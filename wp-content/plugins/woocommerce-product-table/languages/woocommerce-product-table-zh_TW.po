@@ -1,0 +1,1259 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Product Table\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-13 18:20+0000\n"
+"PO-Revision-Date: 2020-03-13 18:37+0000\n"
+"Last-Translator: Andrew Keith <andy@barn2.co.uk>\n"
+"Language-Team: 繁體中文\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: woocommerce-product-table.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:35
+msgid "Settings"
+msgstr "設定"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "View WooCommerce Product Table documentation"
+msgstr "瀏覽 WooCommerce 商品表格文件"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "Docs"
+msgstr "文件"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:49
+#: includes/admin/class-wc-product-table-admin-settings-page.php:70
+msgid "Product tables"
+msgstr "商品表格"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:73
+msgid "The following options control the WooCommerce Product Table extension."
+msgstr "以下選項控制 WooCommerce 商品表格擴展。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:75
+msgid "View Documentation"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:76
+msgid "Get Help"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:80
+msgid "License key"
+msgstr "許可證金鑰"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:84
+msgid "The licence key is contained in your order confirmation email."
+msgstr "許可證金鑰包含在您的訂單確認電子郵件中。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:112
+msgid "Table design"
+msgstr "表格設計"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:113
+msgid ""
+"Choose whether to use the default design or customize it to suit your "
+"requirements."
+msgstr "選擇使用預設設計，或是自訂以滿足您的需求。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:118
+msgid "Design"
+msgstr "設計"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:122
+msgid "Default"
+msgstr "預設"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:123
+#: includes/admin/class-wc-product-table-admin-settings-page.php:508
+msgid "Custom"
+msgstr "自訂"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:134
+msgid ""
+"Choose your custom table styles below. Any settings you leave blank will "
+"default to your theme styles."
+msgstr "選擇下方的自訂表格樣式。留空的話，將採用預設為您的主題樣式。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:138
+msgid "Borders"
+msgstr "邊框"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External border icon"
+msgstr "外部邊框圖示"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External"
+msgstr "外部"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:142
+msgid "The border for the outer edges of the table."
+msgstr "表格外邊緣的邊框。"
+
+#. translators: 'Header' in this context refers to the heading row of a table.
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header border icon"
+msgstr "頁頭邊框圖示"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header"
+msgstr "頁頭"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:150
+msgid "The border for the bottom of the header row."
+msgstr "頁頭行底部的邊框。"
+
+#. translators: 'Cell' in this context refers to a cell in a table or spreadsheet.
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell border icon"
+msgstr "部分邊框圖示"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell"
+msgstr "部分"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:158
+msgid "The border between cells in your table."
+msgstr "表格中單元格之間的邊框。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:162
+msgid "Header background"
+msgstr "頁頭背景"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:165
+msgid "The header background color."
+msgstr "頁頭背景顏色。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:166
+#: includes/admin/class-wc-product-table-admin-settings-page.php:175
+#: lib/class-wc-settings-additional-field-types.php:51
+msgid "Color"
+msgstr "顏色"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:171
+msgid "Cell background"
+msgstr "部分背景"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:174
+msgid "The main background color used for the table contents."
+msgstr "用於表格內容的主要背景顏色。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:180
+msgid "Header font"
+msgstr "頁頭字體"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:183
+msgid "The font used in the table header."
+msgstr "表格頁頭中使用的字體。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:188
+msgid "Cell font"
+msgstr "部分字體"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:191
+msgid "The font used for the table contents."
+msgstr "用於表格內容的字體。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:206
+#, fuzzy
+#| msgid "Table design"
+msgid "Table display"
+msgstr "表格設計"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#, php-format
+msgid ""
+"You can create product tables using the [product_table] shortcode (either "
+"listing all your products or %1$s), or you can automatically replace the "
+"standard layouts in your theme."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+msgid "specific products only"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#: includes/admin/class-wc-product-table-admin-settings-page.php:777
+msgid "Read more"
+msgstr "繼續閱讀"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:212
+#, fuzzy
+#| msgid "Rows per page"
+msgid "Shop page"
+msgstr "每頁行數"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:218
+#, fuzzy
+#| msgid "Product Table: Filter by Price"
+msgid "Product category archives"
+msgstr "商品表格：依據價格篩選"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:232
+msgid "Table content"
+msgstr "表格內容"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:235
+#, fuzzy
+#| msgid ""
+#| "These options set defaults for the [product_table] shortcode. They can be "
+#| "overridden for individual tables when you add the shortcode to the page. "
+#| "%1$sFull list of shortcode options%2$s."
+msgid ""
+"These options set defaults for all your product tables. You can override "
+"them in the shortcode for individual tables."
+msgstr ""
+"這些選項設定 [product_table] 短代碼的預設值。將短代碼新增到頁面時，可以為個別"
+"表格覆蓋它們。 %1$s完整的短代碼選項列表%2$s。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:236
+#, fuzzy
+#| msgid ""
+#| "Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgid "See the full list of shortcode options"
+msgstr "有關 %s全部短代碼選項%s 的列表，請參閱知識庫。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:239
+msgid "Columns"
+msgstr "欄位"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:242
+msgid "The default columns for your product tables."
+msgstr "您商品表格的預設欄位。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:247
+msgid "Image size"
+msgstr "圖片尺寸"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:250
+msgid "W x H in pixels, e.g. 70x50"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:251
+msgid ""
+"You can also enter standard image sizes here such as thumbnail, "
+"shop_thumbnail, medium, etc."
+msgstr "您可以在此處輸入標準圖片尺寸，例如縮略圖、shop_thumbnail、medium 等。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:256
+msgid "Image lightbox"
+msgstr "圖片燈箱"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:259
+msgid "Display product images in a lightbox"
+msgstr "在燈箱中顯示商品圖片"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:263
+msgid "Shortcodes"
+msgstr "短代碼"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:266
+msgid "Display shortcodes, HTML and other formatting inside the table content"
+msgstr "在表格內容中顯示短代碼，HTML 和其他格式"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:270
+msgid "Description length"
+msgstr "描述長度"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:273
+msgid "words"
+msgstr "文字"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:274
+msgid "Enter -1 to display the full product description including formatting."
+msgstr "輸入 -1 以顯示完整的產品說明，包括格式。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:282
+#: includes/admin/class-wc-product-table-admin-settings-page.php:612
+msgid "Product links"
+msgstr "商品連結"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:285
+msgid "Include links to the relevant product, category, tag, or attribute."
+msgstr "包含指向相關商品、類別、標籤，或屬性的連結。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:286
+msgid ""
+"Enter all, none, or a combination of: sku, name, image, tags, categories, "
+"terms, or attributes as a comma-separated list."
+msgstr ""
+"以逗號 ',' 分隔列表，輸入全部、無，或組合：sku、名稱、圖片、標籤、類別、術"
+"語，或屬性。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:297
+msgid "Loading products"
+msgstr "正在讀取商品"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:302
+msgid "Lazy load"
+msgstr "延後讀取"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:305
+msgid "Load products one page at a time"
+msgstr "一次讀取一頁產品"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:306
+msgid ""
+"Enable this if you have many products or experience slow page load times.<br/"
+"><strong>Warning:</strong> Lazy load has some limitations - it limits the "
+"search, sorting, and display of variations. Only use it if you definitely "
+"need it."
+msgstr ""
+"如果您有許多產品或瀏覽頁面加載時間較慢，請啟用此功能。<br/> <strong>警告：</ "
+"strong>延遲加載有一些限制 - 它限制了搜索，排序和變體顯示。只有在你確實需要時"
+"才使用它。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:315
+msgid "Product limit"
+msgstr "商品限制"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:318
+#, fuzzy
+#| msgid "The maximum total number of products to display in one table."
+msgid "The maximum number of products to display in one table."
+msgstr "在一個表格中顯示最大的商品總數。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:319
+msgid "This option is ignored if lazy load is enabled."
+msgstr "如果啟用了延遲讀取，則忽略此選項。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:328
+msgid "Caching"
+msgstr "高速緩存"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:331
+msgid "Cache table contents to improve load times"
+msgstr "緩存表格內容改善讀取時間"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:339
+msgid "Cache expires after"
+msgstr "緩存過期後"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:342
+msgid "hours"
+msgstr "小時"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:343
+msgid "Your table data will be refreshed after this length of time."
+msgstr "您的表格數據將在這段時間後刷新。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:353
+msgid "Rows per page"
+msgstr "每頁行數"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:356
+msgid "The number of products per page of results."
+msgstr "每頁結果的商品數量。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:357
+msgid "Use '-1' to display all products on one page of results."
+msgstr "使用 '-1' 顯示一頁結果中的所有商品。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:372
+msgid "Sorting"
+msgstr "排序"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:377
+msgid "Sort by"
+msgstr "依據排序"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:381
+msgid "As listed in the Products screen (menu order)"
+msgstr "商品畫面的列表 (選單排序)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:382
+#: includes/class-wc-product-table-columns.php:260
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:383
+#: includes/class-wc-product-table-columns.php:261
+msgid "Name"
+msgstr "名稱"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:384
+#: includes/class-wc-product-table-columns.php:259
+msgid "ID"
+msgstr "ID"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:385
+#: includes/class-wc-product-table-columns.php:272
+msgid "Price"
+msgstr "價格"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:386
+msgid "Number of sales"
+msgstr "銷售數量"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:387
+msgid "Average reviews"
+msgstr "平均評價"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:388
+msgid "Date added"
+msgstr "已新增日期"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:389
+msgid "Date last modified"
+msgstr "上次修改日期"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:390
+msgid "Other"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:392
+msgid "The initial sort order applied to the table."
+msgstr "應用於表格的初始排序順序。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:401
+msgid "Sort column"
+msgstr "排序欄位"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:405
+#, fuzzy
+#| msgid ""
+#| "Please note: column sorting will only work when lazy load is disabled."
+msgid ""
+"Enter a column name, e.g. description, att:size, etc. Will only work when "
+"lazy load is disabled."
+msgstr "請注意：列排序僅在停用延遲讀取時有效。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:409
+msgid "Sort direction"
+msgstr "排序方向"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:413
+msgid "Automatic"
+msgstr "自動"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:414
+msgid "Ascending (A to Z, 1 to 99)"
+msgstr "升冪排列 ( A ~ Z，1 ~ 99 )"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:415
+msgid "Descending (Z to A, 99 to 1)"
+msgstr "降冪排列 ( A ~ Z，1 ~ 99 )"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:427
+msgid "Add to cart column"
+msgstr "加入購物車欄位"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:432
+msgid "Add to cart button"
+msgstr "加入購物車按鈕"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:436
+msgid "Button only"
+msgstr "僅適用按鈕"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:437
+msgid "Checkbox only"
+msgstr "僅適用複選框"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:438
+msgid "Button and checkbox"
+msgstr "按鈕和複選框"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:440
+msgid "How 'Add to Cart' buttons are displayed in the table."
+msgstr "表格中顯示 “添加到購物車” 按鈕的方式。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:444
+msgid "Add to cart behavior"
+msgstr "加入購物車行為"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:447
+msgid "Use AJAX when adding to the to the cart"
+msgstr "新增到購物車時使用 AJAX"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:451
+msgid "Quantities"
+msgstr "數量"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:454
+msgid "Show quantity selectors in the Add to Cart column"
+msgstr "在加入購物車欄位中，顯示數量選擇器"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:458
+msgid "Variations"
+msgstr "變化"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:462
+msgid "Link to product page"
+msgstr "連結到商品頁面"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:463
+#, fuzzy
+#| msgid "Show quantity selectors in the Add to Cart column"
+msgid "Dropdown lists in add to cart column"
+msgstr "在加入購物車欄位中，顯示數量選擇器"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:464
+#, fuzzy
+#| msgid "Show as separate rows (1 per variation)"
+msgid "Separate rows in table (one per variation)"
+msgstr "顯示為單獨的行 ( 每個變體 1 個 )"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:466
+msgid "How to display options for variable products."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:470
+msgid "'Add Selected' position"
+msgstr "'已選取' 按鈕位置"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:474
+#: includes/admin/class-wc-product-table-admin-settings-page.php:531
+#: includes/admin/class-wc-product-table-admin-settings-page.php:544
+#: includes/admin/class-wc-product-table-admin-settings-page.php:557
+#: includes/admin/class-wc-product-table-admin-settings-page.php:570
+msgid "Above table"
+msgstr "在表格上方"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:475
+#: includes/admin/class-wc-product-table-admin-settings-page.php:532
+#: includes/admin/class-wc-product-table-admin-settings-page.php:545
+#: includes/admin/class-wc-product-table-admin-settings-page.php:558
+#: includes/admin/class-wc-product-table-admin-settings-page.php:571
+msgid "Below table"
+msgstr "表格下方"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:476
+#: includes/admin/class-wc-product-table-admin-settings-page.php:533
+#: includes/admin/class-wc-product-table-admin-settings-page.php:546
+#: includes/admin/class-wc-product-table-admin-settings-page.php:559
+#: includes/admin/class-wc-product-table-admin-settings-page.php:572
+msgid "Above and below table"
+msgstr "在表格上方和下方"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:478
+msgid ""
+"The position of the 'Add Selected To Cart' button for adding multiple "
+"products."
+msgstr "'加入選取購物車' 按鈕的位置，用於新增多個商品。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:479
+msgid ""
+"Only applicable if using 'Checkbox' or 'Button + checkbox' for the add to "
+"cart buttons"
+msgstr "僅適用使用加入購物車按鈕的 '複選框' 或 '按鈕+複選框'"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:483
+msgid "'Add Selected' button text"
+msgstr "'已選取' 按鈕文字"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:487
+msgid "The text for the 'Add Selected To Cart' button."
+msgstr "'加入選取購物車' 按鈕的文字。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:498
+msgid "Table controls"
+msgstr "表格控制"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:502
+msgid "Product filters"
+msgstr "商品篩選器"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:506
+msgid "Disabled"
+msgstr "停用"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:507
+msgid "Show based on columns in table"
+msgstr "根據表格中的欄位顯示"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:510
+msgid ""
+"Dropdown lists to filter the table by category, tag, attribute, or custom "
+"taxonomy."
+msgstr "下拉列表按類別、標籤、屬性，或自訂分類篩選。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:519
+msgid "Custom filters"
+msgstr "自訂篩選器"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:522
+#, fuzzy
+#| msgid "Enter filters as a comma-separated list."
+msgid "Enter your filters as a comma-separated list."
+msgstr "輸入篩選器，用逗號 ',' 分隔列表。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:523
+msgctxt "toolip for search filter option"
+msgid "E.g. categories, tags, att:color"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:527
+msgid "Page length"
+msgstr "頁面長度"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:534
+#: includes/admin/class-wc-product-table-admin-settings-page.php:547
+#: includes/admin/class-wc-product-table-admin-settings-page.php:560
+#: includes/admin/class-wc-product-table-admin-settings-page.php:573
+msgid "Hidden"
+msgstr "隱藏"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:536
+msgid "The position of the 'Show [x] products' dropdown list."
+msgstr "'顯示 [x] 商品' 下拉列表的位置。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:540
+msgid "Search box"
+msgstr "搜尋框"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:549
+msgid "The position of the product search box."
+msgstr "商品搜尋框的位置。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:553
+msgid "Product totals"
+msgstr "商品表格"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:562
+msgid ""
+"The position of the product totals, e.g. 'Showing 1 to 5 of 10 products'."
+msgstr "商品總數的位置，例如 '顯示 10 個商品中的 1 到 5 個'。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:566
+msgid "Pagination buttons"
+msgstr "分頁按鈕"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:575
+msgid "The position of the paging buttons which scroll between results."
+msgstr "在結果之間滾動的分頁按鈕的位置。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:579
+msgid "Pagination type"
+msgstr "分頁類型"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:583
+msgid "Numbers only"
+msgstr "僅適用數字"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:584
+msgid "Prev/next"
+msgstr "上一頁/下一頁"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:585
+msgid "Prev/next + numbers"
+msgstr "上一頁/下一頁 + 數字"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:586
+msgid "Prev/next/first/last"
+msgstr "上一頁/下一頁/第一頁/最後一頁"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:587
+msgid "Prev/next/first/last + numbers"
+msgstr "上一頁/下一頁/第一頁/最後一頁 + 數字"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:592
+msgid "Reset button"
+msgstr "還原按鈕"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:595
+msgid "Show the reset button above the table"
+msgstr "顯示表格上方的還原按鈕"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:607
+msgid "Quick View Pro"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:615
+msgid "Replace all links to product page with Quick View"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:617
+#, php-format
+msgid "%sLearn how%s to correctly configure this option."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:633
+#, fuzzy
+#| msgid "Product add-ons"
+msgid "Product Addons"
+msgstr "商品附加組件"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:638
+#, fuzzy
+#| msgid "Add-on groups layout"
+msgid "Addons layout"
+msgstr "附加組件群組佈局"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:641
+#: includes/admin/class-wc-product-table-admin-settings-page.php:652
+msgid "Vertical"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:642
+#: includes/admin/class-wc-product-table-admin-settings-page.php:653
+msgid "Horizontal"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:645
+#, fuzzy
+#| msgid "Should the product add-on groups display horizontally or vertically?"
+msgid ""
+"Should product addons display horizontally or vertically within the table?"
+msgstr "商品附加組件是否應該水平或垂直顯示？"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:649
+#, fuzzy
+#| msgid "Add-on options layout"
+msgid "Addon options layout"
+msgstr "附加組件選項佈局"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:656
+#, fuzzy
+#| msgid ""
+#| "Should the individual options for each add-on display horizontally or "
+#| "vertically?"
+msgid ""
+"Should individual options for each addon display horizontally or vertically?"
+msgstr "每個附加組件的各個選項是水平還是垂直顯示？"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:695
+msgid ""
+"The columns option is invalid. Please check you have entered valid column "
+"names."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:757
+#, php-format
+msgid ""
+"Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgstr "有關 %s全部短代碼選項%s 的列表，請參閱知識庫。"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:765
+msgid "Getting Started Guide"
+msgstr "入門指南"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:766
+msgid "Knowledge Base"
+msgstr "知識庫"
+
+#: includes/class-wc-product-table-ajax-handler.php:170
+msgid "View Cart"
+msgstr "瀏覽購物車"
+
+#: includes/class-wc-product-table-ajax-handler.php:192
+msgid "There was an error adding to the cart. Please try again."
+msgstr "新增到購物車時出錯。請再試一次。"
+
+#: includes/class-wc-product-table-args.php:412
+msgid "Show details"
+msgstr "顯示明細"
+
+#: includes/class-wc-product-table-cart-handler.php:37
+#: includes/class-wc-product-table-frontend-scripts.php:118
+msgid "Please select one or more products."
+msgstr "請選擇一個或多個商品。"
+
+#: includes/class-wc-product-table-cart-handler.php:95
+msgid "No product selected. Please try again."
+msgstr "沒有選取商品，請再次嘗試。"
+
+#: includes/class-wc-product-table-cart-handler.php:106
+msgid "This product is no longer available. Please select an alternative."
+msgstr "此商品目前不存在。請選擇其他的。"
+
+#: includes/class-wc-product-table-cart-handler.php:109
+msgid "Please enter a quantity greater than 0."
+msgstr "請輸入大於 0 的數量。"
+
+#: includes/class-wc-product-table-cart-handler.php:128
+#: includes/class-wc-product-table-cart-handler.php:143
+msgid "This product cannot be purchased."
+msgstr "此商品無法購買。"
+
+#: includes/class-wc-product-table-columns.php:262
+msgid "Description"
+msgstr "描述"
+
+#: includes/class-wc-product-table-columns.php:263
+msgid "Summary"
+msgstr "摘要"
+
+#: includes/class-wc-product-table-columns.php:264
+msgid "Date"
+msgstr "日期"
+
+#: includes/class-wc-product-table-columns.php:265
+msgid "Categories"
+msgstr "類別"
+
+#: includes/class-wc-product-table-columns.php:266
+msgid "Tags"
+msgstr "標籤"
+
+#: includes/class-wc-product-table-columns.php:267
+msgid "Image"
+msgstr "圖片"
+
+#: includes/class-wc-product-table-columns.php:268
+msgid "Stock"
+msgstr "庫存"
+
+#: includes/class-wc-product-table-columns.php:269
+msgid "Reviews"
+msgstr "評價"
+
+#: includes/class-wc-product-table-columns.php:270
+msgid "Weight"
+msgstr "重量"
+
+#: includes/class-wc-product-table-columns.php:271
+msgid "Dimensions"
+msgstr "形狀尺寸"
+
+#: includes/class-wc-product-table-columns.php:273
+msgid "Buy"
+msgstr "選購"
+
+#: includes/class-wc-product-table-columns.php:274
+msgid "Details"
+msgstr "明細"
+
+#: includes/class-wc-product-table-config-builder.php:74
+msgctxt "show all products option"
+msgid "All"
+msgstr "全部"
+
+#: includes/class-wc-product-table-frontend-scripts.php:94
+msgid "Showing _START_ to _END_ of _TOTAL_ products"
+msgstr "顯示 _START_ ~ _END_ 共 _TOTAL_ 項商品"
+
+#: includes/class-wc-product-table-frontend-scripts.php:95
+msgid "Showing 0 products"
+msgstr "目前顯示 0 項商品"
+
+#: includes/class-wc-product-table-frontend-scripts.php:96
+msgid "(_MAX_ products in total)"
+msgstr "( 全部 _MAX_ 項商品 )"
+
+#: includes/class-wc-product-table-frontend-scripts.php:97
+msgid "Show _MENU_ products"
+msgstr "顯示 _MENU_ 項商品"
+
+#: includes/class-wc-product-table-frontend-scripts.php:98
+#: includes/class-wc-product-table-frontend-scripts.php:99
+msgid "No matching products found."
+msgstr "找不到符合的商品。"
+
+#: includes/class-wc-product-table-frontend-scripts.php:100
+msgid "Search:"
+msgstr "搜尋"
+
+#: includes/class-wc-product-table-frontend-scripts.php:102
+msgid "First"
+msgstr "首先"
+
+#: includes/class-wc-product-table-frontend-scripts.php:103
+msgid "Last"
+msgstr "最後"
+
+#: includes/class-wc-product-table-frontend-scripts.php:104
+msgid "Next"
+msgstr "下一頁"
+
+#: includes/class-wc-product-table-frontend-scripts.php:105
+msgid "Previous"
+msgstr "上一頁"
+
+#: includes/class-wc-product-table-frontend-scripts.php:107
+msgctxt "thousands separator"
+msgid ","
+msgstr ","
+
+#: includes/class-wc-product-table-frontend-scripts.php:108
+msgctxt "decimal mark"
+msgid "."
+msgstr "."
+
+#. translators: ARIA text for sorting column in ascending order
+#: includes/class-wc-product-table-frontend-scripts.php:111
+msgid ": activate to sort column ascending"
+msgstr "：啟用升冪排列欄位"
+
+#. translators: ARIA text for sorting column in descending order
+#: includes/class-wc-product-table-frontend-scripts.php:113
+msgid ": activate to sort column descending"
+msgstr "：啟用降冪排列欄位"
+
+#: includes/class-wc-product-table-frontend-scripts.php:115
+msgid "Filter:"
+msgstr "篩選"
+
+#: includes/class-wc-product-table-frontend-scripts.php:116
+msgid "Reset"
+msgstr "重設"
+
+#: includes/class-wc-product-table-frontend-scripts.php:117
+#: includes/util/class-wcpt-settings.php:112
+msgid "Add Selected To Cart"
+msgstr "已選取加入購物車"
+
+#: includes/class-wc-product-table-hook-manager.php:312
+msgid "Buy product"
+msgstr "選購商品"
+
+#: includes/class-wc-product-table-hook-manager.php:357
+msgid "This product is currently out of stock and unavailable."
+msgstr "此商品目前無庫存，無法選購。"
+
+#. translators: 1: rating 2: rating count
+#: includes/compat/back-compat-template-functions.php:30
+#, php-format
+msgid "Rated %1$s out of 5 based on %2$s customer rating"
+msgid_plural "Rated %1$s out of 5 based on %2$s customer ratings"
+msgstr[0] "根據 %2$s 的顧客評級，評分為 %1$s 到滿分 5 分"
+
+#. translators: %s: rating
+#: includes/compat/back-compat-template-functions.php:33
+#: includes/data/class-product-table-data-reviews.php:23
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+#, php-format
+msgid "Rated %s out of 5"
+msgstr "評價 %s 最多 5"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "True"
+msgstr "是"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "False"
+msgstr "否"
+
+#. translators: The sentence is 'out of 5'. The '%s' characters are replaced with extra HTML text.
+#: includes/data/class-product-table-data-reviews.php:26
+#, php-format
+msgid "out of %s5%s"
+msgstr "超出 %s5%s"
+
+#: includes/data/class-product-table-data-reviews.php:27
+#, php-format
+msgid "based on %s customer rating"
+msgid_plural "based on %s customer ratings"
+msgstr[0] "在 %s 顧客評分"
+
+#: includes/data/class-product-table-data-stock.php:21
+msgid "In stock"
+msgstr "有庫存"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:29
+msgid "Display a list of active filters for your product table."
+msgstr "在您商品表格，顯示啟用篩選的列表。"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:31
+msgid "Product Table: Active Filters"
+msgstr "商品表格：啟用篩選器"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:35
+msgid "Active filters"
+msgstr "啟用篩選器"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:36
+#: includes/widgets/class-wcpt-widget-layered-nav.php:81
+#: includes/widgets/class-wcpt-widget-price-filter.php:36
+#: includes/widgets/class-wcpt-widget-rating-filter.php:36
+msgid "Title"
+msgstr "標題"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:88
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+msgid "Remove filter"
+msgstr "移除篩選器"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#, php-format
+msgid "Min %s"
+msgstr "最低 %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#, php-format
+msgid "Max %s"
+msgstr "最高 %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:29
+msgid "Display a list of attributes to filter products in your product table."
+msgstr "在您商品表格，顯示篩選商品的屬性列表。"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:31
+msgid "Product Table: Filter by Attribute"
+msgstr "商品表格：依據屬性篩選"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:80
+msgid "Filter by"
+msgstr "依據篩選"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:86
+msgid "Attribute"
+msgstr "屬性"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:92
+msgid "Display type"
+msgstr "顯示類型"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:94
+msgid "List"
+msgstr "列表"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:95
+msgid "Dropdown"
+msgstr "下拉式選單"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:101
+msgid "Query type"
+msgstr "查詢類型"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:103
+msgid "AND"
+msgstr "和"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:104
+msgid "OR"
+msgstr "或"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:208
+#, php-format
+msgid "Any %s"
+msgstr "全部 %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:246
+msgid "Apply"
+msgstr "應用"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:279
+msgctxt "enhanced select"
+msgid "No matches found"
+msgstr "找不到符合的項目"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:29
+msgid "Display a slider to filter your product table by price."
+msgstr "顯示一個幻燈片，依據價格篩選您的商品。"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:31
+msgid "Product Table: Filter by Price"
+msgstr "商品表格：依據價格篩選"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:35
+msgid "Filter by price"
+msgstr "依據價格篩選"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:99
+msgid "Min price"
+msgstr "最低價格"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:100
+msgid "Max price"
+msgstr "最高價格"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:101
+msgid "Filter"
+msgstr "篩選器"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:103
+msgid "Price:"
+msgstr "價格："
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:29
+msgid ""
+"Display a list of star ratings to filter products in your product table."
+msgstr "在您商品表格，顯示篩選商品的星級評價列表。"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:31
+msgid "Product Table: Filter by Rating"
+msgstr "商品表格：依據評價篩選"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:35
+msgid "Average rating"
+msgstr "平均評分"
+
+#: lib/class-wc-settings-additional-field-types.php:62
+msgid "Size"
+msgstr "尺寸"
+
+#: license/EDD_SL_Plugin_Updater.php:219
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s."
+msgstr "有一個新版本的 %1$s 可用。 %2$s瀏覽版本 %3$s 詳細資訊%4$s。"
+
+#: license/EDD_SL_Plugin_Updater.php:227
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s "
+"or %5$supdate now%6$s."
+msgstr ""
+"有一個新版本的 %1$s 可用。%2$s瀏覽版本 %3$s 詳細資訊%4$s 或 %5$s立即更"
+"新%6$s。"
+
+#: license/EDD_SL_Plugin_Updater.php:461
+msgid "You do not have permission to install plugin updates"
+msgstr "您沒有權限安裝插件更新"
+
+#: license/EDD_SL_Plugin_Updater.php:461
+msgid "Error"
+msgstr "錯誤"
+
+#: license/class-b2-plugin-license.php:140
+#: license/class-b2-plugin-license.php:236
+msgid "Please enter your license key."
+msgstr "請輸入您的許可證金鑰。"
+
+#: license/class-b2-plugin-license.php:143
+msgid "No URL was supplied for activation."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:146
+msgid "This license is for a bundled product and cannot be activated."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:150
+#, php-format
+msgid "Your license key expired on %s."
+msgstr "您的許可證金鑰已在 %s 上過期。"
+
+#: license/class-b2-plugin-license.php:155
+#, fuzzy
+#| msgid "Your license is not active for this URL."
+msgid "Your license key is not valid for this plugin."
+msgstr "您的許可證對此 URL 無效。"
+
+#: license/class-b2-plugin-license.php:158
+msgid "Your license key has reached its activation limit."
+msgstr "您的許可證金鑰已達到其啟用限制。"
+
+#: license/class-b2-plugin-license.php:161
+#, fuzzy
+#| msgid "Your license key has been disabled."
+msgid "Your license key has been disabled, please contact support,"
+msgstr "您的許可證金鑰已被停用。"
+
+#: license/class-b2-plugin-license.php:164
+msgid "License key mismatch, please contact support."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:167
+#: license/class-b2-plugin-license.php:248
+msgid "There was an error activating your license, please try again."
+msgstr "驗證許可證時發生了錯誤，請再次嘗試。"
+
+#: license/class-b2-plugin-license.php:237
+msgid "Deactivate"
+msgstr "停用"
+
+#: license/class-b2-plugin-license.php:240
+msgid "License key successfully activated."
+msgstr "成功啟用許可證金鑰。"
+
+#: license/class-b2-plugin-license.php:242
+msgid "License key successfully deactivated. Click Save to reactivate."
+msgstr "許可證金鑰已成功停用。點擊 保存以便重新啟用。"
+
+#: license/class-b2-plugin-license.php:244
+msgid "There was an error deactivating your license key, please try again."
+msgstr "停用許可證金鑰時出錯，請重試。"
+
+#: license/class-b2-plugin-license.php:313
+msgid "An error has occurred, please try again."
+msgstr "發生了一個錯誤，請再次嘗試。"
+
+#: templates/addons/addon-start.php:69 templates/addons/addon-start.php:77
+#: templates/addons/v2/addon-start.php:32
+msgid "Required field"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Product Table"
+msgstr "WooCommerce Product Table"
+
+#. Plugin URI of the plugin/theme
+msgid "https://barn2.co.uk/wordpress-plugins/woocommerce-product-table/"
+msgstr "https://barn2.co.uk/wordpress-plugins/woocommerce-product-table/"
+
+#. Description of the plugin/theme
+msgid ""
+"Display and purchase WooCommerce products from a searchable and sortable "
+"table. Filter by anything."
+msgstr "從可搜索和可排序的表格中顯示和購買 WooCommerce 產品。篩選全部東西。"
+
+#. Author of the plugin/theme
+msgid "Barn2 Media"
+msgstr "Barn2 Media"
+
+#. Author URI of the plugin/theme
+msgid "https://barn2.co.uk"
+msgstr "https://barn2.co.uk"
+
+#~ msgid "Choosing your products"
+#~ msgstr "選擇您的商品"
+
+#~ msgid ""
+#~ "The tables will display all products by default, or you can select "
+#~ "products based on category, tag, custom field, taxonomy, or individual "
+#~ "products."
+#~ msgstr ""
+#~ "這些表格預設示全部商品，或者您可以根據類別、標籤、自訂欄位、分類，或個別商"
+#~ "品來選擇商品。"
+
+#, fuzzy
+#~| msgid "%1$sHow to select your products%2$s."
+#~ msgid "Learn how to select your products"
+#~ msgstr "%1$s如何選擇您的商品%2$s。"
+
+#~ msgid "Stacked (vertically)"
+#~ msgstr "堆疊 ( 垂直 )"
+
+#~ msgid "Inline (horizontally)"
+#~ msgstr "內聯 (水平 )"
+
+#~ msgid "Your license key is invalid."
+#~ msgstr "您的許可證金鑰是無效的。"
+
+#~ msgid "None"
+#~ msgstr "無"
+
+#~ msgctxt "help text for custom search filters"
+#~ msgid "For taxonomies use %1$s, and for product attributes use %2$s"
+#~ msgstr "對於分類，使用 %1$s，對於商品屬性，使用 %2$s"
+
+#~ msgid "W x H in pixels. Sets the image size when using the 'image' column."
+#~ msgstr "W x H ( 以像素為單位 )。使用 '圖片' 欄位時設定圖片大小。"
+
+#~ msgid "Product name"
+#~ msgstr "商品名稱"
+
+#~ msgid "Product ID"
+#~ msgstr "商品 ID"
+
+#~ msgid "Other column"
+#~ msgstr "其他欄位"
+
+#~ msgid ""
+#~ "Enter a column name in the same format used in the columns option. e.g. "
+#~ "\"sku\" or \"cf:date_field\""
+#~ msgstr ""
+#~ "在欄位選項中，輸入使用相同格式的欄位名稱。例如 \"sku” 或 “cf：date_field”"
+
+#~ msgid "Show as dropdown list"
+#~ msgstr "顯示為下拉列表"
+
+#~ msgid "This controls how variable products are displayed in the table."
+#~ msgstr "這控制變量商品在表格中的顯示方式。"

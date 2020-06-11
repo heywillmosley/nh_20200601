@@ -1,0 +1,1346 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Product Table\n"
+"POT-Creation-Date: 2020-03-13 18:19+0000\n"
+"PO-Revision-Date: 2020-03-13 18:36+0000\n"
+"Last-Translator: Andrew Keith <andy@barn2.co.uk>\n"
+"Language-Team: \n"
+"Language: fi_FI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: woocommerce-product-table.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+"X-Poedit-SearchPathExcluded-1: includes/license/EDD_SL_Plugin_Updater.php\n"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:35
+msgid "Settings"
+msgstr "Asetukset"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "View WooCommerce Product Table documentation"
+msgstr "Näytä WooCommerce tuotetaulukon käyttöohjeet"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "Docs"
+msgstr "Dokumentit"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:49
+#: includes/admin/class-wc-product-table-admin-settings-page.php:70
+msgid "Product tables"
+msgstr "Tuotetaulukko"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:73
+msgid "The following options control the WooCommerce Product Table extension."
+msgstr "Seuraavat asetukset koskevat WooCommercen Tuotetaulukko-lisäosaa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:75
+#, fuzzy
+#| msgid "View Documentation"
+msgid "View Documentation"
+msgstr "Näytä käyttöohjeet"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:76
+msgid "Get Help"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:80
+msgid "License key"
+msgstr "Lisenssiavain"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:84
+msgid "The licence key is contained in your order confirmation email."
+msgstr "Lisenssiavain löytyy tilausvahvistussähköpostista."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:112
+msgid "Table design"
+msgstr "Taulukon ulkoasu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:113
+msgid ""
+"Choose whether to use the default design or customize it to suit your "
+"requirements."
+msgstr "Valitse käytetäänkö oletusmuotoilua vai haluatko muokata sitä."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:118
+msgid "Design"
+msgstr "Muotoilu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:122
+msgid "Default"
+msgstr "Oletus"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:123
+#: includes/admin/class-wc-product-table-admin-settings-page.php:508
+msgid "Custom"
+msgstr "Mukautettu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:134
+msgid ""
+"Choose your custom table styles below. Any settings you leave blank will "
+"default to your theme styles."
+msgstr ""
+"Valitse alla mukautetun taulukon taulukon tyyli. Tyhjäksi jätettyjen osalta "
+"käytetään teeman oletusarvoja."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:138
+msgid "Borders"
+msgstr "Kehykset"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External border icon"
+msgstr "Ulkoinen kehysikoni"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External"
+msgstr "Ulkoinen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:142
+msgid "The border for the outer edges of the table."
+msgstr "Taulukon ulkoreunojen kehykset."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header border icon"
+msgstr "Otsikon kehysikoni"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header"
+msgstr "Otsikko"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:150
+msgid "The border for the bottom of the header row."
+msgstr "Otsikkorivin alakehys."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell border icon"
+msgstr "Solun kehysikoni"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell"
+msgstr "Solu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:158
+msgid "The border between cells in your table."
+msgstr "Solujen välinen kehys taulukossa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:162
+msgid "Header background"
+msgstr "Otsikon tausta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:165
+msgid "The header background color."
+msgstr "Otsikon taustaväri."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:166
+#: includes/admin/class-wc-product-table-admin-settings-page.php:175
+#: lib/class-wc-settings-additional-field-types.php:51
+msgid "Color"
+msgstr "Väri"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:171
+msgid "Cell background"
+msgstr "Solun tausta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:174
+msgid "The main background color used for the table contents."
+msgstr "Taulukon sisältöjen taustaväri."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:180
+msgid "Header font"
+msgstr "Otsikon fontti"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:183
+msgid "The font used in the table header."
+msgstr "Taulukon otsikon fontti."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:188
+msgid "Cell font"
+msgstr "Solun fontti"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:191
+msgid "The font used for the table contents."
+msgstr "Taulukon sisällöissä käytetty fontti."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:206
+#, fuzzy
+#| msgid "Table design"
+msgid "Table display"
+msgstr "Taulukon ulkoasu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#, php-format
+msgid ""
+"You can create product tables using the [product_table] shortcode (either "
+"listing all your products or %1$s), or you can automatically replace the "
+"standard layouts in your theme."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+msgid "specific products only"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#: includes/admin/class-wc-product-table-admin-settings-page.php:777
+msgid "Read more"
+msgstr "Lue lisää"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:212
+#, fuzzy
+#| msgid "Rows per page"
+msgid "Shop page"
+msgstr "Rivejä sivua kohden"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:218
+#, fuzzy
+#| msgid "Product Table: Filter by Price"
+msgid "Product category archives"
+msgstr "Tuotetaulukko: Suodata hinnan mukaan"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:232
+msgid "Table content"
+msgstr "Taulukon sisältö"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:235
+#, fuzzy
+#| msgid ""
+#| "These options set defaults for the [product_table] shortcode. They can be "
+#| "overridden for individual tables when you add the shortcode to the page. "
+#| "%1$sFull list of shortcode options%2$s."
+msgid ""
+"These options set defaults for all your product tables. You can override "
+"them in the shortcode for individual tables."
+msgstr ""
+"Nämä asetukset määrittävät oletusarvot [product_table] lyhytkoodille. Ne "
+"voidaan korvata yksittäisille taulukoille, kun lisäät lyhytkoodin sivulle. "
+"%1$sKokonainen lista lyhytkoodeista%2$s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:236
+#, fuzzy
+#| msgid ""
+#| "Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgid "See the full list of shortcode options"
+msgstr "Katso tietopankista %stäysi lista lyhytkoodeista%s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:239
+msgid "Columns"
+msgstr "Sarakkeet"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:242
+msgid "The default columns for your product tables."
+msgstr "Oletussarakkeet tuotetaulukolle."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:247
+msgid "Image size"
+msgstr "Kuvan koko"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:250
+msgid "W x H in pixels, e.g. 70x50"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:251
+msgid ""
+"You can also enter standard image sizes here such as thumbnail, "
+"shop_thumbnail, medium, etc."
+msgstr ""
+"Voit myös antaa standardikuvakoon kuten thumbnail, shop_thumbnail, medium, "
+"jne."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:256
+msgid "Image lightbox"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:259
+msgid "Display product images in a lightbox"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:263
+msgid "Shortcodes"
+msgstr "Lyhytkoodit"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:266
+msgid "Display shortcodes, HTML and other formatting inside the table content"
+msgstr "Näytä lyhytkoodit, HTML ja muu muotoilu taulukon sisällössä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:270
+msgid "Description length"
+msgstr "Kuvauksen pituus"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:273
+msgid "words"
+msgstr "sanaa"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:274
+msgid "Enter -1 to display the full product description including formatting."
+msgstr "Syötä -1 näyttääksesi koko tuotekuvauksen muotoiluineen."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:282
+#: includes/admin/class-wc-product-table-admin-settings-page.php:612
+msgid "Product links"
+msgstr "Tuotelinkit"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:285
+msgid "Include links to the relevant product, category, tag, or attribute."
+msgstr ""
+"Sisällytä linkit soveltuviin tuotteisiin, kategorioihin, tageihin ja "
+"ominaisuuksiin."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:286
+msgid ""
+"Enter all, none, or a combination of: sku, name, image, tags, categories, "
+"terms, or attributes as a comma-separated list."
+msgstr ""
+"Syötä kaikki, ei mitään tai pilkuilla eroteltu lista seuraavista: sku, nimi, "
+"kuva, tagit, kategoriat, termit tai ominaisuudet."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:297
+msgid "Loading products"
+msgstr "Ladataan tuotteita"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:302
+msgid "Lazy load"
+msgstr "Laiska lataus"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:305
+msgid "Load products one page at a time"
+msgstr "Lataa tuotteet sivu kerrallaan"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:306
+msgid ""
+"Enable this if you have many products or experience slow page load times.<br/"
+"><strong>Warning:</strong> Lazy load has some limitations - it limits the "
+"search, sorting, and display of variations. Only use it if you definitely "
+"need it."
+msgstr ""
+"Kytke tämä päälle, jos sinulla on paljon tuotteita tai sivu latautuu "
+"hitaasti.<br/><strong>Varoitus:</strong> Laiska lataus aiheuttaa rajoitteita "
+"hakuun, järjestelyyn ja muunnelmien esittämiseen. Käytä sitä vain "
+"tarvittaessa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:315
+msgid "Product limit"
+msgstr "Tuoteraja"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:318
+#, fuzzy
+#| msgid "The maximum total number of products to display in one table."
+msgid "The maximum number of products to display in one table."
+msgstr "Suurin kokonaismäärä tuotteita yhdessä taulukossa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:319
+msgid "This option is ignored if lazy load is enabled."
+msgstr "Tätä asetusta ei huomioida, jos laista lataus on kytketty päälle."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:328
+msgid "Caching"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:331
+msgid "Cache table contents to improve load times"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:339
+msgid "Cache expires after"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:342
+msgid "hours"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:343
+msgid "Your table data will be refreshed after this length of time."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:353
+msgid "Rows per page"
+msgstr "Rivejä sivua kohden"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:356
+msgid "The number of products per page of results."
+msgstr "Tulossivulla näkyvien tuotteiden määrä."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:357
+msgid "Use '-1' to display all products on one page of results."
+msgstr "Syötä ‘-1’ näyttääksesi kaikki tuotteet yhdellä tulossivulla."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:372
+msgid "Sorting"
+msgstr "Järjestely"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:377
+msgid "Sort by"
+msgstr "Järjestä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:381
+msgid "As listed in the Products screen (menu order)"
+msgstr "Tuotenäkymän listaus (valikkojärjestys)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:382
+#: includes/class-wc-product-table-columns.php:260
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:383
+#: includes/class-wc-product-table-columns.php:261
+msgid "Name"
+msgstr "Nimi"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:384
+#: includes/class-wc-product-table-columns.php:259
+msgid "ID"
+msgstr "ID"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:385
+#: includes/class-wc-product-table-columns.php:272
+msgid "Price"
+msgstr "Hinta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:386
+msgid "Number of sales"
+msgstr "Myyntien määrä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:387
+msgid "Average reviews"
+msgstr "Keskivertoarvio"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:388
+msgid "Date added"
+msgstr "Päivämäärä lisätty"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:389
+msgid "Date last modified"
+msgstr "Viimeksi muokattu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:390
+msgid "Other"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:392
+msgid "The initial sort order applied to the table."
+msgstr "Taulukon oletusjärjestys."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:401
+msgid "Sort column"
+msgstr "Järjestyssarake"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:405
+#, fuzzy
+#| msgid ""
+#| "Please note: column sorting will only work when lazy load is disabled."
+msgid ""
+"Enter a column name, e.g. description, att:size, etc. Will only work when "
+"lazy load is disabled."
+msgstr ""
+"Tärkeää: sarakejärjestäminen toimii vain, kun laiska lataus ei ole "
+"toiminnassa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:409
+msgid "Sort direction"
+msgstr "Järjestyssuunta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:413
+msgid "Automatic"
+msgstr "Automaattinen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:414
+msgid "Ascending (A to Z, 1 to 99)"
+msgstr "Nouseva (A -> Z, 1 -> 99)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:415
+msgid "Descending (Z to A, 99 to 1)"
+msgstr "Laskeva (Z -> A, 99 -> 1)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:427
+msgid "Add to cart column"
+msgstr "Lisää koriin -sarake"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:432
+msgid "Add to cart button"
+msgstr "Lisää koriin -nappi"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:436
+msgid "Button only"
+msgstr "Vain nappi"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:437
+msgid "Checkbox only"
+msgstr "Vain valintaruutu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:438
+msgid "Button and checkbox"
+msgstr "Nappi ja valintaruutu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:440
+msgid "How 'Add to Cart' buttons are displayed in the table."
+msgstr "Miten Lisää koriin -napit näkyvät taulukossa."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:444
+msgid "Add to cart behavior"
+msgstr "Lisää koriin -napin toiminta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:447
+msgid "Use AJAX when adding to the to the cart"
+msgstr "Käytä AJAXia ostoskoriin lisäämisessä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:451
+msgid "Quantities"
+msgstr "Määrät"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:454
+msgid "Show quantity selectors in the Add to Cart column"
+msgstr "Näytä määrävalitsimet ‘Lisää koriin’ -sarakkeessa"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:458
+msgid "Variations"
+msgstr "Muunnelmat"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:462
+msgid "Link to product page"
+msgstr "Linkki tuotesivulle"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:463
+#, fuzzy
+#| msgid "Show quantity selectors in the Add to Cart column"
+msgid "Dropdown lists in add to cart column"
+msgstr "Näytä määrävalitsimet ‘Lisää koriin’ -sarakkeessa"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:464
+#, fuzzy
+#| msgid "Show as separate rows (1 per variation)"
+msgid "Separate rows in table (one per variation)"
+msgstr "Näytä erillisinä riveinä (1 muunnelma rivillä)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:466
+msgid "How to display options for variable products."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:470
+msgid "'Add Selected' position"
+msgstr "Lisää valitut -napin sijainti"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:474
+#: includes/admin/class-wc-product-table-admin-settings-page.php:531
+#: includes/admin/class-wc-product-table-admin-settings-page.php:544
+#: includes/admin/class-wc-product-table-admin-settings-page.php:557
+#: includes/admin/class-wc-product-table-admin-settings-page.php:570
+msgid "Above table"
+msgstr "Taulukon yläpuolella"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:475
+#: includes/admin/class-wc-product-table-admin-settings-page.php:532
+#: includes/admin/class-wc-product-table-admin-settings-page.php:545
+#: includes/admin/class-wc-product-table-admin-settings-page.php:558
+#: includes/admin/class-wc-product-table-admin-settings-page.php:571
+msgid "Below table"
+msgstr "Taulukon alapuolella"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:476
+#: includes/admin/class-wc-product-table-admin-settings-page.php:533
+#: includes/admin/class-wc-product-table-admin-settings-page.php:546
+#: includes/admin/class-wc-product-table-admin-settings-page.php:559
+#: includes/admin/class-wc-product-table-admin-settings-page.php:572
+msgid "Above and below table"
+msgstr "Taulukon ylä- ja alapuolella"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:478
+msgid ""
+"The position of the 'Add Selected To Cart' button for adding multiple "
+"products."
+msgstr "Lisää valitut koriin -napin sijainti useiden tuotteiden lisäämiseen."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:479
+msgid ""
+"Only applicable if using 'Checkbox' or 'Button + checkbox' for the add to "
+"cart buttons"
+msgstr ""
+"Käytössä vain silloin kun Lisää koriin -napeille on valittu valintaruutu tai "
+"nappi + valintaruutu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:483
+msgid "'Add Selected' button text"
+msgstr "Lisää valitut -napin teksti"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:487
+msgid "The text for the 'Add Selected To Cart' button."
+msgstr "Teksti Lisää valitut koriin -napille."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:498
+msgid "Table controls"
+msgstr "Taulukon hallinta"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:502
+msgid "Product filters"
+msgstr "Tuotesuotimet"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:506
+msgid "Disabled"
+msgstr "Ei käytössä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:507
+msgid "Show based on columns in table"
+msgstr "Näytä sarakkeiden mukaisesti taulukossa"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:510
+msgid ""
+"Dropdown lists to filter the table by category, tag, attribute, or custom "
+"taxonomy."
+msgstr ""
+"Alasvetovalikot taulukon suodattamiseen kategorian, tagin tai luokittelun "
+"mukaan."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:519
+msgid "Custom filters"
+msgstr "Suotimet"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:522
+#, fuzzy
+#| msgid "Enter filters as a comma-separated list."
+msgid "Enter your filters as a comma-separated list."
+msgstr "Syötä suotimet pilkuilla erotettuina."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:523
+msgctxt "toolip for search filter option"
+msgid "E.g. categories, tags, att:color"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:527
+msgid "Page length"
+msgstr "Sivun pituus"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:534
+#: includes/admin/class-wc-product-table-admin-settings-page.php:547
+#: includes/admin/class-wc-product-table-admin-settings-page.php:560
+#: includes/admin/class-wc-product-table-admin-settings-page.php:573
+msgid "Hidden"
+msgstr "Piilotettu"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:536
+msgid "The position of the 'Show [x] products' dropdown list."
+msgstr "‘Näytä [x] tuotetta’ -alasvetovalikon sijainti."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:540
+msgid "Search box"
+msgstr "Hakukenttä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:549
+msgid "The position of the product search box."
+msgstr "Tuotehakukentän sijainti."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:553
+msgid "Product totals"
+msgstr "Tuotteiden kokonaismäärä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:562
+msgid ""
+"The position of the product totals, e.g. 'Showing 1 to 5 of 10 products'."
+msgstr ""
+"Tuotteiden kokonaismäärän sijainti, esim. ‘Näytetään 1 - 5 / 10 tuotteesta’."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:566
+msgid "Pagination buttons"
+msgstr "Sivutusnapit"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:575
+msgid "The position of the paging buttons which scroll between results."
+msgstr "Sivutusnappien sijainti."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:579
+msgid "Pagination type"
+msgstr "Sivutustyyli"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:583
+msgid "Numbers only"
+msgstr "Vain numerot"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:584
+msgid "Prev/next"
+msgstr "Edellinen/seuraava"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:585
+msgid "Prev/next + numbers"
+msgstr "Edellinen/seuraava + numerot"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:586
+msgid "Prev/next/first/last"
+msgstr "Edellinen/seuraava/ensimmäinen/viimeinen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:587
+msgid "Prev/next/first/last + numbers"
+msgstr "Edellinen/seuraava/ensimmäinen/viimeinen + numerot"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:592
+msgid "Reset button"
+msgstr "Tyhjennä-nappi"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:595
+msgid "Show the reset button above the table"
+msgstr "Näytä Tyhjennä-nappi taulukon yläpuolella"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:607
+msgid "Quick View Pro"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:615
+msgid "Replace all links to product page with Quick View"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:617
+#, php-format
+msgid "%sLearn how%s to correctly configure this option."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:633
+#, fuzzy
+#| msgid "Product add-ons"
+msgid "Product Addons"
+msgstr "Tuotteen lisäosat"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:638
+#, fuzzy
+#| msgid "Add-on groups layout"
+msgid "Addons layout"
+msgstr "LIsäosaryhmien näkymä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:641
+#: includes/admin/class-wc-product-table-admin-settings-page.php:652
+msgid "Vertical"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:642
+#: includes/admin/class-wc-product-table-admin-settings-page.php:653
+msgid "Horizontal"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:645
+#, fuzzy
+#| msgid "Should the product add-on groups display horizontally or vertically?"
+msgid ""
+"Should product addons display horizontally or vertically within the table?"
+msgstr "Listataanko tuotteen lisäosat pysty- vai vaakasuoraan?"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:649
+#, fuzzy
+#| msgid "Add-on options layout"
+msgid "Addon options layout"
+msgstr "Lisäosien asetusten näkymä"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:656
+#, fuzzy
+#| msgid ""
+#| "Should the individual options for each add-on display horizontally or "
+#| "vertically?"
+msgid ""
+"Should individual options for each addon display horizontally or vertically?"
+msgstr "Listataanko lisäosien asetukset vaaka- vai pystysuoraan?"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:695
+msgid ""
+"The columns option is invalid. Please check you have entered valid column "
+"names."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:757
+#, php-format
+msgid ""
+"Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgstr "Katso tietopankista %stäysi lista lyhytkoodeista%s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:765
+msgid "Getting Started Guide"
+msgstr "Pikaopas"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:766
+msgid "Knowledge Base"
+msgstr "Tietopankki"
+
+#: includes/class-wc-product-table-ajax-handler.php:170
+msgid "View Cart"
+msgstr "Näytä ostoskori"
+
+#: includes/class-wc-product-table-ajax-handler.php:192
+#, fuzzy
+#| msgid "There was an error saving your license key, please try again."
+msgid "There was an error adding to the cart. Please try again."
+msgstr ""
+"Lisenssiavaimesi tallentaminen ei onnistunut. Ole hyvä ja yritä uudelleen."
+
+#: includes/class-wc-product-table-args.php:412
+msgid "Show details"
+msgstr "Näytä tiedot"
+
+#: includes/class-wc-product-table-cart-handler.php:37
+#: includes/class-wc-product-table-frontend-scripts.php:118
+msgid "Please select one or more products."
+msgstr "Valitse yksi tai useampi tuote."
+
+#: includes/class-wc-product-table-cart-handler.php:95
+msgid "No product selected. Please try again."
+msgstr "Ei valittuja tuotteita. Ole hyvä ja yritä uudelleen."
+
+#: includes/class-wc-product-table-cart-handler.php:106
+#, fuzzy
+#| msgid "That product is no longer available. Please select an alternative."
+msgid "This product is no longer available. Please select an alternative."
+msgstr "Tuote ei ole enää saatavilla. Ole hyvä ja valitse toinen tuote."
+
+#: includes/class-wc-product-table-cart-handler.php:109
+#, fuzzy
+#| msgid "Please enter a quantity of 1 or greater."
+msgid "Please enter a quantity greater than 0."
+msgstr "Syötä määräksi 1 tai enemmän."
+
+#: includes/class-wc-product-table-cart-handler.php:128
+#: includes/class-wc-product-table-cart-handler.php:143
+msgid "This product cannot be purchased."
+msgstr ""
+
+#: includes/class-wc-product-table-columns.php:262
+msgid "Description"
+msgstr "Kuvaus"
+
+#: includes/class-wc-product-table-columns.php:263
+msgid "Summary"
+msgstr "Tiivistelmä"
+
+#: includes/class-wc-product-table-columns.php:264
+msgid "Date"
+msgstr "Päiväys"
+
+#: includes/class-wc-product-table-columns.php:265
+msgid "Categories"
+msgstr "Kategoriat"
+
+#: includes/class-wc-product-table-columns.php:266
+msgid "Tags"
+msgstr "Tagit"
+
+#: includes/class-wc-product-table-columns.php:267
+msgid "Image"
+msgstr "Kuva"
+
+#: includes/class-wc-product-table-columns.php:268
+msgid "Stock"
+msgstr "Varasto"
+
+#: includes/class-wc-product-table-columns.php:269
+msgid "Reviews"
+msgstr "Arvostelut"
+
+#: includes/class-wc-product-table-columns.php:270
+msgid "Weight"
+msgstr "Paino"
+
+#: includes/class-wc-product-table-columns.php:271
+msgid "Dimensions"
+msgstr "Mitat"
+
+#: includes/class-wc-product-table-columns.php:273
+msgid "Buy"
+msgstr "Tilaa"
+
+#: includes/class-wc-product-table-columns.php:274
+msgid "Details"
+msgstr "Tiedot"
+
+#: includes/class-wc-product-table-config-builder.php:74
+msgctxt "show all products option"
+msgid "All"
+msgstr "Kaikki"
+
+#: includes/class-wc-product-table-frontend-scripts.php:94
+msgid "Showing _START_ to _END_ of _TOTAL_ products"
+msgstr "Näytetään _START_ - _END_ yhteensä _TOTAL_ tuotteesta"
+
+#: includes/class-wc-product-table-frontend-scripts.php:95
+msgid "Showing 0 products"
+msgstr "Näytetään 0 tuotetta"
+
+#: includes/class-wc-product-table-frontend-scripts.php:96
+msgid "(_MAX_ products in total)"
+msgstr "(Yhteensä _MAX_ tuotetta)"
+
+#: includes/class-wc-product-table-frontend-scripts.php:97
+msgid "Show _MENU_ products"
+msgstr "Näytä _MENU_ tuotteet"
+
+#: includes/class-wc-product-table-frontend-scripts.php:98
+#: includes/class-wc-product-table-frontend-scripts.php:99
+msgid "No matching products found."
+msgstr "Hakuehtoihin sopivia tuotteita ei löytynyt."
+
+#: includes/class-wc-product-table-frontend-scripts.php:100
+msgid "Search:"
+msgstr "Etsi:"
+
+#: includes/class-wc-product-table-frontend-scripts.php:102
+msgid "First"
+msgstr "Ensimmäinen"
+
+#: includes/class-wc-product-table-frontend-scripts.php:103
+msgid "Last"
+msgstr "Viimeinen"
+
+#: includes/class-wc-product-table-frontend-scripts.php:104
+msgid "Next"
+msgstr "Seuraava"
+
+#: includes/class-wc-product-table-frontend-scripts.php:105
+msgid "Previous"
+msgstr "Edellinen"
+
+#: includes/class-wc-product-table-frontend-scripts.php:107
+msgctxt "thousands separator"
+msgid ","
+msgstr "&#8201;"
+
+#: includes/class-wc-product-table-frontend-scripts.php:108
+msgctxt "decimal mark"
+msgid "."
+msgstr ","
+
+#: includes/class-wc-product-table-frontend-scripts.php:111
+msgid ": activate to sort column ascending"
+msgstr ": lajittele sarake nousevasti"
+
+#: includes/class-wc-product-table-frontend-scripts.php:113
+msgid ": activate to sort column descending"
+msgstr ": lajittele sarake laskevasti"
+
+#: includes/class-wc-product-table-frontend-scripts.php:115
+msgid "Filter:"
+msgstr "Suodatin:"
+
+#: includes/class-wc-product-table-frontend-scripts.php:116
+msgid "Reset"
+msgstr "Tyhjennä"
+
+#: includes/class-wc-product-table-frontend-scripts.php:117
+#: includes/util/class-wcpt-settings.php:112
+msgid "Add Selected To Cart"
+msgstr "Lisää valitut ostoskoriin"
+
+#: includes/class-wc-product-table-hook-manager.php:312
+msgid "Buy product"
+msgstr "Tilaa tuote"
+
+#: includes/class-wc-product-table-hook-manager.php:357
+msgid "This product is currently out of stock and unavailable."
+msgstr "Tuotetta ei ole tällä hetkellä varastossa."
+
+#: includes/compat/back-compat-template-functions.php:30
+#, php-format
+msgid "Rated %1$s out of 5 based on %2$s customer rating"
+msgid_plural "Rated %1$s out of 5 based on %2$s customer ratings"
+msgstr[0] "Arvosana %1$s / 5 (%2$s arvostelun pohjalta)"
+msgstr[1] "Arvosana %1$s / 5 (%2$s arvostelun pohjalta)"
+
+#: includes/compat/back-compat-template-functions.php:33
+#: includes/data/class-product-table-data-reviews.php:23
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+#, php-format
+msgid "Rated %s out of 5"
+msgstr "Arvosana %s / 5"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "True"
+msgstr "Kyllä"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "False"
+msgstr "Ei"
+
+#: includes/data/class-product-table-data-reviews.php:26
+#, php-format
+msgid "out of %s5%s"
+msgstr "/ %s5%s"
+
+#: includes/data/class-product-table-data-reviews.php:27
+#, php-format
+msgid "based on %s customer rating"
+msgid_plural "based on %s customer ratings"
+msgstr[0] "%s käyttäjäarvostelun perusteella"
+msgstr[1] "%s käyttäjäarvostelun perusteella"
+
+#: includes/data/class-product-table-data-stock.php:21
+msgid "In stock"
+msgstr "Varastossa"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:29
+msgid "Display a list of active filters for your product table."
+msgstr "Näytä tuotetaulukon aktiivisten suodinten lista."
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:31
+msgid "Product Table: Active Filters"
+msgstr "Tuotetaulukko: aktiiviset suotimet"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:35
+msgid "Active filters"
+msgstr "Aktiiviset suotimet"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:36
+#: includes/widgets/class-wcpt-widget-layered-nav.php:81
+#: includes/widgets/class-wcpt-widget-price-filter.php:36
+#: includes/widgets/class-wcpt-widget-rating-filter.php:36
+msgid "Title"
+msgstr "Otsikko"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:88
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+msgid "Remove filter"
+msgstr "Poista suodin"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#, php-format
+msgid "Min %s"
+msgstr "Min %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#, php-format
+msgid "Max %s"
+msgstr "Max %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:29
+msgid "Display a list of attributes to filter products in your product table."
+msgstr ""
+"Näytä tuoteominaisuussuodatin rajataksesi tuotetaulukossa näkyvien "
+"tuotteiden määrää."
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:31
+msgid "Product Table: Filter by Attribute"
+msgstr "Tuotetaulukko: suodata ominaisuuksien mukaan"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:80
+msgid "Filter by"
+msgstr "Suodata"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:86
+msgid "Attribute"
+msgstr "Ominaisuus"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:92
+msgid "Display type"
+msgstr "Näyttötyyppi"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:94
+msgid "List"
+msgstr "Lista"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:95
+msgid "Dropdown"
+msgstr "Alasvetovalikko"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:101
+msgid "Query type"
+msgstr "Haun tyyppi"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:103
+msgid "AND"
+msgstr "JA"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:104
+msgid "OR"
+msgstr "TAI"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:208
+#, php-format
+msgid "Any %s"
+msgstr "Mikä tahansa %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:246
+msgid "Apply"
+msgstr "Käytä"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:279
+msgctxt "enhanced select"
+msgid "No matches found"
+msgstr "Hakuehtoihin sopivia tuotteita ei löytynyt"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:29
+msgid "Display a slider to filter your product table by price."
+msgstr "Näytä liukupalkki hinnan mukaan suodattamiseen."
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:31
+msgid "Product Table: Filter by Price"
+msgstr "Tuotetaulukko: Suodata hinnan mukaan"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:35
+msgid "Filter by price"
+msgstr "Suodata hinnan mukaan"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:99
+msgid "Min price"
+msgstr "Minimihinta"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:100
+msgid "Max price"
+msgstr "Maksimihinta"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:101
+msgid "Filter"
+msgstr "Suodatin"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:103
+msgid "Price:"
+msgstr "Hinta:"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:29
+msgid ""
+"Display a list of star ratings to filter products in your product table."
+msgstr ""
+"Näytä lista tähtien mukaan arvioinneista suodattaaksesi taulukon tuotteita."
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:31
+msgid "Product Table: Filter by Rating"
+msgstr "Tuotetaulukko: suodata arvioiden mukaan"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:35
+msgid "Average rating"
+msgstr "Keskivertoarvio"
+
+#: lib/class-wc-settings-additional-field-types.php:62
+msgid "Size"
+msgstr "Koko"
+
+#: license/EDD_SL_Plugin_Updater.php:219
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s."
+msgstr ""
+
+#: license/EDD_SL_Plugin_Updater.php:227
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s "
+"or %5$supdate now%6$s."
+msgstr ""
+
+#: license/EDD_SL_Plugin_Updater.php:461
+msgid "You do not have permission to install plugin updates"
+msgstr ""
+
+#: license/EDD_SL_Plugin_Updater.php:461
+#, fuzzy
+#| msgctxt "license key error message"
+#| msgid "Error: %s"
+msgid "Error"
+msgstr "Virhe: %s"
+
+#: license/class-b2-plugin-license.php:140
+#: license/class-b2-plugin-license.php:236
+msgid "Please enter your license key."
+msgstr "Syötä lisenssiavaimesi."
+
+#: license/class-b2-plugin-license.php:143
+msgid "No URL was supplied for activation."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:146
+msgid "This license is for a bundled product and cannot be activated."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:150
+#, php-format
+msgid "Your license key expired on %s."
+msgstr "Lisenssiavaimesi on umpeutunut %s."
+
+#: license/class-b2-plugin-license.php:155
+#, fuzzy
+#| msgid "Your license is not active for this URL."
+msgid "Your license key is not valid for this plugin."
+msgstr "Lisenssisi ei ole aktiivinen tälle osoitteelle (URL)."
+
+#: license/class-b2-plugin-license.php:158
+msgid "Your license key has reached its activation limit."
+msgstr "Lisenssiavaimesi aktivointiraja on täynnä."
+
+#: license/class-b2-plugin-license.php:161
+#, fuzzy
+#| msgid "Your license key has been disabled."
+msgid "Your license key has been disabled, please contact support,"
+msgstr "Lisenssiavaimesi on poistettu käytöstä."
+
+#: license/class-b2-plugin-license.php:164
+msgid "License key mismatch, please contact support."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:167
+#: license/class-b2-plugin-license.php:248
+#, fuzzy
+#| msgid "There was an error saving your license key, please try again."
+msgid "There was an error activating your license, please try again."
+msgstr ""
+"Lisenssiavaimesi tallentaminen ei onnistunut. Ole hyvä ja yritä uudelleen."
+
+#: license/class-b2-plugin-license.php:237
+msgid "Deactivate"
+msgstr "Poista käytöstä"
+
+#: license/class-b2-plugin-license.php:240
+msgid "License key successfully activated."
+msgstr "Lisenssiavain on otettu käyttöön."
+
+#: license/class-b2-plugin-license.php:242
+#, fuzzy
+#| msgid "License key successfully deactivated."
+msgid "License key successfully deactivated. Click Save to reactivate."
+msgstr "Lisenssiavain poistettiin käytöstä."
+
+#: license/class-b2-plugin-license.php:244
+#, fuzzy
+#| msgid "There was an error saving your license key, please try again."
+msgid "There was an error deactivating your license key, please try again."
+msgstr ""
+"Lisenssiavaimesi tallentaminen ei onnistunut. Ole hyvä ja yritä uudelleen."
+
+#: license/class-b2-plugin-license.php:313
+msgid "An error has occurred, please try again."
+msgstr "Tapahtui virhe, ole hyvä ja yritä uudelleen."
+
+#: templates/addons/addon-start.php:69 templates/addons/addon-start.php:77
+#: templates/addons/v2/addon-start.php:32
+msgid "Required field"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Product Table"
+msgstr "WooCommerce tuotetaulukko"
+
+#. Plugin URI of the plugin/theme
+msgid "https://barn2.co.uk/wordpress-plugins/woocommerce-product-table/"
+msgstr ""
+
+#. Description of the plugin/theme
+#, fuzzy
+#| msgid ""
+#| "Provides a shortcode to show a list of your WooCommerce products in a "
+#| "searchable and sortable table."
+msgid ""
+"Display and purchase WooCommerce products from a searchable and sortable "
+"table. Filter by anything."
+msgstr ""
+"Mahdollistaa WooCommerce tuotteiden näyttämisen haettavassa ja "
+"järjestettävissä olevassa taulukossa helpon lyhytkoodin avulla."
+
+#. Author of the plugin/theme
+msgid "Barn2 Media"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://barn2.co.uk"
+msgstr ""
+
+#~ msgid "Choosing your products"
+#~ msgstr "Tuotteidesi valitseminen"
+
+#~ msgid ""
+#~ "The tables will display all products by default, or you can select "
+#~ "products based on category, tag, custom field, taxonomy, or individual "
+#~ "products."
+#~ msgstr ""
+#~ "Taulukossa näkyvät oletuksena kaikki tuotteet. Voit myös suodattaa "
+#~ "tuotteita mm. kategorian ja tagin mukaan."
+
+#, fuzzy
+#~| msgid "%1$sHow to select your products%2$s."
+#~ msgid "Learn how to select your products"
+#~ msgstr "%1$sMiten myydä tuotteitasi%2$s."
+
+#~ msgid "Stacked (vertically)"
+#~ msgstr "Päällekkäin (pystysuoraan)"
+
+#~ msgid "Inline (horizontally)"
+#~ msgstr "Samalle riville (vaakasuoraan)"
+
+#~ msgid "Your license key is invalid."
+#~ msgstr "Lisenssiavaimesi ei ole kelvollinen."
+
+#~ msgid "None"
+#~ msgstr "Ei mitään"
+
+#~ msgctxt "help text for custom search filters"
+#~ msgid "For taxonomies use %1$s, and for product attributes use %2$s"
+#~ msgstr "Käytä %1$s luokitteluille ja %2$s tuoteparametreille"
+
+#~ msgid "W x H in pixels. Sets the image size when using the 'image' column."
+#~ msgstr "K x L pikseleissä. Asettaa kuvan koon käytettäessä kuvasaraketta."
+
+#~ msgid "Product name"
+#~ msgstr "Tuotteen nimi"
+
+#~ msgid "Product ID"
+#~ msgstr "Tuote-ID"
+
+#~ msgid "Other column"
+#~ msgstr "Toinen sarake"
+
+#~ msgid ""
+#~ "Enter a column name in the same format used in the columns option. e.g. "
+#~ "\"sku\" or \"cf:date_field\""
+#~ msgstr ""
+#~ "Lisää sarakkeen nimi samassa formaatissa kuin sarakkeen asetuksissa, "
+#~ "esim. “sku” tai “cf:date_field”"
+
+#~ msgid "Show as dropdown list"
+#~ msgstr "Näytä alasvetovalikkona"
+
+#~ msgid "This controls how variable products are displayed in the table."
+#~ msgstr "Tämä määrittää, miten muunnelmatuotteet näkyvät taulukossa."
+
+#, fuzzy
+#~| msgid "Product Tables"
+#~ msgid "Product totals message"
+#~ msgstr "Tuotetaulukot"
+
+#, fuzzy
+#~| msgid "Show details"
+#~ msgid "Show links"
+#~ msgstr "Näytä tiedot"
+
+#~ msgid ""
+#~ "Shows active filters for the product table so users can see and "
+#~ "deactivate them."
+#~ msgstr ""
+#~ "Näyttää tuotetaulukon aktiiviset suotimet käyttäjälle, joka halutessaan "
+#~ "voi poistaa ne käytöstä."
+
+#~ msgid "Product Table layered nav filters"
+#~ msgstr "Tuotetaulukon kerrostetut navigointisuotimet"
+
+#~ msgid ""
+#~ "Shows a price filter slider which lets you narrow down the list of "
+#~ "products in the product table."
+#~ msgstr ""
+#~ "Näyttää hintaliu’uttimen, jolla voit rajata tuotteiden määrää "
+#~ "tuotetaulukossa."
+
+#~ msgid "Filter products by average rating when viewing product tables."
+#~ msgstr ""
+#~ "Suodata tuotteet keskiarvoisen arvostelun mukaan tuotetaulokkoa "
+#~ "näyttäessä."
+
+#, fuzzy
+#~ msgid "Product Table average rating filter"
+#~ msgstr "Tuotetaulukon keskiarvoinen arvostelusuodin"
+
+#, fuzzy
+#~| msgid "Active filters"
+#~ msgid "Search filters"
+#~ msgstr "Aktiiviset suotimet"
+
+#~ msgid "Get help with WooCommerce Product Table"
+#~ msgstr "Apua WooCommerce Tuotetaulukon käytössä"
+
+#~ msgid "Get Support"
+#~ msgstr "Tukipyyntö"
+
+#~ msgid "Support"
+#~ msgstr "Tuki"

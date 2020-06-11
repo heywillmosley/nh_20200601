@@ -1,0 +1,57 @@
+{
+    "name": "barn2/woocommerce-product-table",
+    "description": "WooCommerce Product Table plugin",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Barn2 Plugins",
+            "email": "support@barn2.co.uk"
+        }
+    ],
+    "require": {},
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Barn2\\Plugin\\WC_Product_Table\\": "includes",
+            "Barn2\\WPT_Lib\\": "lib",
+            "WPTRT\\AdminNotices\\": "lib/vendor/admin-notices/src"
+        },
+        "classmap": ["includes/util/"],
+        "files": [
+            "lib/class-html-data-table.php",
+            "lib/class-wc-settings-additional-field-types.php",
+            "lib/class-wc-settings-plugin-promo.php",
+            "lib/class-wp-scoped-hooks.php",
+            "includes/class-wc-product-table-args.php",
+            "includes/class-wc-product-table-columns.php",
+            "includes/class-wc-product-table-config-builder.php",
+            "includes/class-wc-product-table-plugin.php",
+            "includes/class-wc-product-table-query.php",
+            "includes/class-wc-product-table.php",
+            "includes/data/interface-product-table-data.php",
+            "includes/data/class-abstract-product-table-data.php",
+            "includes/data/class-product-table-data-add-to-cart.php",
+            "includes/data/class-product-table-data-attribute.php",
+            "includes/data/class-product-table-data-button.php",
+            "includes/data/class-product-table-data-categories.php",
+            "includes/data/class-product-table-data-custom-field.php",
+            "includes/data/class-product-table-data-custom-taxonomy.php",
+            "includes/data/class-product-table-data-date.php",
+            "includes/data/class-product-table-data-description.php",
+            "includes/data/class-product-table-data-dimensions.php",
+            "includes/data/class-product-table-data-hidden-filter.php",
+            "includes/data/class-product-table-data-id.php",
+            "includes/data/class-product-table-data-image.php",
+            "includes/data/class-product-table-data-name.php",
+            "includes/data/class-product-table-data-price.php",
+            "includes/data/class-product-table-data-reviews.php",
+            "includes/data/class-product-table-data-short-description.php",
+            "includes/data/class-product-table-data-sku.php",
+            "includes/data/class-product-table-data-stock.php",
+            "includes/data/class-product-table-data-tags.php",
+            "includes/data/class-product-table-data-weight.php",
+            "includes/data/class-wc-product-table-data-factory.php"
+        ]
+    }
+}

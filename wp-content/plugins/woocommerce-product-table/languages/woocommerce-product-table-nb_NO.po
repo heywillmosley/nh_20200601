@@ -1,0 +1,1309 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Product Table\n"
+"POT-Creation-Date: 2020-03-13 18:19+0000\n"
+"PO-Revision-Date: 2020-03-13 18:37+0000\n"
+"Last-Translator: Andrew Keith <andy@barn2.co.uk>\n"
+"Language-Team: \n"
+"Language: nb_NO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: woocommerce-product-table.php\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:35
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "View WooCommerce Product Table documentation"
+msgstr "Se WooCommerce Product Table dokumentasjon"
+
+#: includes/admin/class-wc-product-table-admin-controller.php:45
+msgid "Docs"
+msgstr "Dokumenter"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:49
+#: includes/admin/class-wc-product-table-admin-settings-page.php:70
+msgid "Product tables"
+msgstr "Produkttabeller"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:73
+msgid "The following options control the WooCommerce Product Table extension."
+msgstr "De følgende valgene styrer WooCommerce Produkttabeller tillegg."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:75
+msgid "View Documentation"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:76
+msgid "Get Help"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:80
+msgid "License key"
+msgstr "Lisensnøkkel"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:84
+msgid "The licence key is contained in your order confirmation email."
+msgstr "Lisensnøkkelen er å finne i ordrebekreftelsen du har fått på e-post."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:112
+msgid "Table design"
+msgstr "Tabell design"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:113
+msgid ""
+"Choose whether to use the default design or customize it to suit your "
+"requirements."
+msgstr ""
+"Velg om du vil bruke standard design eller tilpasse denne for å passe dine "
+"ønsker."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:118
+msgid "Design"
+msgstr "Design"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:122
+msgid "Default"
+msgstr "Standard"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:123
+#: includes/admin/class-wc-product-table-admin-settings-page.php:508
+msgid "Custom"
+msgstr "Tilpasset"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:134
+msgid ""
+"Choose your custom table styles below. Any settings you leave blank will "
+"default to your theme styles."
+msgstr ""
+"Velg din stil på tilpasset utseende nedenfor. Enhver innstilling du lar være "
+"blank, vil bli være standard for ditt tema-utseende."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:138
+msgid "Borders"
+msgstr "Marger"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External border icon"
+msgstr "Yttre marg ikon"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:141
+msgid "External"
+msgstr "Yttre"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:142
+msgid "The border for the outer edges of the table."
+msgstr "Den yttre kanlinjen for tabellen."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header border icon"
+msgstr "Ikon for header"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:149
+msgid "Header"
+msgstr "Header"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:150
+msgid "The border for the bottom of the header row."
+msgstr "Linjen for den nederste del av header rad."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell border icon"
+msgstr "Ikon for celle"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:157
+msgid "Cell"
+msgstr "Celle"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:158
+msgid "The border between cells in your table."
+msgstr "Linjen mellom cellene i din tabell."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:162
+msgid "Header background"
+msgstr "Bakgrunn for header"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:165
+msgid "The header background color."
+msgstr "Fargen til header bakgrunn."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:166
+#: includes/admin/class-wc-product-table-admin-settings-page.php:175
+#: lib/class-wc-settings-additional-field-types.php:51
+msgid "Color"
+msgstr "Farge"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:171
+msgid "Cell background"
+msgstr "Cellens bakgrunn"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:174
+msgid "The main background color used for the table contents."
+msgstr "Hovedfarge for bakrunn brukt i tabellens innhold."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:180
+msgid "Header font"
+msgstr "Header font"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:183
+msgid "The font used in the table header."
+msgstr "Font benyttet i tabell header."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:188
+msgid "Cell font"
+msgstr "Celle font"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:191
+msgid "The font used for the table contents."
+msgstr "Font benyttet i tabellens innhold."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:206
+#, fuzzy
+#| msgid "Table design"
+msgid "Table display"
+msgstr "Tabell design"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#, php-format
+msgid ""
+"You can create product tables using the [product_table] shortcode (either "
+"listing all your products or %1$s), or you can automatically replace the "
+"standard layouts in your theme."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+msgid "specific products only"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:209
+#: includes/admin/class-wc-product-table-admin-settings-page.php:777
+msgid "Read more"
+msgstr "Les mer"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:212
+#, fuzzy
+#| msgid "Rows per page"
+msgid "Shop page"
+msgstr "Rader pr side"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:218
+#, fuzzy
+#| msgid "Product Table: Filter by Price"
+msgid "Product category archives"
+msgstr "Produkttabell: Filtrér etter pris"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:232
+msgid "Table content"
+msgstr "Tabellinnhold"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:235
+#, fuzzy
+#| msgid ""
+#| "These options set defaults for the [product_table] shortcode. They can be "
+#| "overridden for individual tables when you add the shortcode to the page. "
+#| "%1$sFull list of shortcode options%2$s."
+msgid ""
+"These options set defaults for all your product tables. You can override "
+"them in the shortcode for individual tables."
+msgstr ""
+"Disse valgene setter standard for [product_table] hurtigkode. De kan "
+"overstyres for individuelle tabeller når du legger til hurtigkode på siden. "
+"%1$sHel liste av hurtigkodevalg%2$s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:236
+#, fuzzy
+#| msgid ""
+#| "Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgid "See the full list of shortcode options"
+msgstr "Vennligst se Kunnskapsbasen for %sfull liste av hurtigkode valg%s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:239
+msgid "Columns"
+msgstr "Kolonne"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:242
+msgid "The default columns for your product tables."
+msgstr "Standard kolonnene for produkttabellene dine."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:247
+msgid "Image size"
+msgstr "Bilde størrelse"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:250
+msgid "W x H in pixels, e.g. 70x50"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:251
+msgid ""
+"You can also enter standard image sizes here such as thumbnail, "
+"shop_thumbnail, medium, etc."
+msgstr ""
+"Du kan også legge inn standard størrelse for bilder, slik som minibilde, "
+"butikk_minibilde, medium, etc."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:256
+msgid "Image lightbox"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:259
+msgid "Display product images in a lightbox"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:263
+msgid "Shortcodes"
+msgstr "Hurtigkoder"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:266
+msgid "Display shortcodes, HTML and other formatting inside the table content"
+msgstr "Vis hurtigkoder, HTML og andre formatkoder inne i tabellinnhold"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:270
+msgid "Description length"
+msgstr "Beskrivelselengde"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:273
+msgid "words"
+msgstr "ord"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:274
+msgid "Enter -1 to display the full product description including formatting."
+msgstr "Legg inn -1 for å vise hele produktbeskrivelsen inklusive format."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:282
+#: includes/admin/class-wc-product-table-admin-settings-page.php:612
+msgid "Product links"
+msgstr "Produktlinker"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:285
+msgid "Include links to the relevant product, category, tag, or attribute."
+msgstr ""
+"Inkludér linker til relevante produkter, kategori, tag, eller egenskap."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:286
+msgid ""
+"Enter all, none, or a combination of: sku, name, image, tags, categories, "
+"terms, or attributes as a comma-separated list."
+msgstr ""
+"Legg inn alle, ingen eller en kombinasjon av: SKU-ID, navn, bilde, tag, "
+"kategori, vilkår eller egenskaper som en komma-separert liste."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:297
+msgid "Loading products"
+msgstr "Laster produkter"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:302
+msgid "Lazy load"
+msgstr "Treg lastiing"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:305
+msgid "Load products one page at a time"
+msgstr "Last produkter en side om gangen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:306
+msgid ""
+"Enable this if you have many products or experience slow page load times.<br/"
+"><strong>Warning:</strong> Lazy load has some limitations - it limits the "
+"search, sorting, and display of variations. Only use it if you definitely "
+"need it."
+msgstr ""
+"Aktivér denne om du har mange produkter eller erfarer treg lasting av sider, "
+"<br/><strong>Advvarsel::</strong> Lazy load has some limitations - it limits "
+"the search, sorting, and display of variations. Only use it if you "
+"definitely need it."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:315
+msgid "Product limit"
+msgstr "Produktbegrensning"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:318
+#, fuzzy
+#| msgid "The maximum total number of products to display in one table."
+msgid "The maximum number of products to display in one table."
+msgstr "Maksimalt antall produkter som vises i en tabell."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:319
+msgid "This option is ignored if lazy load is enabled."
+msgstr "Dette valget tas ikke hensyn til hvis Lazy Load er aktivert."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:328
+msgid "Caching"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:331
+msgid "Cache table contents to improve load times"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:339
+msgid "Cache expires after"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:342
+msgid "hours"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:343
+msgid "Your table data will be refreshed after this length of time."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:353
+msgid "Rows per page"
+msgstr "Rader pr side"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:356
+msgid "The number of products per page of results."
+msgstr "Antall produkter pr side ved søk."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:357
+msgid "Use '-1' to display all products on one page of results."
+msgstr "Bruk '-1' for å vise alle produktene på en side ved søk."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:372
+msgid "Sorting"
+msgstr "Sortering"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:377
+msgid "Sort by"
+msgstr "Sortér etter"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:381
+msgid "As listed in the Products screen (menu order)"
+msgstr "Som listet på Produkt oversikten (meny rekkefølge)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:382
+#: includes/class-wc-product-table-columns.php:260
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:383
+#: includes/class-wc-product-table-columns.php:261
+msgid "Name"
+msgstr "Navn"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:384
+#: includes/class-wc-product-table-columns.php:259
+msgid "ID"
+msgstr "ID"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:385
+#: includes/class-wc-product-table-columns.php:272
+msgid "Price"
+msgstr "Pris"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:386
+msgid "Number of sales"
+msgstr "Antall salg"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:387
+msgid "Average reviews"
+msgstr "Gjennomsnitt kommentar"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:388
+msgid "Date added"
+msgstr "Dato registrert"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:389
+msgid "Date last modified"
+msgstr "Dato for siste endring"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:390
+msgid "Other"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:392
+msgid "The initial sort order applied to the table."
+msgstr "Standard sortering er aktiv på tabellen."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:401
+msgid "Sort column"
+msgstr "Sortér kolonne"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:405
+#, fuzzy
+#| msgid ""
+#| "Please note: column sorting will only work when lazy load is disabled."
+msgid ""
+"Enter a column name, e.g. description, att:size, etc. Will only work when "
+"lazy load is disabled."
+msgstr "Merk: kolonnesortering vil kun vises når Lazy Load ikke er aktivisert."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:409
+msgid "Sort direction"
+msgstr "Sorteringsretning"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:413
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:414
+msgid "Ascending (A to Z, 1 to 99)"
+msgstr "Stigende sortering (A-Å, 1-99)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:415
+msgid "Descending (Z to A, 99 to 1)"
+msgstr "Synkende sortering (Å - A, 99 til 1)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:427
+msgid "Add to cart column"
+msgstr "Legg i kurv kolonne"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:432
+msgid "Add to cart button"
+msgstr "Knapp for legg i handlekurv"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:436
+msgid "Button only"
+msgstr "Kun knapp"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:437
+msgid "Checkbox only"
+msgstr "Kun avkryssingsboks"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:438
+msgid "Button and checkbox"
+msgstr "Knapp og avkryssingsboks"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:440
+msgid "How 'Add to Cart' buttons are displayed in the table."
+msgstr "Hvordan \"Legg til handlekurv\" knappen vises i tabell."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:444
+msgid "Add to cart behavior"
+msgstr "Legg til Valgte til Handlekurv rutine"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:447
+msgid "Use AJAX when adding to the to the cart"
+msgstr "Bruke AJAX når varer legges i handlekurv"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:451
+msgid "Quantities"
+msgstr "Antall"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:454
+msgid "Show quantity selectors in the Add to Cart column"
+msgstr "Vis antallsvelger i \"Legg til handlekurv\" kolonnen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:458
+msgid "Variations"
+msgstr "Variasjoner"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:462
+msgid "Link to product page"
+msgstr "Lenke til produktsiden"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:463
+#, fuzzy
+#| msgid "Show quantity selectors in the Add to Cart column"
+msgid "Dropdown lists in add to cart column"
+msgstr "Vis antallsvelger i \"Legg til handlekurv\" kolonnen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:464
+#, fuzzy
+#| msgid "Show as separate rows (1 per variation)"
+msgid "Separate rows in table (one per variation)"
+msgstr "Vis som separate rader (1 per variant)"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:466
+msgid "How to display options for variable products."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:470
+msgid "'Add Selected' position"
+msgstr "Posisjonen til ‘Legg til Valgte til Handlekurven’"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:474
+#: includes/admin/class-wc-product-table-admin-settings-page.php:531
+#: includes/admin/class-wc-product-table-admin-settings-page.php:544
+#: includes/admin/class-wc-product-table-admin-settings-page.php:557
+#: includes/admin/class-wc-product-table-admin-settings-page.php:570
+msgid "Above table"
+msgstr "Over tabell"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:475
+#: includes/admin/class-wc-product-table-admin-settings-page.php:532
+#: includes/admin/class-wc-product-table-admin-settings-page.php:545
+#: includes/admin/class-wc-product-table-admin-settings-page.php:558
+#: includes/admin/class-wc-product-table-admin-settings-page.php:571
+msgid "Below table"
+msgstr "Under tabell"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:476
+#: includes/admin/class-wc-product-table-admin-settings-page.php:533
+#: includes/admin/class-wc-product-table-admin-settings-page.php:546
+#: includes/admin/class-wc-product-table-admin-settings-page.php:559
+#: includes/admin/class-wc-product-table-admin-settings-page.php:572
+msgid "Above and below table"
+msgstr "Over og under tabell"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:478
+msgid ""
+"The position of the 'Add Selected To Cart' button for adding multiple "
+"products."
+msgstr ""
+"Plassering av \"Legg til valgte til handlekurv\" knapp for å legge til flere "
+"produkter."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:479
+msgid ""
+"Only applicable if using 'Checkbox' or 'Button + checkbox' for the add to "
+"cart buttons"
+msgstr ""
+"Gjelder kun hvis 'Avkryssingboks' eller 'Knapp + Avkryssingsboks' for legg "
+"til handlekurv-knapp"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:483
+msgid "'Add Selected' button text"
+msgstr "Tekst for knappen ‘Legg til Valgte’"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:487
+msgid "The text for the 'Add Selected To Cart' button."
+msgstr "Tekst for knappen 'Legg til Valgte til Handlekurven'"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:498
+msgid "Table controls"
+msgstr "Tabellinstillinger"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:502
+msgid "Product filters"
+msgstr "Produktfiltre"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:506
+msgid "Disabled"
+msgstr "Ikke aktiv"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:507
+msgid "Show based on columns in table"
+msgstr "Vises basert på kolonner i tabell"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:510
+msgid ""
+"Dropdown lists to filter the table by category, tag, attribute, or custom "
+"taxonomy."
+msgstr ""
+"Nedtrekksmeny for å filtrere tabell etter kategori, knagg, egenskap eller "
+"tilpassede valg."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:519
+msgid "Custom filters"
+msgstr "Tilpasset valg"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:522
+#, fuzzy
+#| msgid "Enter filters as a comma-separated list."
+msgid "Enter your filters as a comma-separated list."
+msgstr "Legg inn filtre som komma-separert liste."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:523
+msgctxt "toolip for search filter option"
+msgid "E.g. categories, tags, att:color"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:527
+msgid "Page length"
+msgstr "Sidelengde"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:534
+#: includes/admin/class-wc-product-table-admin-settings-page.php:547
+#: includes/admin/class-wc-product-table-admin-settings-page.php:560
+#: includes/admin/class-wc-product-table-admin-settings-page.php:573
+msgid "Hidden"
+msgstr "Skjult"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:536
+msgid "The position of the 'Show [x] products' dropdown list."
+msgstr "Posisjon for \"vis [x] produkters nedtrekksliste."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:540
+msgid "Search box"
+msgstr "Søkefelt"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:549
+msgid "The position of the product search box."
+msgstr "Posisjon for søkefelt."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:553
+msgid "Product totals"
+msgstr "Produkttotaler"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:562
+msgid ""
+"The position of the product totals, e.g. 'Showing 1 to 5 of 10 products'."
+msgstr "Posisjon for produkttotal, f eks 'Vis 1 til 5 av 10 produkter'."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:566
+msgid "Pagination buttons"
+msgstr "Knapp for sideoppdeling"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:575
+msgid "The position of the paging buttons which scroll between results."
+msgstr "Posisjon for side-størrelse som blar i resultat."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:579
+msgid "Pagination type"
+msgstr "Sidestørrelsetype"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:583
+msgid "Numbers only"
+msgstr "Kun nummer"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:584
+msgid "Prev/next"
+msgstr "Forrige/neste"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:585
+msgid "Prev/next + numbers"
+msgstr "Forrige/neste + nummer"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:586
+msgid "Prev/next/first/last"
+msgstr "Forrige/neste/første/siste"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:587
+msgid "Prev/next/first/last + numbers"
+msgstr "Forrige/neste/første/siste + nummer"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:592
+msgid "Reset button"
+msgstr "Nullstillingsknapp"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:595
+msgid "Show the reset button above the table"
+msgstr "Vis nullstillingsknapp over tabellen"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:607
+msgid "Quick View Pro"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:615
+msgid "Replace all links to product page with Quick View"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:617
+#, php-format
+msgid "%sLearn how%s to correctly configure this option."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:633
+#, fuzzy
+#| msgid "Product add-ons"
+msgid "Product Addons"
+msgstr "Produkt tilvalg"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:638
+#, fuzzy
+#| msgid "Add-on groups layout"
+msgid "Addons layout"
+msgstr "Layout for tilvalgsgrupper"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:641
+#: includes/admin/class-wc-product-table-admin-settings-page.php:652
+msgid "Vertical"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:642
+#: includes/admin/class-wc-product-table-admin-settings-page.php:653
+msgid "Horizontal"
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:645
+#, fuzzy
+#| msgid "Should the product add-on groups display horizontally or vertically?"
+msgid ""
+"Should product addons display horizontally or vertically within the table?"
+msgstr "Skal produktenes tilvalg vises horisontalt eller vertikalt?"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:649
+#, fuzzy
+#| msgid "Add-on options layout"
+msgid "Addon options layout"
+msgstr "Legg til tilvalgs layout"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:656
+#, fuzzy
+#| msgid ""
+#| "Should the individual options for each add-on display horizontally or "
+#| "vertically?"
+msgid ""
+"Should individual options for each addon display horizontally or vertically?"
+msgstr ""
+"Skal individuelle valg for hvert tilvalg vises horisontalt eller vertikalt?"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:695
+msgid ""
+"The columns option is invalid. Please check you have entered valid column "
+"names."
+msgstr ""
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:757
+#, php-format
+msgid ""
+"Please see the Knowledge Base for the %sfull list of shortcode options%s."
+msgstr "Vennligst se Kunnskapsbasen for %sfull liste av hurtigkode valg%s."
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:765
+msgid "Getting Started Guide"
+msgstr "Hurtigstartguide"
+
+#: includes/admin/class-wc-product-table-admin-settings-page.php:766
+msgid "Knowledge Base"
+msgstr "Kunnskapsbase"
+
+#: includes/class-wc-product-table-ajax-handler.php:170
+msgid "View Cart"
+msgstr "Se handlekurv"
+
+#: includes/class-wc-product-table-ajax-handler.php:192
+msgid "There was an error adding to the cart. Please try again."
+msgstr ""
+"Det oppstod en feil ved lagringen av din lisensnøkkel, vennligst prøv på "
+"nytt."
+
+#: includes/class-wc-product-table-args.php:412
+msgid "Show details"
+msgstr "Vis detaljer"
+
+#: includes/class-wc-product-table-cart-handler.php:37
+#: includes/class-wc-product-table-frontend-scripts.php:118
+msgid "Please select one or more products."
+msgstr "Vennligst velg ett eller flere produkter."
+
+#: includes/class-wc-product-table-cart-handler.php:95
+msgid "No product selected. Please try again."
+msgstr "Ingen produkter er valgt. Vær så snill, prøv på nytt."
+
+#: includes/class-wc-product-table-cart-handler.php:106
+msgid "This product is no longer available. Please select an alternative."
+msgstr ""
+"Dette produktet er ikke lenger tilgjengelig. Vennligst velg et alternativ."
+
+#: includes/class-wc-product-table-cart-handler.php:109
+#, fuzzy
+#| msgid "Please enter a quantity of 1 or greater."
+msgid "Please enter a quantity greater than 0."
+msgstr "Vennligst velg et antall som er 1 eller større."
+
+#: includes/class-wc-product-table-cart-handler.php:128
+#: includes/class-wc-product-table-cart-handler.php:143
+msgid "This product cannot be purchased."
+msgstr ""
+
+#: includes/class-wc-product-table-columns.php:262
+msgid "Description"
+msgstr "Beskrivelse"
+
+#: includes/class-wc-product-table-columns.php:263
+msgid "Summary"
+msgstr "Sammendrag"
+
+#: includes/class-wc-product-table-columns.php:264
+msgid "Date"
+msgstr "Dato"
+
+#: includes/class-wc-product-table-columns.php:265
+msgid "Categories"
+msgstr "Kategorier"
+
+#: includes/class-wc-product-table-columns.php:266
+msgid "Tags"
+msgstr "Merkelapper"
+
+#: includes/class-wc-product-table-columns.php:267
+msgid "Image"
+msgstr "Bilde"
+
+#: includes/class-wc-product-table-columns.php:268
+msgid "Stock"
+msgstr "Lager"
+
+#: includes/class-wc-product-table-columns.php:269
+msgid "Reviews"
+msgstr "Anmeldelser"
+
+#: includes/class-wc-product-table-columns.php:270
+msgid "Weight"
+msgstr "Vekt"
+
+#: includes/class-wc-product-table-columns.php:271
+msgid "Dimensions"
+msgstr "Størrelse"
+
+#: includes/class-wc-product-table-columns.php:273
+msgid "Buy"
+msgstr "Kjøp"
+
+#: includes/class-wc-product-table-columns.php:274
+msgid "Details"
+msgstr "Detaljer"
+
+#: includes/class-wc-product-table-config-builder.php:74
+msgctxt "show all products option"
+msgid "All"
+msgstr "Alle"
+
+#: includes/class-wc-product-table-frontend-scripts.php:94
+msgid "Showing _START_ to _END_ of _TOTAL_ products"
+msgstr "Viser _START_ til _END_ av _TOTAL_ produkter"
+
+#: includes/class-wc-product-table-frontend-scripts.php:95
+msgid "Showing 0 products"
+msgstr "Viser 0 produkter"
+
+#: includes/class-wc-product-table-frontend-scripts.php:96
+msgid "(_MAX_ products in total)"
+msgstr "(filtrert fra _MAX_ totalt antall produkter)"
+
+#: includes/class-wc-product-table-frontend-scripts.php:97
+msgid "Show _MENU_ products"
+msgstr "Vis _MENU_ produkter"
+
+#: includes/class-wc-product-table-frontend-scripts.php:98
+#: includes/class-wc-product-table-frontend-scripts.php:99
+msgid "No matching products found."
+msgstr "Ingen produkter matcher s&oslash;ket."
+
+#: includes/class-wc-product-table-frontend-scripts.php:100
+msgid "Search:"
+msgstr "S&oslash;k:"
+
+#: includes/class-wc-product-table-frontend-scripts.php:102
+msgid "First"
+msgstr "F&oslash;rste"
+
+#: includes/class-wc-product-table-frontend-scripts.php:103
+msgid "Last"
+msgstr "Siste"
+
+#: includes/class-wc-product-table-frontend-scripts.php:104
+msgid "Next"
+msgstr "Neste"
+
+#: includes/class-wc-product-table-frontend-scripts.php:105
+msgid "Previous"
+msgstr "Forrige"
+
+#: includes/class-wc-product-table-frontend-scripts.php:107
+msgctxt "thousands separator"
+msgid ","
+msgstr "&#8201;"
+
+#: includes/class-wc-product-table-frontend-scripts.php:108
+msgctxt "decimal mark"
+msgid "."
+msgstr ","
+
+#: includes/class-wc-product-table-frontend-scripts.php:111
+msgid ": activate to sort column ascending"
+msgstr ": aktiver for å sortere kolonnen stigende"
+
+#: includes/class-wc-product-table-frontend-scripts.php:113
+msgid ": activate to sort column descending"
+msgstr ": aktiver for å sortere kolonnen synkende"
+
+#: includes/class-wc-product-table-frontend-scripts.php:115
+msgid "Filter:"
+msgstr "Filter:"
+
+#: includes/class-wc-product-table-frontend-scripts.php:116
+msgid "Reset"
+msgstr "Tilbakestill"
+
+#: includes/class-wc-product-table-frontend-scripts.php:117
+#: includes/util/class-wcpt-settings.php:112
+msgid "Add Selected To Cart"
+msgstr "Legg til Valgte til Handlekurven"
+
+#: includes/class-wc-product-table-hook-manager.php:312
+msgid "Buy product"
+msgstr "Kjøp produkt"
+
+#: includes/class-wc-product-table-hook-manager.php:357
+msgid "This product is currently out of stock and unavailable."
+msgstr "Dette produktet er for øyeblikket ikke på lager og er utilgjengelig."
+
+#: includes/compat/back-compat-template-functions.php:30
+#, php-format
+msgid "Rated %1$s out of 5 based on %2$s customer rating"
+msgid_plural "Rated %1$s out of 5 based on %2$s customer ratings"
+msgstr[0] "Vurdert til %1$s ut av 5 basert på %2$s tilbakemelding fra kunde"
+msgstr[1] "Vurdert til %1$s av 5 basert på %2$s tilbakemeldinger fra kunder"
+
+#: includes/compat/back-compat-template-functions.php:33
+#: includes/data/class-product-table-data-reviews.php:23
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+#, php-format
+msgid "Rated %s out of 5"
+msgstr "Vurdert %s ut av 5"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "True"
+msgstr "Sant"
+
+#: includes/data/class-product-table-data-custom-field.php:146
+msgid "False"
+msgstr "Usant"
+
+#: includes/data/class-product-table-data-reviews.php:26
+#, php-format
+msgid "out of %s5%s"
+msgstr "ut av %s5%s"
+
+#: includes/data/class-product-table-data-reviews.php:27
+#, php-format
+msgid "based on %s customer rating"
+msgid_plural "based on %s customer ratings"
+msgstr[0] "basert på %s kundevurdering"
+msgstr[1] "basert på %s kundevurderinger"
+
+#: includes/data/class-product-table-data-stock.php:21
+msgid "In stock"
+msgstr "På lager"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:29
+msgid "Display a list of active filters for your product table."
+msgstr "Vennligst vis en liste av aktive filtré for din produktliste."
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:31
+msgid "Product Table: Active Filters"
+msgstr "Produkttabell: Aktive filtré"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:35
+msgid "Active filters"
+msgstr "Aktive filtré"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:36
+#: includes/widgets/class-wcpt-widget-layered-nav.php:81
+#: includes/widgets/class-wcpt-widget-price-filter.php:36
+#: includes/widgets/class-wcpt-widget-rating-filter.php:36
+msgid "Title"
+msgstr "Tittel"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:88
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:107
+msgid "Remove filter"
+msgstr "Ta bort filtré"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:95
+#, php-format
+msgid "Min %s"
+msgstr "Min %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav-filters.php:100
+#, php-format
+msgid "Max %s"
+msgstr "Maks %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:29
+msgid "Display a list of attributes to filter products in your product table."
+msgstr ""
+"Vis en liste av egenskaper for å filtrere produkter i din produkttabell."
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:31
+msgid "Product Table: Filter by Attribute"
+msgstr "Produkttabell: Filtrér per egenskap"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:80
+msgid "Filter by"
+msgstr "Filtrér ved"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:86
+msgid "Attribute"
+msgstr "Egenskap"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:92
+msgid "Display type"
+msgstr "Vis type"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:94
+msgid "List"
+msgstr "Liste"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:95
+msgid "Dropdown"
+msgstr "Nedtrekk"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:101
+msgid "Query type"
+msgstr "Spørsmålstype"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:103
+msgid "AND"
+msgstr "OG"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:104
+msgid "OR"
+msgstr "ELLER"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:208
+#, php-format
+msgid "Any %s"
+msgstr "Enhver %s"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:246
+msgid "Apply"
+msgstr "Aktivér"
+
+#: includes/widgets/class-wcpt-widget-layered-nav.php:279
+msgctxt "enhanced select"
+msgid "No matches found"
+msgstr "Ingen produkter matcher s&oslash;ket"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:29
+msgid "Display a slider to filter your product table by price."
+msgstr "Vis en skyvebryter for å filtrere din produkttabell etter pris."
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:31
+msgid "Product Table: Filter by Price"
+msgstr "Produkttabell: Filtrér etter pris"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:35
+msgid "Filter by price"
+msgstr "Filtrér etter pris"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:99
+msgid "Min price"
+msgstr "Min pris"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:100
+msgid "Max price"
+msgstr "Maks pris"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:101
+msgid "Filter"
+msgstr "Filter"
+
+#: includes/widgets/class-wcpt-widget-price-filter.php:103
+msgid "Price:"
+msgstr "Pris:"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:29
+msgid ""
+"Display a list of star ratings to filter products in your product table."
+msgstr ""
+"Vis en liste av stjerner vurderinger for å filtrere produkter i din "
+"produkttabell."
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:31
+msgid "Product Table: Filter by Rating"
+msgstr "Produkttabell: Filtrer etter Tilbakemelding"
+
+#: includes/widgets/class-wcpt-widget-rating-filter.php:35
+msgid "Average rating"
+msgstr "Gjennomstnitt tilbakemelding"
+
+#: lib/class-wc-settings-additional-field-types.php:62
+msgid "Size"
+msgstr "Størrelse"
+
+#: license/EDD_SL_Plugin_Updater.php:219
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s."
+msgstr "Det finnes en ny versjon av %1$s. %2$sSe versjon %3$s detaljer%4$s."
+
+#: license/EDD_SL_Plugin_Updater.php:227
+#, php-format
+msgid ""
+"There is a new version of %1$s available. %2$sView version %3$s details%4$s "
+"or %5$supdate now%6$s."
+msgstr ""
+"Det finnes en ny versjon av %1$s. %2$sSe versjon %3$s detaljer%4$s. eller "
+"%5$s oppdatér nå %6$s."
+
+#: license/EDD_SL_Plugin_Updater.php:461
+msgid "You do not have permission to install plugin updates"
+msgstr ""
+"Du har ikke nødvendige rettigheter til å installere plugin oppdateringer."
+
+#: license/EDD_SL_Plugin_Updater.php:461
+msgid "Error"
+msgstr "Feil"
+
+#: license/class-b2-plugin-license.php:140
+#: license/class-b2-plugin-license.php:236
+msgid "Please enter your license key."
+msgstr "Vennligst legg inn din lisensnøkkel."
+
+#: license/class-b2-plugin-license.php:143
+msgid "No URL was supplied for activation."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:146
+msgid "This license is for a bundled product and cannot be activated."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:150
+#, php-format
+msgid "Your license key expired on %s."
+msgstr "Din lisensnøkkel utgikk den %s."
+
+#: license/class-b2-plugin-license.php:155
+#, fuzzy
+#| msgid "Your license is not active for this URL."
+msgid "Your license key is not valid for this plugin."
+msgstr "Din lisens er ikke aktiv for denne URL’en."
+
+#: license/class-b2-plugin-license.php:158
+msgid "Your license key has reached its activation limit."
+msgstr "Din lisensnøkkel har nådd sin aktiverinsgrense."
+
+#: license/class-b2-plugin-license.php:161
+#, fuzzy
+#| msgid "Your license key has been disabled."
+msgid "Your license key has been disabled, please contact support,"
+msgstr "Lisensnøkkelen din har blitt deaktivert."
+
+#: license/class-b2-plugin-license.php:164
+msgid "License key mismatch, please contact support."
+msgstr ""
+
+#: license/class-b2-plugin-license.php:167
+#: license/class-b2-plugin-license.php:248
+msgid "There was an error activating your license, please try again."
+msgstr ""
+"Det oppstod en feil ved lagringen av din lisensnøkkel, vennligst prøv på "
+"nytt."
+
+#: license/class-b2-plugin-license.php:237
+msgid "Deactivate"
+msgstr "Deaktiver"
+
+#: license/class-b2-plugin-license.php:240
+msgid "License key successfully activated."
+msgstr "Aktivering av lisensnøkkel vellykket."
+
+#: license/class-b2-plugin-license.php:242
+msgid "License key successfully deactivated. Click Save to reactivate."
+msgstr "Lisensnøkkelen er deaktivert. Klikk Lagre reaktivere."
+
+#: license/class-b2-plugin-license.php:244
+msgid "There was an error deactivating your license key, please try again."
+msgstr ""
+"Det oppstod en feil ved lagringen av din lisensnøkkel, vennligst prøv på "
+"nytt."
+
+#: license/class-b2-plugin-license.php:313
+msgid "An error has occurred, please try again."
+msgstr "En feil har oppstått, vennligst prøv på nytt."
+
+#: templates/addons/addon-start.php:69 templates/addons/addon-start.php:77
+#: templates/addons/v2/addon-start.php:32
+msgid "Required field"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WooCommerce Product Table"
+msgstr "WooCommerce Product Table"
+
+#. Plugin URI of the plugin/theme
+msgid "https://barn2.co.uk/wordpress-plugins/woocommerce-product-table/"
+msgstr "https://barn2.co.uk/wordpress-plugins/woocommerce-product-table/"
+
+#. Description of the plugin/theme
+msgid ""
+"Display and purchase WooCommerce products from a searchable and sortable "
+"table. Filter by anything."
+msgstr ""
+"Vis en hurtigkode for å vise en liste av dine WooCommerceprodukter i en "
+"søkbar og sortérbar tabell."
+
+#. Author of the plugin/theme
+msgid "Barn2 Media"
+msgstr "Barn2 Media"
+
+#. Author URI of the plugin/theme
+msgid "https://barn2.co.uk"
+msgstr "https://barn2.co.uk"
+
+#~ msgid "Choosing your products"
+#~ msgstr "Velg dine produkter"
+
+#~ msgid ""
+#~ "The tables will display all products by default, or you can select "
+#~ "products based on category, tag, custom field, taxonomy, or individual "
+#~ "products."
+#~ msgstr ""
+#~ "Tabellen vil vise alle produktene som standard, eller du kan velge "
+#~ "produkter basert på kategori, tag, tilpasset felt, verdi, eller "
+#~ "individuelle produkter."
+
+#, fuzzy
+#~| msgid "%1$sHow to select your products%2$s."
+#~ msgid "Learn how to select your products"
+#~ msgstr "%1$sHvordan velge dine produkter%2$s."
+
+#~ msgid "Stacked (vertically)"
+#~ msgstr "Stablet (vertikalt)"
+
+#~ msgid "Inline (horizontally)"
+#~ msgstr "I linje (horisontalt)"
+
+#~ msgid "Your license key is invalid."
+#~ msgstr "Lisensnøkkelen din er ugyldig."
+
+#~ msgid "None"
+#~ msgstr "Ingen"
+
+#~ msgctxt "help text for custom search filters"
+#~ msgid "For taxonomies use %1$s, and for product attributes use %2$s"
+#~ msgstr "For tilpassede valg, bruk %1$s, og for produktegenskaper bruk %2$s"
+
+#~ msgid "W x H in pixels. Sets the image size when using the 'image' column."
+#~ msgstr ""
+#~ "B x H i piksler. Velg bildestørrelse når man bruker 'image' kolonne."
+
+#~ msgid "Product name"
+#~ msgstr "Produktnavn"
+
+#~ msgid "Product ID"
+#~ msgstr "Produkt ID"
+
+#~ msgid "Other column"
+#~ msgstr "Andre kolonner"
+
+#~ msgid ""
+#~ "Enter a column name in the same format used in the columns option. e.g. "
+#~ "\"sku\" or \"cf:date_field\""
+#~ msgstr ""
+#~ "Skriv inn kolonnenavn i samme format som benyttet i kolonnevalg. f eks. "
+#~ "\"sku\" eller \"cf:date_field\""
+
+#~ msgid "Show as dropdown list"
+#~ msgstr "Vis som nedtrekksmeny"
+
+#~ msgid "This controls how variable products are displayed in the table."
+#~ msgstr "Denne bestemmer hvordan produktvariasjoner vises i tabellen."
+
+#~ msgctxt "license key error message"
+#~ msgid "Error: %s"
+#~ msgstr "Feil: %s"
+
+#, fuzzy
+#~| msgid "Product Tables"
+#~ msgid "Product totals message"
+#~ msgstr "Produkttabeller"
+
+#, fuzzy
+#~| msgid "Show details"
+#~ msgid "Show links"
+#~ msgstr "Vis detaljer"
+
+#~ msgid "Get Support"
+#~ msgstr "Be om hjelp"
+
+#~ msgid "Support"
+#~ msgstr "Støtte"
+
+#~ msgid "Troubleshooting Tips"
+#~ msgstr "Feilsøkingstips"

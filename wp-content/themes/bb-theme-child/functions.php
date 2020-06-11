@@ -502,39 +502,54 @@ function stock_log( $product_id ) {
   global $wp;
   $product = wc_get_product( $product_id );
   $hwm_url =  add_query_arg( $wp->query_vars, home_url( $wp->request ) );
+  $form_id = 19;
+  $search_criteria['field_filters'][] = array(
+    'key' => 7,
+    'value' => $product->id
+  );
+  $sorting = NULL;
+  $paging = NULL;
+  $total_count = 1;
+  $previous_count_entries = GFAPI::get_entries( $form_id, $search_criteria, $sorting, $paging, $total_count );
+  $difference = "";
+  $previous_count = "";
 
-  if(!empty( get_the_modified_author() ) )
-    $mod_author = get_the_modified_author();
-
-  elseif( strpos( $hwm_url, '/wp-admin/admin-ajax.php' ) !== false ) { // editing from the quick edit page
+  // If on Quick Edit Page
+  if( strpos( $hwm_url, '/wp-admin/admin-ajax.php' ) !== false ) { // editing from the quick edit page
 
     $current_user = wp_get_current_user();
     $mod_author = $current_user->display_name;
   }
+  // If on Product Edit Page
+  elseif ( strpos( $hwm_url, '/wp-admin/post.php' ) !== false ) 
+    $mod_author = get_the_modified_author();
+
+  // The System do stuff
   else
     $mod_author = "System";
 
-  // message to be logged 
-  $message = "$mod_author updated " . $product->name . " stock to " . $product->stock_quantity . " at $product->date_modified \n";
-      
-    // path of the log file where message need to be logged 
-    $log_file = get_stylesheet_directory() . "/stock.log"; 
-      
-    // logging error message to given log file 
-    error_log($message, 3, $log_file); 
+  // Get previous count if it exists
+  foreach( $previous_count_entries as $entry ) {
+
+      $previous_count = $entry[2]; // previous stock count
+      $difference = $product->stock_quantity - $previous_count; // set the difference
+      break;
+  }
+
+  // Add to gravity forms
+  $entry = array(
+    'form_id' => $form_id,
+    1 => $mod_author,
+    2 => $product->stock_quantity,
+    3 => $product->name,
+    7 => $product->id,
+    5 => $previous_count,
+    6 => $difference
+  );
+
+  // Create entry in stock log form
+  GFAPI::add_entry( $entry );
 }
-
-
-// Display stock Changes
-function stock_change_display() {
-
-  //if( is_admin() ) {
-
-    $log_file = get_stylesheet_directory() . "/stock.log"; 
-    return nl2br( file_get_contents( $log_file ) );
-  //}
-}
-add_shortcode('stock_change_display', 'stock_change_display');
 
 
 /*
