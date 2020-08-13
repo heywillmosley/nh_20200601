@@ -3,14 +3,20 @@
 class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'rcp';
+
+	/**
 	 * Gets things started
 	 *
 	 * @access  public
 	 * @since   1.0
 	*/
 	public function init() {
-
-		$this->context = 'rcp';
 
 		add_action( 'rcp_form_processing', array( $this, 'add_pending_referral' ), 10, 3 );
 		add_action( 'rcp_insert_payment', array( $this, 'mark_referral_complete' ), 10, 3 );
@@ -31,6 +37,56 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 		add_action( 'rcp_add_subscription', array( $this, 'store_subscription_meta' ), 10, 2 );
 		add_action( 'rcp_edit_subscription_level', array( $this, 'store_subscription_meta' ), 10, 2 );
 
+	}
+
+	/**
+	 * Gets the total order count for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date {
+	 *     Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 *     @type string $start Start date to retrieve orders for.
+	 *     @type string $end   End date to retrieve orders for.
+	 * }
+	 * @return int Total order count.
+	 */
+	public function get_total_order_count( $date = '' ) {
+		$payments = new \RCP_Payments();
+		$payments = $payments->get_payments( array(
+			'date'   => $this->prepare_date_range( $date ),
+			'fields' => 'id',
+			'number' => 999999999999
+		) );
+
+		return count( $payments );
+	}
+
+	/**
+	 * Gets the total sales for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date  {
+	 *     Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 *     @type string        $start Start date to retrieve orders for.
+	 *     @type string        $end   End date to retrieve orders for.
+	 * }
+	 * @return int Total order count.
+	 */
+	public function get_total_sales( $date = '' ) {
+		$payments = new \RCP_Payments();
+		$payments = $payments->get_payments( array(
+			'date'   => $this->prepare_date_range( $date ),
+			'fields' => 'amount',
+			'number' => 999999999999
+		) );
+
+		$payment_amounts = array_column( (array) $payments, 'amount' );
+
+		return array_sum( $payment_amounts );
 	}
 
 	/**
@@ -149,6 +205,7 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 
 		}
 
+		/** This filter is documented in includes/integrations/class-base.php */
 		$rate = apply_filters( 'affwp_get_product_rate', $rate, $level_id, $args, $this->affiliate_id, $this->context );
 
 		$rate = affwp_sanitize_referral_rate( $rate );
@@ -519,8 +576,16 @@ class Affiliate_WP_RCP extends Affiliate_WP_Base {
 		$this->reject_referral( $payment->subscription_key );
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return function_exists( 'rcp_options_install' ) || class_exists( 'RCP_Requirements_Check' );
+	}
 }
 
-if ( function_exists( 'rcp_options_install' ) || class_exists( 'RCP_Requirements_Check' ) ) {
 	new Affiliate_WP_RCP;
-}

@@ -176,6 +176,7 @@ final class Affiliate extends Base_Object {
 	 * Used as the cache group and for accessing object DB classes in the parent.
 	 *
 	 * @since 1.9
+	 * @since 2.4.1 Added support for the magic `$meta` property
 	 * @access public
 	 * @static
 	 * @var string
@@ -194,6 +195,10 @@ final class Affiliate extends Base_Object {
 	public function __get( $key ) {
 		if ( 'user' === $key ) {
 			return $this->get_user();
+		}
+
+		if ( 'meta' === $key ) {
+			return $this->get_meta();
 		}
 
 		if ( 'date' === $key ) {

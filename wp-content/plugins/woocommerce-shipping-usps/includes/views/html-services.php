@@ -44,12 +44,12 @@
 								<input type="text" name="usps_service[<?php echo esc_attr( $code ); ?>][name]" placeholder="<?php echo $values['name']; ?> (<?php echo $this->title; ?>)" value="<?php echo isset( $this->custom_services[ $code ]['name'] ) ? esc_attr( $this->custom_services[ $code ]['name'] ) : ''; ?>" size="35" />
 							</td>
 							<td>
-								<ul class="sub_services" style="font-size: 0.92em; color: #555">
+								<ul class="sub_services">
 									<?php foreach ( $values['services'] as $key => $name ) :
 										if ( 0 === $key ) {
 											foreach( $name as $subsub_service_key => $subsub_service ) {
 												?>
-												<li style="line-height: 23px;">
+												<li>
 													<label>
 														<input type="checkbox" name="usps_service[<?php echo esc_attr( $code ); ?>][<?php echo esc_attr( $key ); ?>][<?php echo esc_attr( $subsub_service_key ); ?>][enabled]" <?php checked( ( ! isset( $this->custom_services[ $code ][ $key ][ $subsub_service_key ]['enabled'] ) || ! empty( $this->custom_services[ $code ][ $key ][ $subsub_service_key ]['enabled'] ) ), true ); ?> />
 														<?php echo $subsub_service; ?>
@@ -58,20 +58,21 @@
 												<?php
 											}
 										} else {
+											$classes = ! empty( $values['commercial'] ) && in_array( $key, $values['commercial'], true ) ? 'commercial' : '';
 											?>
-											<li style="line-height: 23px;">
+											<li class="<?php echo esc_attr( $classes ); ?>">
 												<label>
 													<input type="checkbox" name="usps_service[<?php echo esc_attr( $code ); ?>][<?php echo esc_attr( $key ); ?>][enabled]" <?php checked( ( ! isset( $this->custom_services[ $code ][ $key ]['enabled'] ) || ! empty( $this->custom_services[ $code ][ $key ]['enabled'] ) ), true ); ?> />
 													<?php echo $name; ?>
 												</label>
 											</li>
-											<?php 
+											<?php
 										}
 									endforeach; ?>
 								</ul>
 							</td>
 							<td>
-								<ul class="sub_services" style="font-size: 0.92em; color: #555">
+								<ul class="sub_services">
 									<?php foreach ( $values['services'] as $key => $name ) :
 										if ( 0 === $key ) {
 											foreach( $name as $subsub_service_key => $subsub_service ) {
@@ -82,17 +83,18 @@
 												<?php
 											}
 										} else {
+											$classes = ! empty( $values['commercial'] ) && in_array( $key, $values['commercial'], true ) ? 'commercial' : '';
 											?>
-											<li>
+											<li class="<?php echo esc_attr( $classes ); ?>">
 												<?php echo get_woocommerce_currency_symbol(); ?><input type="text" name="usps_service[<?php echo esc_attr( $code ); ?>][<?php echo esc_attr( $key ); ?>][adjustment]" placeholder="N/A" value="<?php echo isset( $this->custom_services[ $code ][ $key ]['adjustment'] ) ? esc_attr( $this->custom_services[ $code ][ $key ]['adjustment'] ) : ''; ?>" size="4" />
 											</li>
-											<?php 
+											<?php
 										}
 									endforeach; ?>
 								</ul>
 							</td>
 							<td>
-								<ul class="sub_services" style="font-size: 0.92em; color: #555">
+								<ul class="sub_services">
 									<?php foreach ( $values['services'] as $key => $name ) :
 										if ( 0 === $key ) {
 											foreach( $name as $subsub_service_key => $subsub_service ) {
@@ -103,11 +105,12 @@
 												<?php
 											}
 										} else {
+											$classes = ! empty( $values['commercial'] ) && in_array( $key, $values['commercial'], true ) ? 'commercial' : '';
 											?>
-											<li>
+											<li class="<?php echo esc_attr( $classes ); ?>">
 												<input type="text" name="usps_service[<?php echo esc_attr( $code ); ?>][<?php echo esc_attr( $key ); ?>][adjustment_percent]" placeholder="N/A" value="<?php echo isset( $this->custom_services[ $code ][ $key ]['adjustment_percent'] ) ? esc_attr( $this->custom_services[ $code ][ $key ]['adjustment_percent'] ) : ''; ?>" size="4" />%
-											</li>		
-											<?php 
+											</li>
+											<?php
 										}
 									endforeach; ?>
 								</ul>

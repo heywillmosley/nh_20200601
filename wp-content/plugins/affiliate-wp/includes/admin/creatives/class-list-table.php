@@ -124,7 +124,9 @@ class AffWP_Creatives_Table extends List_Table {
 		/**
 		 * Filters the creatives list table columns.
 		 *
-		 * @param function               $prepared_columns Prepared columns.
+		 * @since 1.2
+		 *
+		 * @param array                  $prepared_columns Prepared columns.
 		 * @param array                  $columns          The columns for this list table.
 		 * @param \AffWP_Creatives_Table $this             List table instance.
 		 */
@@ -146,6 +148,8 @@ class AffWP_Creatives_Table extends List_Table {
 
 		/**
 		 * Filters the creatives list table sortable columns.
+		 *
+		 * @since 1.2
 		 *
 		 * @param array                  $columns          The sortable columns for this list table.
 		 * @param \AffWP_Creatives_Table $this             List table instance.

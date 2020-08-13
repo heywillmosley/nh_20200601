@@ -28,8 +28,6 @@ class Affiliate_WP_Migrate {
 
 		}
 
-		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/class-migrate-base.php';
-
 		switch ( $type ) {
 
 			case 'affiliates-pro' :

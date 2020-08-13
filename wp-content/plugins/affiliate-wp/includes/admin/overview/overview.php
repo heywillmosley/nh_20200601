@@ -58,6 +58,8 @@ function affwp_affiliates_dashboard() {
 		<?php
 		/**
 		 * Fires at the top of the Overview page, in the area used for Overview meta-boxes.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_overview_meta_boxes' );
 		?>
@@ -83,6 +85,8 @@ function affwp_affiliates_dashboard() {
 		<?php
 		/**
 		 * Fires at the bottom of the Overview admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_overview_bottom' );
 		?>

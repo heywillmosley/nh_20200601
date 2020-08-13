@@ -2,9 +2,15 @@
 
 class Affiliate_WP_Membermouse extends Affiliate_WP_Base {
 
-	public function init() {
+	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'membermouse';
 
-		$this->context = 'membermouse';
+	public function init() {
 
 		add_action( 'mm_member_add',         array( $this, 'add_referral_on_free' ),      10    );
 		add_action( 'mm_commission_initial', array( $this, 'add_referral' ),              10    );
@@ -124,8 +130,16 @@ class Affiliate_WP_Membermouse extends Affiliate_WP_Base {
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'MM_MembershipLevel' );
+	}
 }
 
-if ( class_exists( 'MM_MembershipLevel' ) ) {
 	new Affiliate_WP_Membermouse;
-}

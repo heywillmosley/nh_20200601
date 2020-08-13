@@ -135,6 +135,16 @@ class Generate_Payouts extends Batch\Export\CSV implements Batch\With_PreFetch {
 				'affiliate_id' => $this->affiliate_id,
 			);
 
+			/**
+			 * Filters the arguments used to retrieve referrals for the payout CSV.
+			 *
+			 * @since 2.4.4
+			 *
+			 * @param array            $args Array of get_referrals() arguments.
+			 * @param Generate_Payouts $this Generate_Payouts batch process instance.
+			 */
+			$args = apply_filters( 'affwp_generate_payout_get_referrals_args', $args, $this );
+
 			$referrals_for_export = affiliate_wp()->referrals->get_referrals( $args );
 
 			$this->compile_potential_payouts( $referrals_for_export );

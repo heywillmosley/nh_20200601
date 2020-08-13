@@ -12,6 +12,11 @@ i.mce-i-icon {
 
 #TB_ajaxContent { padding: 0 0 30px 0; width: 100%!important; overflow: hidden; }
 
+/* Added z-index to force popup on top of LD headers and WP admin menu. */
+.ui-dialog.ld-shortcodes {
+	z-index: 160000 !important;
+}
+
 #learndash_shortcodes_wrap {
 	position: relative;
 	margin: 0;

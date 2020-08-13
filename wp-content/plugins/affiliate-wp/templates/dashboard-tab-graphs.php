@@ -13,12 +13,14 @@ $affiliate_id = affwp_get_affiliate_id();
 	?>
 
 	<?php
-    /**
-     * Fires after dashboard graphs within the affiliate area graphs template.
-     *
-     * @param int $affiliate_id Affiliate ID of the currently logged-in affiliate.
-     */
-    do_action( 'affwp_affiliate_dashboard_after_graphs', $affiliate_id );
+	/**
+	 * Fires after dashboard graphs within the affiliate area graphs template.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $affiliate_id Affiliate ID of the currently logged-in affiliate.
+	 */
+	do_action( 'affwp_affiliate_dashboard_after_graphs', $affiliate_id );
     ?>
 
 </div>

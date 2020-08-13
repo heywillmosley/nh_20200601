@@ -42,6 +42,13 @@ class Affiliate_WP_Register {
 
 		affiliate_wp()->templates->get_template_part( 'register' );
 
+		/**
+		 * Filters the output for the AffiliateWP registration form.
+		 *
+		 * @since 1.2
+		 *
+		 * @param string $output Registration form output.
+		 */
 		return apply_filters( 'affwp_register_form', ob_get_clean() );
 
 	}
@@ -59,6 +66,8 @@ class Affiliate_WP_Register {
 
 		/**
 		 * Fires immediately prior to processing an affiliate registration form.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_pre_process_register_form' );
 
@@ -156,6 +165,8 @@ class Affiliate_WP_Register {
 
 		/**
 		 * Fires after processing an affiliate registration form.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_process_register_form' );
 
@@ -165,6 +176,13 @@ class Affiliate_WP_Register {
 
 			$redirect = empty( $data['affwp_redirect'] ) ? affwp_get_affiliate_area_page_url() : $data['affwp_redirect'];
 
+			/**
+			 * Filters the redirect URL used after a successful AffiliateWP registration.
+			 *
+			 * @since 1.0
+			 *
+			 * @param string $redirect Redirect URL.
+			 */
 			$redirect = apply_filters( 'affwp_register_redirect', $data['affwp_redirect'] );
 
 			if ( $redirect ) {
@@ -229,6 +247,19 @@ class Affiliate_WP_Register {
 			)
 		);
 
+		/**
+		 * Filters the list of required registration fields and their attributes.
+		 *
+		 * @since 1.1.4
+		 *
+		 * @param array $required_fields {
+		 *     Required registration fields.
+		 *
+		 *     @type string $error_id     Error ID.
+		 *     @type string error_message Translatable error message.
+		 *     @type bool   $logged_out   Whether to output errors while logged out.
+		 * }
+		 */
 		return apply_filters( 'affwp_register_required_fields', $required_fields );
 	}
 
@@ -370,6 +401,8 @@ class Affiliate_WP_Register {
 		/**
 		 * Fires immediately after registering a user.
 		 *
+		 * @since 1.0
+		 *
 		 * @param int    $affiliate_id Affiliate ID.
 		 * @param string $status       Affiliate status.
 		 * @param array  $args         Data arguments used when registering the user.
@@ -437,7 +470,7 @@ class Affiliate_WP_Register {
 		/**
 		 * Fires immediately after a new user has been auto-registered as an affiliate
 		 *
-		 * @since  1.7
+		 * @since 1.7
 		 *
 		 * @param int    $affiliate_id Affiliate ID.
 		 * @param string $status       The affiliate status.

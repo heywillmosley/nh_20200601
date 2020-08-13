@@ -7,6 +7,8 @@
 		<?php
 		/**
 		 * Fires at the top of the new-creative admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_creative_top' );
 		?>
@@ -111,6 +113,8 @@
 		<?php
 		/**
 		 * Fires at the bottom of the new-creative admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_creative_bottom' );
 		?>

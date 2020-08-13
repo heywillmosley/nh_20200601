@@ -3,10 +3,15 @@
 /**
  * WooCommerce Box Packer
  *
- * @version 2.0.1
+ * @version 1.0.2
  * @author WooThemes / Mike Jolley
  */
 class WC_Boxpack {
+
+	/**
+	 * @since 1.0.2
+	 */
+	const VERSION = '1.0.2';
 
 	private $boxes;
 	private $items;
@@ -14,12 +19,25 @@ class WC_Boxpack {
 	private $cannot_pack;
 
 	/**
+	 * @var bool Try to pack into envelopes and packets
+	 */
+	private $prefer_packets = false;
+
+	/**
 	 * __construct function.
 	 *
-	 * @access public
+	 * @since 1.0.2 Added `$options` parameter and '$prefer_packets' option.
+	 *
+	 * @param array $options {
+	 *     Optional. An array of options.
+	 *     @type bool $prefer_packets Pack into packets before boxes.
+	 * }
 	 * @return void
 	 */
-	public function __construct() {
+	public function __construct( array $options = array() ) {
+		if ( isset( $options['prefer_packets'] ) ) {
+			$this->prefer_packets = $options['prefer_packets'];
+		}
 		include_once( 'class-wc-boxpack-box.php' );
 		include_once( 'class-wc-boxpack-item.php' );
 	}
@@ -57,15 +75,19 @@ class WC_Boxpack {
 	/**
 	 * add_box function.
 	 *
-	 * @access public
+	 * @since 1.0.2 Add `$max_weight` and `$type` optional parameters.
+	 *
 	 * @param mixed $length
 	 * @param mixed $width
 	 * @param mixed $height
 	 * @param mixed $weight
-	 * @return void
+	 * @param float $max_weight
+	 * @param string $type
+	 *
+	 * @return WC_Boxpack_Box
 	 */
-	public function add_box( $length, $width, $height, $weight = 0 ) {
-		$new_box = new WC_Boxpack_Box( $length, $width, $height, $weight );
+	public function add_box( $length, $width, $height, $weight = 0, $max_weight = 0.0, $type = '' ) {
+		$new_box       = new WC_Boxpack_Box( $length, $width, $height, $weight, $max_weight, $type );
 		$this->boxes[] = $new_box;
 		return $new_box;
 	}
@@ -74,7 +96,7 @@ class WC_Boxpack {
 	 * get_packages function.
 	 *
 	 * @access public
-	 * @return void
+	 * @return array
 	 */
 	public function get_packages() {
 		return $this->packages ? $this->packages : array();
@@ -151,6 +173,7 @@ class WC_Boxpack {
 				foreach ( $this->cannot_pack as $item ) {
 					$package           = new stdClass();
 					$package->id       = '';
+					$package->type     = 'box';
 					$package->weight   = $item->get_weight();
 					$package->length   = $item->get_length();
 					$package->width    = $item->get_width();
@@ -160,14 +183,13 @@ class WC_Boxpack {
 					$this->packages[]  = $package;
 				}
 			}
-
 		} catch ( Exception $e ) {
 
 			// Display a packing error for admins
 			if ( current_user_can( 'manage_options' ) ) {
 				echo 'Packing error: ',  $e->getMessage(), "\n";
 			}
-    	}
+		}
 	}
 
 	/**
@@ -195,19 +217,6 @@ class WC_Boxpack {
 	}
 
 	/**
-	 * order_by_volume function.
-	 *
-	 * @access private
-	 * @return void
-	 */
-	private function order_by_volume( $sort ) {
-		if ( ! empty( $sort ) ) {
-			uasort( $sort, array( $this, 'volume_based_sorting' ) );
-		}
-		return $sort;
-	}
-
-	/**
 	 * item_sorting function.
 	 *
 	 * @access public
@@ -217,12 +226,12 @@ class WC_Boxpack {
 	 */
 	public function item_sorting( $a, $b ) {
 		if ( $a->get_volume() == $b->get_volume() ) {
-	        if ( $a->get_weight() == $b->get_weight() ) {
-		        return 0;
-		    }
-		    return ( $a->get_weight() < $b->get_weight() ) ? 1 : -1;
-	    }
-	    return ( $a->get_volume() < $b->get_volume() ) ? 1 : -1;
+			if ( $a->get_weight() == $b->get_weight() ) {
+				return 0;
+			}
+			return ( $a->get_weight() < $b->get_weight() ) ? 1 : -1;
+		}
+		return ( $a->get_volume() < $b->get_volume() ) ? 1 : -1;
 	}
 
 	/**
@@ -231,31 +240,30 @@ class WC_Boxpack {
 	 * @access public
 	 * @param mixed $a
 	 * @param mixed $b
-	 * @return void
+	 * @return int
 	 */
 	public function box_sorting( $a, $b ) {
-		if ( $a->get_volume() == $b->get_volume() ) {
-	        if ( $a->get_max_weight() == $b->get_max_weight() ) {
-		        return 0;
-		    }
-		    return ( $a->get_max_weight() < $b->get_max_weight() ) ? 1 : -1;
-	    }
-	    return ( $a->get_volume() < $b->get_volume() ) ? 1 : -1;
-	}
 
-	/**
-	 * volume_based_sorting function.
-	 *
-	 * @access public
-	 * @param mixed $a
-	 * @param mixed $b
-	 * @return void
-	 */
-	public function volume_based_sorting( $a, $b ) {
-		if ( $a->get_volume() == $b->get_volume() ) {
-	        return 0;
-	    }
-	    return ( $a->get_volume() < $b->get_volume() ) ? 1 : -1;
-	}
+		if ( $this->prefer_packets ) {
+			// check 'envelope', 'packet' first as they are cheaper even if their volume is more
+			$a_cheaper_packaging = in_array( $a->get_type(), array( 'envelope', 'packet' ) );
+			$b_cheaper_packaging = in_array( $b->get_type(), array( 'envelope', 'packet' ) );
 
+			if ( $a_cheaper_packaging && ! $b_cheaper_packaging ) {
+				return 1;
+			}
+
+			if ( $b_cheaper_packaging && ! $a_cheaper_packaging ) {
+				return - 1;
+			}
+		}
+
+		if ( $a->get_volume() == $b->get_volume() ) {
+			if ( $a->get_max_weight() == $b->get_max_weight() ) {
+				return 0;
+			}
+			return ( $a->get_max_weight() < $b->get_max_weight() ) ? 1 : -1;
+		}
+		return ( $a->get_volume() < $b->get_volume() ) ? 1 : -1;
+	}
 }

@@ -1,7 +1,7 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 <?php do_action( 'wpo_wcpdf_before_document', $this->type, $this->order ); ?>
 
-<table class="head container">
+<!-- <table class="head container">
 	<tr>
 		<td class="header">
 		<?php
@@ -13,10 +13,18 @@
 		?>
 		</td>
 		<td class="shop-info">
-			<div class="shop-name"><h3><?php $this->shop_name(); ?></h3></div>
-			<div class="shop-address"><?php $this->shop_address(); ?></div>
+			<h3><?php $this->shop_name(); $this->shop_address(); ?></h3>
 		</td>
 	</tr>
+</table> -->
+
+<table>
+    <tr>
+        <td><?php $this->header_logo(); ?></td>
+    </tr>
+    <tr>
+        <td><strong>Fullfillment Center</strong> • 245 Rosman Hwy • Brevard, NC 28712</td>
+    </tr>
 </table>
 
 <h1 class="document-type-label">
@@ -84,12 +92,12 @@
 				<?php $description_label = __( 'Description', 'woocommerce-pdf-invoices-packing-slips' ); // registering alternate label translation ?>
 				<span class="item-name"><?php echo $item['name']; ?></span>
 				<?php do_action( 'wpo_wcpdf_before_item_meta', $this->type, $item, $this->order  ); ?>
-				<span class="item-meta"><?php echo $item['meta']; ?></span>
+				<!-- <span class="item-meta"><?php echo $item['meta']; ?></span>
 				<dl class="meta">
 					<?php $description_label = __( 'SKU', 'woocommerce-pdf-invoices-packing-slips' ); // registering alternate label translation ?>
 					<?php if( !empty( $item['sku'] ) ) : ?><dt class="sku"><?php _e( 'SKU:', 'woocommerce-pdf-invoices-packing-slips' ); ?></dt><dd class="sku"><?php echo $item['sku']; ?></dd><?php endif; ?>
 					<?php if( !empty( $item['weight'] ) ) : ?><dt class="weight"><?php _e( 'Weight:', 'woocommerce-pdf-invoices-packing-slips' ); ?></dt><dd class="weight"><?php echo $item['weight']; ?><?php echo get_option('woocommerce_weight_unit'); ?></dd><?php endif; ?>
-				</dl>
+				</dl> -->
 				<?php do_action( 'wpo_wcpdf_after_item_meta', $this->type, $item, $this->order  ); ?>
 			</td>
 			<td class="quantity"><?php echo $item['quantity']; ?></td>

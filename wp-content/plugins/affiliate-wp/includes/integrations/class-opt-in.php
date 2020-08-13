@@ -63,11 +63,18 @@ class Opt_In {
 		ob_start();
 
 		if( empty( $this->platform ) ) {
-			return '<p class="affwp-error">' . __( 'No opt-in platform has been configured. Please configure a platform in settings.', 'affiliate_wp' ) . '</p>';
+			return '<p class="affwp-error">' . __( 'No opt-in platform has been configured. Please configure a platform in settings.', 'affiliate-wp' ) . '</p>';
 		}
 
 		affiliate_wp()->templates->get_template_part( 'opt-in' );
 
+		/**
+		 * Filters the output for the Opt-in form.
+		 *
+		 * @since 2.2
+		 *
+		 * @param string $output Output of the form.
+		 */
 		return apply_filters( 'affwp_opt_in_form', ob_get_clean() );
 	}
 
@@ -84,11 +91,13 @@ class Opt_In {
 
 		/**
 		 * Fires immediately prior to processing the opt-in form.
+		 *
+		 * @since 2.2
 		 */
 		do_action( 'affwp_pre_process_opt_in_form', $this );
 
 		if( empty( $this->platform ) ) {
-			$this->add_error( 'no_opt_in_platform', __( 'No opt-in platform has been configured. Please configure a platform in settings.', 'affiliate_wp' ) );
+			$this->add_error( 'no_opt_in_platform', __( 'No opt-in platform has been configured. Please configure a platform in settings.', 'affiliate-wp' ) );
 		}
 
 		if ( empty( $data['affwp_first_name'] ) ) {
@@ -109,6 +118,10 @@ class Opt_In {
 
 		/**
 		 * Fires immediately after processing the opt-in form.
+		 *
+		 * @since 2.2
+		 *
+		 * @param \AFFWP\Integrations\Opt_In $this Opt_In class instance.
 		 */
 		do_action( 'affwp_process_opt_in_form', $this );
 
@@ -157,10 +170,27 @@ class Opt_In {
 
 				}
 
+				/**
+				 * Fires immediately after a successful opt-in submission.
+				 *
+				 * @since 2.2
+				 *
+				 * @param \AFFWP\Integrations\Opt_In $this Opt_In class reference.
+				 * @param int                        $referral_id Referral ID.
+				 * @param array                      $args        Arguments for processing the opt-in submission.
+				 */
 				do_action( 'affwp_opt_in_success', $this, $referral_id, $referral_args );
 
 				$redirect = empty( $data['affwp_redirect'] ) ? affiliate_wp()->tracking->get_current_page_url() : $data['affwp_redirect'];
 				$redirect = add_query_arg( 'affwp-notice', 'opted-in', $redirect );
+
+				/**
+				 * Filters the redirect URL used after processing of the opt-in form has completed.
+				 *
+				 * @since 2.2
+				 *
+				 * @param string $redirect Redirect URL.
+				 */
 				$redirect = apply_filters( 'affwp_opt_in_redirect', $redirect );
 
 				if ( $redirect ) {
@@ -179,6 +209,13 @@ class Opt_In {
 	 */
 	public function subscribe_contact() {
 
+		/**
+		 * Fires immediately before an opt-in contact is subscribed.
+		 *
+		 * @since 2.2
+		 *
+		 * @param \AFFWP\Integrations\Opt_In $this Opt_In instance.
+		 */
 		do_action( 'affwp_opt_in_pre_subscribe_contact', $this );
 
 		$this->platform_obj->contact = $this->contact;
@@ -187,6 +224,13 @@ class Opt_In {
 
 		$this->errors = $this->platform_obj->errors;
 
+		/**
+		 * Fires immediately after an opt-in contact is subscribed.
+		 *
+		 * @since 2.2
+		 *
+		 * @param \AFFWP\Integrations\Opt_In $this Opt_In instance.
+		 */
 		do_action( 'affwp_opt_in_post_subscribe_contact', $this );
 
 		return $ret;

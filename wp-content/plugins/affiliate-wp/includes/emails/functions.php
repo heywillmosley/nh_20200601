@@ -259,6 +259,15 @@ function affwp_email_notification_enabled( $email_notification = '', $affiliate_
 		$enabled = true;
 	}
 
+	/**
+	 * Filters whether the email notification is enabled.
+	 *
+	 * @since 2.2
+	 *
+	 * @param bool   $enabled            Whether the email notification is enabled.
+	 * @param string $email_notification Email notification slug.
+	 * @param int    $affiliate_id       Affiliate ID.
+	 */
 	return (bool) apply_filters( 'affwp_email_notification_enabled', $enabled, $email_notification, $affiliate_id );
 
 }

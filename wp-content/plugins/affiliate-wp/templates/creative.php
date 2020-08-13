@@ -36,6 +36,13 @@
 	<?php endif; ?>
 
 	<?php
+		/**
+		 * Filters the text of the current Creative.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $text Text of the creative.
+		 */
 		echo apply_filters( 'affwp_affiliate_creative_text', '<p>' . __( 'Copy and paste the following:', 'affiliate-wp' ) . '</p>' );
 
 		// Image - media library

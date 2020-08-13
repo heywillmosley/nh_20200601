@@ -158,6 +158,15 @@ p.affwp-error {
 	width: auto;
 }
 
+#affwp-affiliate-dashboard-payouts-service {
+	margin-bottom: 50px;
+}
+
+.affwp-form select#affwp-payout-service-account-type,
+.affwp-form select#affwp-payout-service-country {
+	width: 100%;
+}
+
 .visit-converted i {
 	display: inline-block;
 	position: relative;

@@ -9,6 +9,8 @@ $affiliate_id = affwp_get_affiliate_id();
 	/**
 	 * Fires at the top of the Affiliate URLs dashboard tab.
 	 *
+	 * @since 2.0.5
+	 *
 	 * @param int $affiliate_id Affiliate ID of the currently logged-in affiliate.
 	 */
 	do_action( 'affwp_affiliate_dashboard_urls_top', $affiliate_id );

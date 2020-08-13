@@ -3,14 +3,20 @@
 class Affiliate_WP_S2Member extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 's2member';
+
+	/**
 	 * Setup the integration
 	 *
 	 * @access  public
 	 * @since   1.7
 	*/
 	public function init() {
-
-		$this->context = 's2member';
 
 		add_action( 'init', array( $this, 'generate_referral' ) );
 		add_action( 'init', array( $this, 'revoke_referral_on_refund' ) );
@@ -256,8 +262,16 @@ class Affiliate_WP_S2Member extends Affiliate_WP_Base {
 		}
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return function_exists( 'ws_plugin__s2member_pro_classes' );
+	}
 }
 
-if ( function_exists( 'ws_plugin__s2member_pro_classes' ) ) {
 	new Affiliate_WP_S2Member;
-}

@@ -11,6 +11,8 @@ $creative = affwp_get_creative( absint( $_GET['creative_id'] ) );
 		/**
 		 * Fires at the top of the edit-creative admin screen.
 		 *
+		 * @since 1.0
+		 *
 		 * @param \AffWP\Creative $creative The creative object.
 		 */
 		do_action( 'affwp_edit_creative_top', $creative ); ?>
@@ -134,6 +136,8 @@ $creative = affwp_get_creative( absint( $_GET['creative_id'] ) );
 		<?php
 		/**
 		 * Fires at the bottom of the edit-creative admin screen.
+		 *
+		 * @since 1.0
 		 *
 		 * @param \AffWP\Creative $creative The creative object.
 		 */

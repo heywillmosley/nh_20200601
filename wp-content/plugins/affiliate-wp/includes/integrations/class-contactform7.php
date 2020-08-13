@@ -34,6 +34,14 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 	public $cancel_url;
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'contactform7';
+
+	/**
 	 * @access  public
 	 * @see     Affiliate_WP_Base::init
 	 * @since   2.0
@@ -41,8 +49,6 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 	public function init() {
 
 		$this->doc_url = 'http://docs.affiliatewp.com/article/657-contact-form-7';
-
-		$this->context = 'contactform7';
 
 		// Set the success and cancel url
 		$paypal_options   = get_option( 'cf7pp_options' );
@@ -241,7 +247,10 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 		/**
 		 * The Contact Form 7 forms for which AffiliateWP is enabled.
 		 *
-		 * @param array $enabled An array of integers, each being the ID of a Contact Form 7 form for which AffiliateWP is enabled.
+		 * @since 2.0
+		 *
+		 * @param array $enabled An array of integers, each being the ID of a Contact Form 7
+		 *                       form for which AffiliateWP is enabled.
 		 */
 		return apply_filters( 'affwp_cf7_enabled_forms', $enabled );
 	}
@@ -438,12 +447,12 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 			/**
 			 * Filters the referral description for the AffiliateWP Contact Form 7 integration.
 			 *
-			 * @since  2.1.12
+			 * @since 2.1.12
 			 *
-			 * @param string $description   Item description or CF7 form title
-			 * @param string $form_id       CF7 form id
-			 * @param object $contactform   CF7 form submission object.
-			 * @param object $result        Submitted CF7 form submission data.
+			 * @param string $description Item description or CF7 form title.
+			 * @param string $form_id     CF7 form ID.
+			 * @param object $contactform CF7 form submission object.
+			 * @param object $result      Submitted CF7 form submission data.
 			 *
 			 */
 			$description = apply_filters( 'affwp_cf7_referral_description', $description, $form_id, $contactform, $result );
@@ -625,8 +634,16 @@ class Affiliate_WP_Contact_Form_7 extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'WPCF7_ContactForm' );
+	}
 }
 
-if ( class_exists( 'WPCF7_ContactForm' ) ) {
 	new Affiliate_WP_Contact_Form_7;
-}

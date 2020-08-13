@@ -57,6 +57,8 @@ class Affiliate_WP_Rewrites {
 
 		/**
 		 * Fires immediately prior to flushing rewrite rules.
+		 *
+		 * @since 1.7.8
 		 */
 		do_action( 'affwp_pre_flush_rewrites' );
 
@@ -64,6 +66,8 @@ class Affiliate_WP_Rewrites {
 
 		/**
 		 * Fires immediately after flushing rewrite rules.
+		 *
+		 * @since 1.7.8
 		 */
 		do_action( 'affwp_post_flush_rewrites' );
 	}
@@ -78,16 +82,15 @@ class Affiliate_WP_Rewrites {
 	public function rewrites() {
 
 		$taxonomies = get_taxonomies( array( 'public' => true, '_builtin' => false ), 'objects' );
+		$ref        = affiliate_wp()->tracking->get_referral_var();
 
-		foreach( $taxonomies as $tax_id => $tax ) {
-
-			$ref = affiliate_wp()->tracking->get_referral_var();
-			add_rewrite_rule( $tax->rewrite['slug'] . '/(.+?)/' . $ref . '(/(.*))?/?$', 'index.php?' . $tax_id . '=$matches[1]&' . $ref . '=$matches[3]', 'top');
-
+		foreach ( $taxonomies as $tax_id => $tax ) {
+			if ( is_array( $tax->rewrite ) && isset( $tax->rewrite[ 'slug' ] ) ) {
+				add_rewrite_rule( $tax->rewrite[ 'slug' ] . '/(.+?)/' . $ref . '(/(.*))?/?$', 'index.php?' . $tax_id . '=$matches[1]&' . $ref . '=$matches[3]', 'top' );
+			}
 		}
 
-		add_rewrite_endpoint( affiliate_wp()->tracking->get_referral_var(), EP_PERMALINK | EP_ROOT | EP_COMMENTS | EP_SEARCH | EP_PAGES | EP_ALL_ARCHIVES , false );
-
+		add_rewrite_endpoint( $ref, EP_PERMALINK | EP_ROOT | EP_COMMENTS | EP_SEARCH | EP_PAGES | EP_ALL_ARCHIVES, false );
 	}
 
 	/**

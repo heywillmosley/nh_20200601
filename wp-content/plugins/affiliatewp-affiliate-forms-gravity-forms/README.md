@@ -1,6 +1,17 @@
 AffiliateWP - Affiliate Forms For Gravity Forms
 ====================
 
+####Version 1.0.21, May 20, 2020
+
+- Fixed: Affiliate Application Accepted email includes reset password link when user is already logged in
+- Fixed: Cast the form ID as an integer when doing a string comparison for adding an affiliate
+- Fixed: Avoid a notice when upgrading from an undefined form
+
+####Version 1.0.20, January 8, 2020
+
+Fix: Password reset link not emailed to affiliate if password field missing from form
+Fix: Affiliates can't log in after setting password
+
 ####Version 1.0.19, August 29, 2019
 
 Fix: Limit capturing affiliate username and email lead meta to the registration form only.

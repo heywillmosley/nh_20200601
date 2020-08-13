@@ -23,6 +23,14 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 	public $cache_group = 'payouts';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'affiliates:payouts';
+
+	/**
 	 * Object type to query for.
 	 *
 	 * @access public
@@ -30,6 +38,24 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 	 * @var    string
 	 */
 	public $query_object_type = 'AffWP\Affiliate\Payout';
+
+	/**
+	 * The payouts service registration instance.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    \AffWP\Affiliate\Payout\Service_Register
+	 */
+	public $service_register;
+
+	/**
+	 * The payouts service events instance.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    \AffWP\Affiliate\Payout\Service_Events
+	 */
+	public $service_events;
 
 	/**
 	 * Constructor.
@@ -48,6 +74,12 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 		}
 		$this->primary_key = 'payout_id';
 		$this->version     = '1.0';
+
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-payouts-service-register.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/class-payouts-service-events.php';
+
+		$this->service_register = new \AffWP\Affiliate\Payout\Service_Register;
+		$this->service_events   = new \AffWP\Affiliate\Payout\Service_Events;
 
 		// REST endpoints.
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
@@ -78,14 +110,18 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 	*/
 	public function get_columns() {
 		return array(
-			'payout_id'     => '%d',
-			'affiliate_id'  => '%d',
-			'referrals'     => '%s',
-			'amount'        => '%s',
-			'owner'         => '%d',
-			'payout_method' => '%s',
-			'status'        => '%s',
-			'date'          => '%s',
+			'payout_id'            => '%d',
+			'affiliate_id'         => '%d',
+			'referrals'            => '%s',
+			'amount'               => '%s',
+			'owner'                => '%d',
+			'payout_method'        => '%s',
+			'service_account'      => '%s',
+			'service_id'           => '%d',
+			'service_invoice_link' => '%s',
+			'description'          => '%s',
+			'status'               => '%s',
+			'date'                 => '%s',
 		);
 	}
 
@@ -127,12 +163,16 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 	public function add( $args = array() ) {
 
 		$args = wp_parse_args( $args, array(
-			'affiliate_id'  => 0,
-			'referrals'     => array(),
-			'amount'        => 0,
-			'payout_method' => '',
-			'owner'         => get_current_user_id(),
-			'status'        => 'paid',
+			'affiliate_id'         => 0,
+			'referrals'            => array(),
+			'amount'               => 0,
+			'payout_method'        => '',
+			'service_account'      => '',
+			'service_id'           => 0,
+			'service_invoice_link' => '',
+			'description'          => '',
+			'owner'                => get_current_user_id(),
+			'status'               => 'paid',
 		) );
 
 		$args['affiliate_id'] = absint( $args['affiliate_id'] );
@@ -321,6 +361,7 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 	 *                                        as a float or string. Accepts '>', '<', '>=', '<=', '=', or '!='.
 	 *                                        Default '='.
 	 *     @type string       $payout_method  Payout method to retrieve payouts for. Default empty (all).
+	 *     @type string       $service_account Account the payout was paid to. Default empty (all).
 	 *     @type string|array $date {
 	 *         Date string or start/end range to retrieve payouts for.
 	 *
@@ -343,21 +384,23 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 		global $wpdb;
 
 		$defaults = array(
-			'number'         => 20,
-			'offset'         => 0,
-			'payout_id'      => 0,
-			'affiliate_id'   => 0,
-			'referrals'      => 0,
-			'amount'         => 0,
-			'amount_compare' => '=',
-			'payout_method'  => '',
-			'owner'          => '',
-			'status'         => 'paid',
-			'date'           => '',
-			'order'          => 'DESC',
-			'orderby'        => 'payout_id',
-			'fields'         => '',
-			'search'         => false,
+			'number'          => 20,
+			'offset'          => 0,
+			'payout_id'       => 0,
+			'affiliate_id'    => 0,
+			'referrals'       => 0,
+			'amount'          => 0,
+			'amount_compare'  => '=',
+			'payout_method'   => '',
+			'service_account' => '',
+			'service_id'      => 0,
+			'owner'           => '',
+			'status'          => 'paid',
+			'date'            => '',
+			'order'           => 'DESC',
+			'orderby'         => 'payout_id',
+			'fields'          => '',
+			'search'          => false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -462,9 +505,35 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 
 			$where .= empty( $where ) ? "WHERE " : "AND ";
 
-			$payment_method = esc_sql( $args['payout_method'] );
+			$payout_method = esc_sql( $args['payout_method'] );
 
 			$where .= "`payout_method` = '" . $payout_method . "' ";
+		}
+
+		// Payout account.
+		if ( ! empty( $args['service_account'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			$service_account = esc_sql( $args['service_account'] );
+
+			$where .= "`service_account` = '" . $service_account . "' ";
+		}
+
+		// Specific payouts service payout id.
+		if( ! empty( $args['service_id'] ) ) {
+
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			if( is_array( $args['service_id'] ) ) {
+				$service_ids = implode( ',', array_map( 'intval', $args['service_id'] ) );
+			} else {
+				$service_ids = intval( $args['service_id'] );
+			}
+
+			$service_ids = esc_sql( $service_ids );
+
+			$where .= "`service_id` IN( {$service_ids} ) ";
 		}
 
 		// Owners.
@@ -487,13 +556,30 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 
 			$where .= empty( $where ) ? "WHERE " : "AND ";
 
-			if ( ! in_array( $args['status'], array( 'paid', 'failed' ), true ) ) {
-				$args['status'] = 'paid';
+			$statuses = array( 'processing', 'paid', 'failed' );
+
+			if ( is_array( $args['status'] ) ) {
+
+				$invalid_status = array_diff( $args['status'], $statuses );
+
+				if ( ! empty( $invalid_status ) ) {
+					$args['status'] = 'paid';
+				}
+
+			} else {
+
+				if ( ! in_array( $args['status'], $statuses, true ) ) {
+					$args['status'] = 'paid';
+				}
+
 			}
 
-			$status = esc_sql( $args['status'] );
+			if ( is_array( $args['status'] ) ) {
+				$where .= "`status` IN('" . implode( "','", array_map( 'esc_sql', $args['status'] ) ) . "') ";
+			} else {
+				$where .= "`status` = '" . esc_sql( $args['status'] ) . "' ";
+			}
 
-			$where .= "`status` = '" . $status . "' ";
 		}
 
 		// Visits for a date or date range
@@ -628,10 +714,15 @@ class Affiliate_WP_Payouts_DB extends Affiliate_WP_DB {
 			amount mediumtext NOT NULL,
 			owner bigint(20) NOT NULL,
 			payout_method tinytext NOT NULL,
+			service_account tinytext NOT NULL,
+			service_id bigint(20) NOT NULL,
+			service_invoice_link varchar(255) NOT NULL,
+			description longtext NOT NULL,
 			status tinytext NOT NULL,
 			date datetime NOT NULL,
 			PRIMARY KEY  (payout_id),
-			KEY affiliate_id (affiliate_id)
+			KEY affiliate_id (affiliate_id),
+			KEY service_id (service_id)
 			) CHARACTER SET utf8 COLLATE utf8_general_ci;";
 
 		dbDelta( $sql );

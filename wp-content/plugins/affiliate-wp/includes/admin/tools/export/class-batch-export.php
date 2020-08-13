@@ -243,21 +243,13 @@ class Export extends \Affiliate_WP_Export {
 	/**
 	 * Retrieves the calculated completion percentage.
 	 *
-	 * @access public
-	 * @since  2.0
+	 * @since 2.0
+	 * @since 2.5 Refactored to wrap affwp_calculate_percentage()
 	 *
 	 * @return int Percentage completed.
 	 */
 	public function get_percentage_complete() {
-
-		$percentage = 0;
-
-		$current_count = $this->get_current_count();
-		$total_count   = $this->get_total_count();
-
-		if ( $total_count > 0 ) {
-			$percentage = ( $current_count / $total_count ) * 100;
-		}
+		$percentage = affwp_calculate_percentage( $this->get_current_count(), $this->get_total_count() );
 
 		if ( $percentage > 100 ) {
 			$percentage = 100;

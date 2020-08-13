@@ -13,6 +13,16 @@ use AffWP\Utils;
 class Registry extends Utils\Registry {
 
 	/**
+	 * Tooltips.
+	 *
+	 * @since 2.5
+	 * @access private
+	 *
+	 * @var array List containing text for tooltips keyed by the meta box ID.
+	 */
+	private static $tooltips = array();
+
+	/**
 	 * Initialize the registry.
 	 *
 	 * Each sub-class will need to do various initialization operations in this method.
@@ -25,8 +35,8 @@ class Registry extends Utils\Registry {
 	/**
 	 * Adds a tile to a given reports tab (collection).
 	 *
-	 * @access public
-	 * @since  2.1
+	 * @since 2.1
+	 * @since 2.5 Added support for a 'tooltip' attribute.
 	 *
 	 * @param string $collection Collection (tab) ID.
 	 * @param string $tile_id    Tile ID.
@@ -42,10 +52,14 @@ class Registry extends Utils\Registry {
 	 *     @type mixed    $comparison_data  Comparison data to pair with `$data`. Default empty.
 	 *     @type callable $display_callback Display callback to use for the tile. Default is 'default_tile',
 	 *                                      which leverages `$type`.
+	 *     @type string   $tooltip          HTML output for tooltip. Leave blank for no tooltip. Default empty.
 	 * }
 	 * @return true Always true.
 	 */
 	public function add_tile( $collection, $tile_id, $attributes ) {
+		if ( ! empty( $attributes['tooltip'] ) ) {
+			self::$tooltips[ $collection . '-' . $tile_id ] = $attributes['tooltip'];
+		}
 		return parent::add_item( "{$collection}:{$tile_id}", $attributes );
 	}
 
@@ -95,6 +109,17 @@ class Registry extends Utils\Registry {
 		}
 
 		return $items;
+	}
+
+	/**
+	 * Retrieves the list of registered tooltips.
+	 *
+	 * @since 2.5
+	 *
+	 * @return array List containing text for tooltips keyed by the meta box ID.
+	 */
+	public static function get_tooltips() {
+		return self::$tooltips;
 	}
 
 }

@@ -7,275 +7,55 @@
  * @package LearnDash\Widgets
  */
 
-
-// This filter will parse the text of the widget for shortcodes.
-add_filter( 'widget_text', 'do_shortcode' );
-add_filter( 'widget_text_content', 'do_shortcode' );
-add_filter( 'widget_custom_html', 'do_shortcode' );
-add_filter( 'widget_custom_html_content', 'do_shortcode' );
-
-class LearnDash_Course_Info_Widget extends WP_Widget {
-
-	/**
-	 * Setup Course Info Widget
-	 */
-	function __construct() {
-		$widget_ops = array( 
-			'classname' => 'widget_ldcourseinfo', 
-			'description' => sprintf( _x( 'LearnDash - %s attempt and score information of users. Visible only to users logged in.', 'placeholders: course', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) )
-		);
-		$control_ops = array(); //'width' => 400, 'height' => 350);
-		parent::__construct( 'ldcourseinfo', sprintf( _x( '%s Information', 'Course Information', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ), $widget_ops, $control_ops );
-	}
-
-
-	
-	/**
-	 * Displays widget
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $args     widget arguments
-	 * @param  array $instance widget instance
-	 * @return string          widget output
-	 */
-	function widget( $args, $instance ) {
-		global $learndash_shortcode_used;
-		
-		extract( $args );
-
-		 /**
-		 * Filter widget title
-		 * 
-		 * @since 2.1.0
-		 * 
-		 * @param  string
-		 */
-		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance );
-		
-		if ( empty( $user_id ) ) {
-			$current_user = wp_get_current_user();
-			if ( empty( $current_user->ID ) ) {
-				return;
-			}
-			
-			$user_id = $current_user->ID;
-		}
-		
-		$courseinfo = learndash_course_info( $user_id );
-		
-		if ( empty( $courseinfo ) ) {
-			return;
-		}
-		
-		echo $before_widget;
-
-		if ( ! empty( $title ) ) {
-			echo $before_title . $title . $after_title;
-		}
-		
-		echo $courseinfo;
-		echo $after_widget;
-		
-		$learndash_shortcode_used = true;
-	}
-
-
-	/**
-	 * Handles widget updates in admin
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $new_instance
-	 * @param  array $old_instance
-	 * @return array $instance
-	 */
-	function update( $new_instance, $old_instance ) {
-		$instance = $old_instance;
-		$instance['title'] = strip_tags( $new_instance['title'] );		
-		return $instance;
-	}
-
-
-	/**
-	 * Display widget form in admin
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $instance widget instance
-	 */
-	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
-		$title = strip_tags( $instance['title'] );
-		//$text = format_to_edit($instance['text']);
-		
-		?>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'learndash' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
-			</p>
-		<?php
-	}
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
-
-add_action( 'widgets_init', create_function( '', 'return register_widget("LearnDash_Course_Info_Widget");' ) );
-
-
-
-class LearnDash_Course_Navigation_Widget extends WP_Widget {
-	
-	/**
-	 * Setup Course Navigation Widget
-	 */
-	function __construct() {
-		$widget_ops = array(
-			'classname' => 'widget_ldcoursenavigation', 
-			'description' => sprintf( _x( 'LearnDash - %s Navigation. Shows lessons and topics on the current course.', 'LearnDash - Course Navigation. Shows lessons and topics on the current course.', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) )
-		);
-		$control_ops = array(); //'width' => 400, 'height' => 350);
-		parent::__construct( 'widget_ldcoursenavigation', sprintf( _x( '%s Navigation', 'Course Navigation Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ), $widget_ops, $control_ops );
-	}
-
-
-	/**
-	 * Displays widget
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $args     widget arguments
-	 * @param  array $instance widget instance
-	 * @return string          widget output
-	 */
-	function widget( $args, $instance ) {
-		global $learndash_shortcode_used;
-		
-		global $post;
-		
-		if ( empty( $post->ID ) || ! is_single() ) {
-			return;
-		}
-		
-		$course_id = learndash_get_course_id( $post->ID );
-
-		if ( empty( $course_id ) ) {
-			return;
-		}
-		
-		extract( $args );
-
-		 /**
-		 * Filter widget title
-		 * 
-		 * @since 2.1.0
-		 * 
-		 * @param  string
-		 */
-		$title = apply_filters( 'widget_title', empty( $instance['title'] ) ? '' : $instance['title'], $instance );
-		
-		echo $before_widget;
-		
-		if ( ! empty( $title ) ) {
-			echo $before_title . $title . $after_title;
-		}
-		
-		learndash_course_navigation( $course_id, $instance );
-		
-		echo $after_widget;
-		
-		$learndash_shortcode_used = true;
-	}
-
-
-	/**
-	 * Handles widget updates in admin
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $new_instance
-	 * @param  array $old_instance
-	 * @return array $instance
-	 */
-	function update( $new_instance, $old_instance ) {
-		$instance = $old_instance;
-		
-		$instance['title'] 					= 	strip_tags( $new_instance['title'] );		
-		
-		$instance['show_lesson_quizzes']	= 	isset( $new_instance['show_lesson_quizzes'] ) ? (bool) $new_instance['show_lesson_quizzes'] : false;
-		$instance['show_topic_quizzes'] 	= 	isset( $new_instance['show_topic_quizzes'] ) ? (bool) $new_instance['show_topic_quizzes'] : false;
-		$instance['show_course_quizzes'] 	= 	isset( $new_instance['show_course_quizzes'] ) ? (bool) $new_instance['show_course_quizzes'] : false;
-		
-		return $instance;
-	}
-
-
-	/**
-	 * Display widget form in admin
-	 * 
-	 * @since 2.1.0
-	 * 
-	 * @param  array $instance widget instance
-	 */
-	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => '' ) );
-		$title = strip_tags( $instance['title'] );
-		$show_lesson_quizzes 	= isset( $instance['show_lesson_quizzes'] ) ? (bool) $instance['show_lesson_quizzes'] : false;
-		$show_topic_quizzes 	= isset( $instance['show_topic_quizzes'] ) ? (bool) $instance['show_topic_quizzes'] : false;
-		$show_course_quizzes 	= isset( $instance['show_course_quizzes'] ) ? (bool) $instance['show_course_quizzes'] : false;
-		
-		//$text = format_to_edit($instance['text']);		
-		?>
-			<p>
-				<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:', 'learndash' ); ?></label>
-				<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
-			</p>
-
-
-			<p>
-				<input class="checkbox" type="checkbox"<?php checked( $show_course_quizzes ); ?> id="<?php echo $this->get_field_id( 'show_course_quizzes' ); ?>" name="<?php echo $this->get_field_name( 'show_course_quizzes' ); ?>" />
-				<label for="<?php echo $this->get_field_id( 'show_course_quizzes' ); ?>"><?php _e( 'Show Course Quizzes?', 'learndash' ); ?></label>
-			</p>
-			<p>
-				<input class="checkbox" type="checkbox"<?php checked( $show_lesson_quizzes ); ?> id="<?php echo $this->get_field_id( 'show_lesson_quizzes' ); ?>" name="<?php echo $this->get_field_name( 'show_lesson_quizzes' ); ?>" />
-				<label for="<?php echo $this->get_field_id( 'show_lesson_quizzes' ); ?>"><?php _e( 'Show Lesson Quizzes?', 'learndash' ); ?></label>
-			</p>
-			<p>
-				<input class="checkbox" type="checkbox"<?php checked( $show_topic_quizzes ); ?> id="<?php echo $this->get_field_id( 'show_topic_quizzes' ); ?>" name="<?php echo $this->get_field_name( 'show_topic_quizzes' ); ?>" />
-				<label for="<?php echo $this->get_field_id( 'show_topic_quizzes' ); ?>"><?php _e( 'Show Topic Quizzes?', 'learndash' ); ?></label>
-			</p>
-		<?php
-	}
-
-}
-
-add_action( 'widgets_init', create_function( '', 'return register_widget("LearnDash_Course_Navigation_Widget");' ) );
-
-
 
 /**
- * Outputs course navigation template for widget
- * 
+ * Outputs the course navigation template for widget.
+ *
  * @since 2.1.0
- * 
- * @param  int 		$course_id  course id
- * @return string 			 	course navigation output
+ *
+ * @param int   $course_id         Course ID.
+ * @param array $widget_instance   Optional. An array of widget settings. Default empty array.
+ * @param array $lesson_query_args Optional. An array of lesson `WP_Query` arguments. Default empty array.
+ *
+ * @return string The course navigation widget output.
  */
-function learndash_course_navigation( $course_id, $widget_instance ) {
+function learndash_course_navigation( $course_id, $widget_instance = array(), $lesson_query_args = array() ) {
 	$course = get_post( $course_id );
 	
 	if ( empty( $course->ID ) || $course_id != $course->ID ) {
 		return;
 	}
 	
-	$course = get_post( $course_id );
-
 	if ( empty( $course->ID ) || $course->post_type != 'sfwd-courses' ) {
 		return;
 	}
 	
-	$course_settings = learndash_get_setting( $course );
-	$lessons = learndash_get_course_lessons_list( $course );
+	if ( is_user_logged_in() )
+		$user_id = get_current_user_id();
+	else
+		$user_id = 0;
+		
+	$course_navigation_widget_pager = array();
+	global $course_navigation_widget_pager;
 	
-	include( SFWD_LMS::get_template( 
+	add_action( 'learndash_course_lessons_list_pager', function( $query_result = null ) {
+		global $course_navigation_widget_pager;
+
+		$course_navigation_widget_pager['paged'] = 1;
+
+		if ( ( isset( $query_result->query_vars['paged'] ) ) && ( $query_result->query_vars['paged'] > 1 ) )
+			$course_navigation_widget_pager['paged'] = $query_result->query_vars['paged'];
+		
+		$course_navigation_widget_pager['total_items'] = $query_result->found_posts;
+		$course_navigation_widget_pager['total_pages'] = $query_result->max_num_pages;
+	} );
+	
+	$lessons = learndash_get_course_lessons_list( $course, $user_id, $lesson_query_args );
+	
+	$template_file = SFWD_LMS::get_template( 
 		'course_navigation_widget', 
 		array(
 			'course_id' => $course_id, 
@@ -285,20 +65,27 @@ function learndash_course_navigation( $course_id, $widget_instance ) {
 		), 
 		null, 
 		true 
-	));
+	);
+
+	if ( ! empty( $template_file ) ) {
+		include( $template_file );
+	}
 }
 
 
 
 /**
- * Outputs course navigation admin template for widget
- * 
+ * Outputs the course navigation admin template for the widget.
+ *
  * @since 2.1.0
- * 
- * @param  int 		$course_id  course id
- * @return string 			 	course navigation output
+ *
+ * @param int   $course_id         Course ID.
+ * @param array $instance          Optional. An array of widget settings. Default empty array.
+ * @param array $lesson_query_args Optional. An array of lesson `WP_Query` arguments. Default empty array.
+ *
+ * @return string The course navigation widget output.
  */
-function learndash_course_navigation_admin( $course_id ) {
+function learndash_course_navigation_admin( $course_id, $instance = array(), $lesson_query_args = array() ) {
 	$course = get_post( $course_id );
 	
 	if ( empty( $course->ID ) || $course_id != $course->ID ) {
@@ -311,218 +98,609 @@ function learndash_course_navigation_admin( $course_id ) {
 		return;
 	}
 	
-	$course_settings = learndash_get_setting( $course );
-	$lessons = learndash_get_course_lessons_list( $course );
+	if ( is_user_logged_in() )
+		$user_id = get_current_user_id();
+	else
+		$user_id = 0;
+			
+	$course_navigation_admin_pager = array();
+	global $course_navigation_admin_pager;
 	
-	include( SFWD_LMS::get_template( 
+	add_action( 'learndash_course_lessons_list_pager', function( $query_result = null ) {
+		global $course_navigation_admin_pager;
+
+		$course_navigation_admin_pager['paged'] = 1;
+
+		if ( ( isset( $query_result->query_vars['paged'] ) ) && ( $query_result->query_vars['paged'] > 1 ) )
+			$course_navigation_admin_pager['paged'] = $query_result->query_vars['paged'];
+		
+		$course_navigation_admin_pager['total_items'] = $query_result->found_posts;
+		$course_navigation_admin_pager['total_pages'] = $query_result->max_num_pages;
+	} );
+	
+	$lessons = learndash_get_course_lessons_list( $course, $user_id, $lesson_query_args );
+	$quizzes = learndash_get_course_quiz_list( $course_id, $user_id ); 
+	
+	 SFWD_LMS::get_template( 
 		'course_navigation_admin', 
 		array( 
+			'user_id' => $user_id,
 			'course_id' => $course_id, 
 			'course' => $course, 
 			'lessons' => $lessons, 
-		), 
-		null, 
+			'course_quiz_list' => $quizzes,
+			'widget' => $instance
+		),
 		true 
-	));
+	);
 }
 
+/**
+ * Includes the course navigation switcher admin template.
+ *
+ * @param int $course_id Course ID.
+ */
 function learndash_course_switcher_admin( $course_id ) {
-	include( SFWD_LMS::get_template( 
+	$template_file = SFWD_LMS::get_template( 
 		'course_navigation_switcher_admin', 
 		array(), 
 		null, 
 		true 
-	));
-	
-}
+	);
 
-
-/**
- * Register course navigation meta box for admin
- * 
- * @since 2.1.0
- */
-function learndash_course_navigation_admin_box() {
-	$post_types = array('sfwd-courses', 'sfwd-lessons', 'sfwd-quiz', 'sfwd-topic');
-
-	foreach( $post_types as $post_type ) {
-		add_meta_box( 'learndash_course_navigation_admin_meta', __( 'Associated Content', 'learndash' ), 'learndash_course_navigation_admin_box_content', $post_type, 'side', 'high' );
+	if ( ! empty( $template_file ) ) {
+		include( $template_file );
 	}
 }
 
-add_action( 'add_meta_boxes', 'learndash_course_navigation_admin_box' );
+/**
+ * Enqueues the scripts and styles needed to handle pagination.
+ *
+ * Fires on `load-post.php` and `load-post-new.php` hook.
+ *
+ * @since 2.5.4
+ */
+function learndash_course_step_edit_init() {
+	global $learndash_assets_loaded;
+	
+	$screen = get_current_screen();
+	if ( ( $screen->base == 'post') && ( in_array( $screen->post_type, array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz' ) ) ) ) {
+		
+		$filepath = SFWD_LMS::get_template( 'learndash_pager.css', null, null, true );
+		if ( !empty( $filepath ) ) {
+			wp_enqueue_style( 'learndash_pager_css', learndash_template_url_from_path( $filepath ), array(), LEARNDASH_SCRIPT_VERSION_TOKEN );
+			wp_style_add_data( 'learndash_pager_css', 'rtl', 'replace' );
+			$learndash_assets_loaded['styles']['learndash_pager_css'] = __FUNCTION__;
+		} 
 
+		$filepath = SFWD_LMS::get_template( 'learndash_pager.js', null, null, true );
+		if ( !empty( $filepath ) ) {
+			wp_enqueue_script( 'learndash_pager_js', learndash_template_url_from_path( $filepath ), array( 'jquery' ), LEARNDASH_SCRIPT_VERSION_TOKEN, true );
+			$learndash_assets_loaded['scripts']['learndash_pager_js'] = __FUNCTION__;
+		}
+	}	
+}
+add_action( 'load-post.php', 'learndash_course_step_edit_init' );
+add_action( 'load-post-new.php', 'learndash_course_step_edit_init' );
 
 
 /**
- * Add content to course navigation meta box for admi
- * 
+ * Adds the content to the course navigation meta box for admin.
+ *
  * @since 2.1.0
  */
 function learndash_course_navigation_admin_box_content() {
-	$course_id = learndash_get_course_id( @$_GET['post'] );
-	
-	if ( !empty( $course_id ) ) {
-		learndash_course_navigation_admin( $course_id );
-	}
+	if ( ( isset($_GET['post'] ) ) && ( !empty( $_GET['post'] ) ) ) {
+		$course_id = learndash_get_course_id( intval( $_GET['post'] ) );
+			
+		if ( !empty( $course_id ) ) {
+			
+			$instance = array();
+			$instance['show_widget_wrapper'] = true;
+			$instance['course_id'] = $course_id;
+			$instance['current_lesson_id'] = 0;
+			$instance['current_step_id'] = 0;
+			
+			$lesson_query_args = array();
+			$lesson_query_args['pagination'] = 'true';
+			$lesson_query_args['paged'] = 1;
 
-	if ( LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Courses_Builder', 'shared_steps' ) == 'yes' ) {
-		learndash_course_switcher_admin( $course_id );
+			$current_post = get_post( intval( $_GET['post'] ) );
+			if ( ( is_a( $current_post, 'WP_Post' ) ) && ( is_user_logged_in() ) && ( in_array( $current_post->post_type, array( 'sfwd-courses', 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz' ) ) ) ) {
+			
+				$course_lessons_per_page = learndash_get_course_lessons_per_page( $course_id );
+				if ( $course_lessons_per_page > 0 ) {
+					if (  in_array( $current_post->post_type, array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz' ) ) ) {
+
+						$instance['current_step_id'] = $current_post->ID;
+						if ( $current_post->post_type == 'sfwd-lessons' ) {
+							$instance['current_lesson_id'] = $instance['current_step_id'];
+						} else if ( in_array( $current_post->post_type, array('sfwd-topic', 'sfwd-quiz') ) ) {
+							$instance['current_lesson_id'] = learndash_course_get_single_parent_step( $course_id, $instance['current_step_id'], 'sfwd-lessons' );
+						}
+
+						if ( !empty( $instance['current_lesson_id'] ) ) {
+							$ld_course_steps_object = LDLMS_Factory_Post::course_steps( $course_id );
+							$course_lesson_ids = $ld_course_steps_object->get_children_steps( $course_id, 'sfwd-lessons' );
+	
+							if ( !empty( $course_lesson_ids ) ) {
+								$course_lessons_paged = array_chunk( $course_lesson_ids, $course_lessons_per_page, true );
+								$lessons_paged = 0;
+								foreach( $course_lessons_paged as $paged => $paged_set ) {
+									if ( in_array( $instance['current_lesson_id'], $paged_set ) ) {
+										$lessons_paged = $paged + 1;
+										break;
+									}
+								}
+	
+								if ( !empty( $lessons_paged ) ) {
+									$lesson_query_args['pagination'] = 'true';
+									$lesson_query_args['paged'] = $lessons_paged;
+								}
+							}
+						} else if ( in_array( $current_post->post_type, array( 'sfwd-quiz') ) ) {
+							// If here we have a global Quiz. So we set the pager to the max number
+							$course_lesson_ids = learndash_course_get_steps_by_type( $course_id, 'sfwd-lessons' );
+							if ( !empty( $course_lesson_ids ) ) {
+								$course_lessons_paged = array_chunk( $course_lesson_ids, $course_lessons_per_page, true );
+								$lesson_query_args['paged'] = count( $course_lessons_paged );
+							}
+						}
+							
+					}
+				} else {
+					$lesson_query_args['pagination'] = 'false';
+					
+					if ( in_array( $current_post->post_type, array( 'sfwd-lessons', 'sfwd-topic', 'sfwd-quiz' ) ) ) {
+						$instance['current_step_id'] = $current_post->ID;
+						if ( $current_post->post_type == 'sfwd-lessons' ) {
+							$instance['current_lesson_id'] = $current_post->ID;
+						} else if ( in_array( $current_post->post_type, array('sfwd-topic', 'sfwd-quiz') ) ) {
+							$instance['current_lesson_id'] = learndash_course_get_single_parent_step( $course_id, $current_post->ID, 'sfwd-lessons' );
+						}
+					}
+				}
+			}
+			
+			learndash_course_navigation_admin( $course_id, $instance, $lesson_query_args );
+		} else {
+			echo sprintf(
+				// translators: placeholders: Course.
+				esc_html_x( 'No associated %s', 'placeholder: Course', 'learndash' ),
+				LearnDash_Custom_Label::get_label( 'course' )
+			);
+		}
+
+		if ( LearnDash_Settings_Section::get_section_setting('LearnDash_Settings_Courses_Builder', 'shared_steps' ) == 'yes' ) {
+			learndash_course_switcher_admin( $course_id );
+		}
 	}
 }
 
 
 /**
- * Get course info html output for user (helper function)
- * 
+ * Gets the course info HTML output for user.
+ *
  * @since 2.1.0
- * 
- * @param  int 		$user_id 
- * @return string 	course info output
+ *
+ * @param int   $user_id User ID.
+ * @param array $atts    Optional. An array of widget attributes. Default empty array.
+ *
+ * @return string The course info output.
  */
-function learndash_course_info( $user_id ) {
-	return SFWD_LMS::get_course_info( $user_id );
+function learndash_course_info( $user_id, $atts = array() ) {
+	return SFWD_LMS::get_course_info( $user_id, $atts );
 }
 
-
-
 /**
- * Shortcode get course info html output for user (helper function)
- * 
- * @since 2.1.0
- * 
- * @param  array 	$atts 	shortcode attributes
- * @return string 	course info output
+ * Handles the AJAX pagination for the courses registered.
+ *
+ * Fires on `ld_course_registered_pager` AJAX action.
+ *
+ * @return void|string
  */
-function learndash_course_info_shortcode( $atts ) {
+function wp_ajax_ld_course_registered_pager() {
+	if ( !is_user_logged_in() ) return '';
+	if ( ! current_user_can( 'read' ) ) return '';
 	
-	global $learndash_shortcode_used;
-	
-	if ( isset( $atts['user_id'] ) ) {
-		$user_id = $atts['user_id'];
-	} else {
-		$current_user = wp_get_current_user();
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
+
+		add_filter('learndash_course_info_paged', function( $paged = 1, $context = '' ) {
+			if ( ( $context == 'registered' ) && ( isset( $_POST['paged'] ) ) && ( !empty( $_POST['paged'] ) ) ) {
+				$paged = intval( $_POST['paged'] );
+			}
+			
+			// Always return $paged
+			return $paged;
+		}, 10, 2 );
+
+		$reply_data = array();
+
+		if ( isset( $_POST['shortcode_atts'] ) )
+			$shortcode_atts = $_POST['shortcode_atts'];
+		else
+			$shortcode_atts = array();
 		
-		if ( empty( $current_user->ID ) ) {
-			return;
+		$user_id = get_current_user_id();
+		if ( learndash_is_group_leader_user() ) {
+			if ( ( isset( $shortcode_atts['user_id'] ) ) && ( ! empty( $shortcode_atts['user_id'] ) ) ) {
+				if ( learndash_is_group_leader_of_user( $user_id, $shortcode_atts['user_id'] ) ) {
+					$user_id = intval( $shortcode_atts['user_id'] );
+				}
+			}
+		} else if ( learndash_is_admin_user() ) {	
+			if ( ( isset( $shortcode_atts['user_id'] ) ) && ( ! empty( $shortcode_atts['user_id'] ) ) ) {
+				$user_id = intval( $shortcode_atts['user_id'] );
+			} 
 		}
 		
-		$user_id = $current_user->ID;
-	}
+		$shortcode_atts['return'] = true;
+		$shortcode_atts['type'] = 'registered';
+		
+		// Setup the pager filter. 
+		if ( !learndash_ajax_pager_verify_atts( $user_id, $shortcode_atts ) ) {
+			return '';
+		}
 
-	$learndash_shortcode_used = true;
-	
-	return SFWD_LMS::get_course_info( $user_id );
+		$user_progress = SFWD_LMS::get_course_info( $user_id, $shortcode_atts );
+
+		if ( ( isset( $user_progress['courses_registered'] ) ) && ( !empty( $user_progress['courses_registered'] ) ) ) {
+			$courses_registered = $user_progress['courses_registered'];
+			
+			$level = ob_get_level();
+			ob_start();
+			
+			$template_file = SFWD_LMS::get_template(
+				'course_registered_rows',
+				null,
+				null, 
+				true 
+			); 
+			if ( ! empty( $template_file ) ) {
+				include $template_file;
+			}
+			$reply_data['content'] = learndash_ob_get_clean( $level );
+		}
+
+		if ( isset( $user_progress['courses_registered_pager'] ) ) {
+			$reply_data['pager'] = SFWD_LMS::get_template( 
+				'learndash_pager.php', 
+				array(
+					'pager_results' => $user_progress['courses_registered_pager'], 
+					'pager_context' => 'course_info_registered'
+				) 
+			);
+		}
+	}	
+	echo json_encode( $reply_data );
+	die();
 }
-
-add_shortcode( 'ld_course_info', 'learndash_course_info_shortcode' );
-
-
-
-function learndash_user_course_points_shortcode( $atts, $content = '' ) {
-	global $learndash_shortcode_used;
-	
-	$defaults = array(
-		'user_id'	=>	get_current_user_id(),
-		'context'	=>	'ld_user_course_points'
-	);
-	$atts = wp_parse_args( $atts, $defaults );
-
-	if ( !isset( $atts['user_id'] ) )
-		return;
-
-	$learndash_shortcode_used = true;
-
-	$user_couse_points = learndash_get_user_course_points( $atts['user_id'] );
-
-	$content = SFWD_LMS::get_template( 
-		'learndash_course_points_user_message', 
-		array(
-			'user_course_points'	=>	$user_couse_points,
-			'user_id'				=>	$atts['user_id'],
-			'shortcode_atts'		=>	$atts,
-		), false
-	);
-	return $content;
-}
-add_shortcode( 'ld_user_course_points', 'learndash_user_course_points_shortcode' );
-
+add_action( 'wp_ajax_ld_course_registered_pager', 'wp_ajax_ld_course_registered_pager' );
 
 /**
- * Shortcoude output profile for user
+ * Handles the AJAX pagination for the course progress.
  * 
- * @since 2.1.0
- * 
- * @param  array 	$atts 	shortcode attributes
- * @return string 	output profile for user
+ * Fires on `ld_course_progress_pager` AJAX action.
+ *
+ * @return void|string
  */
-function learndash_profile( $atts ) {
-	global $learndash_shortcode_used;
-	
-	// Add check ti ensure user it logged in
+function wp_ajax_ld_course_progress_pager() {
+	// Not sure why this is here since we have the 'wp_ajax_nopriv_ld_course_progress_pager' action setup
 	if ( !is_user_logged_in() ) return '';
-	
-	$defaults = array(
-		'user_id'				=>	get_current_user_id(),
-		'order' 				=> 'DESC', 
-		'orderby' 				=> 'ID', 
-		'course_points_user' 	=> 'yes',
-		'expand_all'			=> false
-	);
-	$atts = wp_parse_args( $atts, $defaults );
 
-//	if ($atts['course_points_user'] == 'true')
-//		$atts['course_points_user'] = true;
-//	else
-//		$atts['course_points_user'] = false;
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
 
-
-	if ( ( strtolower($atts['expand_all'] ) == 'yes' ) || ( $atts['expand_all'] == 'true' ) || ( $atts['expand_all'] == '1' ))
-		$atts['expand_all'] = true;
-	else
-		$atts['expand_all'] = false;
-
-
-	$atts = apply_filters('learndash_profile_shortcode_atts', $atts);
-
-	if ( empty( $atts['user_id'] ) ) return;
-
-	$current_user = get_user_by( 'id', $atts['user_id'] );
-	$user_courses = ld_get_mycourses( $atts['user_id'], $atts );
-
-	$usermeta = get_user_meta( $atts['user_id'], '_sfwd-quizzes', true );
-	$quiz_attempts_meta = empty( $usermeta ) ? false : $usermeta;
-	$quiz_attempts = array();
-
-	if ( ! empty( $quiz_attempts_meta ) ) {
-
-		foreach ( $quiz_attempts_meta as $quiz_attempt ) {
-			$c = learndash_certificate_details( $quiz_attempt['quiz'], $atts['user_id'] );
-			$quiz_attempt['post'] = get_post( $quiz_attempt['quiz'] );
-			$quiz_attempt['percentage'] = ! empty( $quiz_attempt['percentage'] ) ? $quiz_attempt['percentage'] : ( ! empty( $quiz_attempt['count'] ) ? $quiz_attempt['score'] * 100 / $quiz_attempt['count'] : 0 );
+		add_filter('learndash_course_info_paged', function( $paged = 1, $context = '' ) {
+			if ( ( $context == 'courses' ) && ( isset( $_POST['paged'] ) ) && ( !empty( $_POST['paged'] ) ) ) {
+				$paged = intval( $_POST['paged'] );
+			}
 			
-			if ( $atts['user_id'] == get_current_user_id() && ! empty( $c['certificateLink'] ) && ( ( isset( $quiz_attempt['percentage'] ) && $quiz_attempt['percentage'] >= $c['certificate_threshold'] * 100 ) ) ) {
-				$quiz_attempt['certificate'] = $c;
+			// Always return $paged
+			return $paged;
+		}, 10, 2 );
+
+		$reply_data = array();
+
+		if ( isset( $_POST['shortcode_atts'] ) )
+			$shortcode_atts = $_POST['shortcode_atts'];
+		else
+			$shortcode_atts = array();
+		
+		$user_id = get_current_user_id();
+		if ( ( isset( $shortcode_atts['user_id'] ) ) && ( ! empty( $shortcode_atts['user_id'] ) ) ) {
+			$shortcode_atts['user_id'] = absint( $shortcode_atts['user_id'] );
+			if ( $user_id !== $shortcode_atts['user_id'] ) {
+				if ( ( learndash_is_group_leader_user() ) && ( learndash_is_group_leader_of_user( $user_id, $shortcode_atts['user_id'] ) ) ) {
+					$user_id = intval( $shortcode_atts['user_id'] );
+				} else if ( learndash_is_admin_user() ) {	
+					$user_id = intval( $shortcode_atts['user_id'] );
+				} 
+			}
+		}
+
+		$shortcode_atts['return'] = true;
+		$shortcode_atts['type'] = 'course';
+		
+		// Setup the pager filter. 
+		if ( !learndash_ajax_pager_verify_atts( $user_id, $shortcode_atts) ) {
+			return '';
+		}
+		
+		$user_progress = SFWD_LMS::get_course_info( $user_id, $shortcode_atts );
+
+		if ( ( isset( $user_progress['course_progress'] ) ) && ( !empty( $user_progress['course_progress'] ) ) ) {
+			$courses_registered = $user_progress['courses_registered'];
+			$course_progress = $user_progress['course_progress'];
+			
+			$level = ob_get_level();
+			ob_start();
+			
+			$template_file = SFWD_LMS::get_template(
+				'course_progress_rows',
+				null,
+				null, 
+				true 
+			);
+
+			if ( ! empty( $template_file ) ) {
+				include $template_file;
+			}
+			$reply_data['content'] = learndash_ob_get_clean( $level );
+		}
+
+		if ( isset( $user_progress['course_progress_pager'] ) ) {
+			$reply_data['pager'] = SFWD_LMS::get_template( 
+				'learndash_pager.php', 
+				array(
+					'pager_results' => $user_progress['course_progress_pager'], 
+					'pager_context' => 'course_info_courses'
+				) 
+			);
+		}
+	}
+	echo json_encode( $reply_data );
+	die();
+}
+add_action( 'wp_ajax_ld_course_progress_pager', 'wp_ajax_ld_course_progress_pager' );
+add_action( 'wp_ajax_nopriv_ld_course_progress_pager', 'wp_ajax_ld_course_progress_pager' );
+
+/**
+ * Handles the AJAX pagination for the quiz progress.
+ *
+ * Fires on `ld_course_progress_pager` AJAX action.
+ *
+ * @return void|string
+ */
+function wp_ajax_ld_quiz_progress_pager() {
+	$reply_data = array();
+
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
+		if ( ! is_user_logged_in() ) return '';
+		if ( ! current_user_can( 'read' ) ) return '';
+		
+		add_filter('learndash_quiz_info_paged', function( $paged = 1 ) {
+			if ( ( isset( $_POST['paged'] ) ) && ( !empty( $_POST['paged'] ) ) ) {
+				$paged = intval( $_POST['paged'] );
+			}
+			return $paged;
+		});
+
+		if ( isset( $_POST['shortcode_atts'] ) )
+			$shortcode_atts = $_POST['shortcode_atts'];
+		else
+			$shortcode_atts = array();
+
+		$user_id = get_current_user_id();
+		if ( ( isset( $shortcode_atts['user_id'] ) ) && ( ! empty( $shortcode_atts['user_id'] ) ) ) {
+			$shortcode_atts['user_id'] = absint( $shortcode_atts['user_id'] );
+			if ( $user_id !== $shortcode_atts['user_id'] ) {
+				if ( ( learndash_is_group_leader_user() ) && ( learndash_is_group_leader_of_user( $user_id, $shortcode_atts['user_id'] ) ) ) {
+					$user_id = intval( $shortcode_atts['user_id'] );
+				} else if ( learndash_is_admin_user() ) {	
+					$user_id = intval( $shortcode_atts['user_id'] );
+				} 
+			}
+		}
+
+		$shortcode_atts['return'] = true;
+		$shortcode_atts['type'] = 'quiz';
+		
+		// Setup the pager filter. 
+		if ( !learndash_ajax_pager_verify_atts( $user_id, $shortcode_atts ) ) {
+			return '';
+		}
+
+		$user_progress = SFWD_LMS::get_course_info( $user_id, $shortcode_atts );
+
+		if ( ( isset( $user_progress['quizzes'] ) ) && ( !empty( $user_progress['quizzes'] ) ) ) {
+			$quizzes = $user_progress['quizzes'];
+			
+			$level = ob_get_level();
+			ob_start();
+
+			$template_file = SFWD_LMS::get_template(
+				'quiz_progress_rows',
+				null,
+				null, 
+				true 
+			); 
+
+			if ( ! empty( $template_file ) ) {
+				include $template_file;
 			}
 
-			if ( !isset( $quiz_attempt['course'] ) )
-				$quiz_attempt['course'] = learndash_get_course_id( $quiz_attempt['quiz'] );
-			$course_id = intval( $quiz_attempt['course'] );
+			$reply_data['content'] = learndash_ob_get_clean( $level );
+		}
 
-			$quiz_attempts[$course_id][] = $quiz_attempt;
+		if ( isset( $user_progress['quizzes_pager'] ) ) {
+			$reply_data['pager'] = SFWD_LMS::get_template( 
+				'learndash_pager.php', 
+				array(
+				'pager_results' => $user_progress['quizzes_pager'], 
+				'pager_context' => 'course_info_quizzes'
+				) 
+			);
+		}
+	}	
+	echo json_encode( $reply_data );
+	die();
+}
+	
+add_action( 'wp_ajax_ld_quiz_progress_pager', 'wp_ajax_ld_quiz_progress_pager' );
+
+
+/**
+ * Handles the AJAX pagination for the courses navigation.
+ *
+ * Fires on `ld_course_navigation_pager` AJAX action.
+ *
+ * @since 2.5.4
+ */
+function wp_ajax_ld_course_navigation_pager() {
+	$reply_data = array();
+	
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
+
+		if ( ( isset( $_POST['paged'] ) ) && ( !empty( $_POST['paged'] ) ) ) {
+			$paged = intval( $_POST['paged'] );
+		} else {
+			$paged = 1;
+		}
+
+		if ( ( isset( $_POST['widget_data']['course_id'] ) ) && ( !empty( $_POST['widget_data']['course_id'] ) ) ) {
+			$course_id = intval( $_POST['widget_data']['course_id'] );
+		} else {
+			$course_id = 0;
+		}
+			
+		if ( ( isset( $_POST['widget_data']['widget_instance'] ) ) && ( !empty( $_POST['widget_data']['widget_instance'] ) ) ) {
+			$widget_instance = $_POST['widget_data']['widget_instance'];
+		} else {
+			$widget_instance = array();
+		}
+		
+		if ( ( !empty( $course_id ) ) && ( !empty( $widget_instance ) ) ) {
+			
+			$lesson_query_args = array();
+			$course_lessons_per_page = learndash_get_course_lessons_per_page( $course_id );
+			if ( $course_lessons_per_page > 0 ) {		
+				$lesson_query_args['pagination'] = 'true';
+				$lesson_query_args['paged'] = $paged;
+			}
+			$widget_instance['show_widget_wrapper'] = false;
+			
+			$level = ob_get_level();
+			ob_start();
+			learndash_course_navigation( $course_id, $widget_instance, $lesson_query_args );
+			$reply_data['content'] = learndash_ob_get_clean( $level );		
 		}
 	}
 	
-	$learndash_shortcode_used = true;
-
-	return SFWD_LMS::get_template( 'profile', array(
-		'user_id' 			=> 	$atts['user_id'], 
-		'quiz_attempts' 	=> 	$quiz_attempts, 
-		'current_user' 		=> 	$current_user, 
-		'user_courses' 		=> 	$user_courses,
-		'shortcode_atts'	=>	$atts
-		) 
-	);
+	echo json_encode( $reply_data );
+	die();
 }
+	
+add_action( 'wp_ajax_ld_course_navigation_pager', 'wp_ajax_ld_course_navigation_pager' );
+add_action( 'wp_ajax_nopriv_ld_course_navigation_pager', 'wp_ajax_ld_course_navigation_pager' );
 
-add_shortcode( 'ld_profile', 'learndash_profile' );
+
+/**
+ * Handles the AJAX pagination for the admin courses navigation.
+ *
+ * Fires on `ld_course_navigation_admin_pager` AJAX action.
+ *
+ * @since 2.5.4
+ */
+function wp_ajax_ld_course_navigation_admin_pager() {
+	$reply_data = array();
+	
+	if ( ( isset( $_POST['nonce'] ) ) && ( ! empty( $_POST['nonce'] ) ) && ( wp_verify_nonce( $_POST['nonce'], 'learndash-pager' ) ) ) {
+
+		if ( ( isset( $_POST['paged'] ) ) && ( !empty( $_POST['paged'] ) ) ) {
+			$paged = intval( $_POST['paged'] );
+		} else {
+			$paged = 1;
+		}
+
+		if ( ( isset( $_POST['widget_data'] ) ) && ( !empty( $_POST['widget_data'] ) ) ) {
+			$widget_data = $_POST['widget_data'];
+		} else {
+			$widget_data = array();
+		}
+
+		if ( ( isset( $widget_data['course_id'] ) ) && ( !empty( $widget_data['course_id'] ) ) ) {
+			$course_id = intval( $widget_data['course_id'] );
+		} else {
+			$course_id = 0;
+		}
+			
+		if ( ( !empty( $course_id ) ) && ( !empty( $widget_data ) ) ) {
+			
+			if ( ( isset( $_POST['widget_data']['nonce'] ) ) && ( ! empty( $_POST['widget_data']['nonce'] ) ) && ( wp_verify_nonce( $_POST['widget_data']['nonce'], 'ld_course_navigation_admin_pager_nonce_' . $course_id . '_' . get_current_user_id() ) ) ) {
+
+				$lesson_query_args = array();
+				$lesson_query_args['pagination'] = 'true';
+				$lesson_query_args['paged'] = $paged;
+				$widget_data['show_widget_wrapper'] = false;
+				
+				$level = ob_get_level();
+				ob_start();
+				learndash_course_navigation_admin( $course_id, $widget_data, $lesson_query_args );
+				$reply_data['content'] = learndash_ob_get_clean( $level );
+			}
+		}
+	}	
+	echo json_encode( $reply_data );
+	die();
+}
+	
+add_action( 'wp_ajax_ld_course_navigation_admin_pager', 'wp_ajax_ld_course_navigation_admin_pager' );
+
+/**
+ * Verifies the attributes for AJAX pagination.
+ *
+ * @param int   $user_id        User ID.
+ * @param array $shortcode_atts Shortcode attributes.
+ *
+ * @return boolean Returns true if the attributes are verified otherwise false.
+ */
+function learndash_ajax_pager_verify_atts( $user_id, $shortcode_atts ) {
+	$use_filter = false;
+	
+	if ( ( !empty( $user_id ) ) && ( isset( $shortcode_atts['pagenow'] ) ) ) {
+		if ( ( isset( $shortcode_atts['pagenow_nonce'] ) ) && ( !empty( $shortcode_atts['pagenow_nonce'] ) ) ) {
+			if ( ( $shortcode_atts['pagenow'] == 'profile.php' ) || ( $shortcode_atts['pagenow'] == 'user-edit.php' ) ) {
+				if ( wp_verify_nonce( $shortcode_atts['pagenow_nonce'], $shortcode_atts['pagenow'] .'-'. $user_id ) ) {
+					$use_filter = true;
+				}
+			} else if ( $shortcode_atts['pagenow'] == 'group_admin_page' ) {
+				if ( ( isset( $shortcode_atts['group_id'] ) ) && ( intval( $shortcode_atts['group_id'] ) ) ) {
+					if ( wp_verify_nonce( $shortcode_atts['pagenow_nonce'], $shortcode_atts['pagenow'] .'-'. intval( $shortcode_atts['group_id'] ).'-'. $user_id ) ) {
+						$use_filter = true;
+					}
+				} 
+			} else if ( $shortcode_atts['pagenow'] == 'learndash' ) {
+				if ( wp_verify_nonce( $shortcode_atts['pagenow_nonce'], $shortcode_atts['pagenow'] .'-'. $user_id ) ) {
+					// Hard return here because we don't want to set $user_filter to true as that will trigger the 
+					// logic below to show the admin only details link. 
+					return true;
+				}
+			}
+		}
+	
+		if ( $use_filter == true ) {
+			// The following filter is called during the template output. Normally if the admin is viewing profile.php
+			// We show the edit options. but via AJAX we don't know from where the user is viewing. It may be a front-end 
+			// page etc. So as part of the shortcode atts we store the pagenow and a nonce we then verify within the logic below.
+			add_filter( 'learndash_show_user_course_complete_options', function( $show_admin_options, $user_id = 0 ) {
+				if ( current_user_can( 'edit_users' ) )  {
+					$show_admin_options = true;
+				} 
+
+				return $show_admin_options;
+			}, 1, 2 );
+		}
+	}
+		
+	return $use_filter;
+}

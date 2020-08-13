@@ -4,12 +4,12 @@ namespace AffWP\Integrations\Opt_In;
 use AffWP\Integrations\Opt_In;
 
 /**
- * MailChimp opt-in platform integration.
+ * Mailchimp opt-in platform integration.
  *
  * @since 2.2
  * @abstract
  */
-class MailChimp extends Opt_In\Platform {
+class Mailchimp extends Opt_In\Platform {
 
 	/**
 	 * Initialize our API keys and platform variables.
@@ -129,15 +129,15 @@ class MailChimp extends Opt_In\Platform {
 	public function settings( $settings ) {
 
 		$settings['mailchimp_api_key'] = array(
-			'name' => __( 'MailChimp API Key', 'affiliate-wp' ),
+			'name' => __( 'Mailchimp API Key', 'affiliate-wp' ),
 			'type' => 'text',
-			'desc' => __( 'Enter your MailChimp API key.', 'affiliate-wp' ),
+			'desc' => __( 'Enter your Mailchimp API key.', 'affiliate-wp' ),
 		);
 
 		$settings['mailchimp_list_id'] = array(
-			'name' => __( 'MailChimp List ID', 'affiliate-wp' ),
+			'name' => __( 'Mailchimp Audience ID', 'affiliate-wp' ),
 			'type' => 'text',
-			'desc' => __( 'Enter the ID of the list you wish to subscribe contacts to.', 'affiliate-wp' ),
+			'desc' => __( 'Enter the ID of the audience you wish to subscribe contacts to.', 'affiliate-wp' ),
 		);
 
 		$settings['mailchimp_double_opt_in'] = array(

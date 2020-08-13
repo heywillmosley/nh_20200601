@@ -119,6 +119,7 @@ add_action( 'admin_enqueue_scripts', 'affwp_admin_styles' );
 function affwp_enqueue_admin_js() {
 
 	$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+	wp_register_script( 'affwp-tooltips', AFFILIATEWP_PLUGIN_URL . 'assets/js/tooltips' . $suffix . '.js', array( 'jquery' ), AFFILIATEWP_VERSION );
 
 	// Batch processing.
 	wp_register_script( 'affwp-batch', AFFILIATEWP_PLUGIN_URL . 'assets/js/batch' . $suffix . '.js', array( 'jquery-form' ), AFFILIATEWP_VERSION );
@@ -139,7 +140,7 @@ function affwp_enqueue_admin_js() {
 		'confirm_delete_referral'  => __( 'Are you sure you want to delete this referral?', 'affiliate-wp' ),
 		'no_user_found'            => __( 'The user you entered does not exist. To create a new user and affiliate, continue filling out the form and click Add User & Affiliate.', 'affiliate-wp' ),
 		'no_user_email_found'      => __( 'No user account is associated with this email address. To create a new user and affiliate, continue filling out the form and click Add User & Affiliate.', 'affiliate-wp' ),
-		'user_and_affiliate_input' => __( 'Add User & Affiliate' ),
+		'user_and_affiliate_input' => __( 'Add User & Affiliate', 'affiliate-wp' ),
 		'valid_user_selected'      => __( 'You have selected a valid user account and may continue adding this user as an affiliate.', 'affiliate-wp' ),
 		'existing_affiliate'       => __( 'An affiliate already exists for this username.', 'affiliate-wp' ),
 		'user_email_exists'        => __( 'A user already exists for this email address, however they are not currently an affiliate. Their username is %s', 'affiliate-wp' ),
@@ -179,13 +180,15 @@ function affwp_frontend_scripts_and_styles() {
 	wp_register_script( 'affwp-frontend', AFFILIATEWP_PLUGIN_URL . 'assets/js/frontend' . $suffix . '.js', $script_deps, AFFILIATEWP_VERSION );
 
 	wp_localize_script( 'affwp-frontend', 'affwp_vars', array(
-		'affwp_version'         => AFFILIATEWP_VERSION,
-		'permalinks'            => get_option( 'permalink_structure' ),
-		'pretty_affiliate_urls' => affwp_is_pretty_referral_urls(),
-		'currency_sign'         => affwp_currency_filter(''),
-		'currency_pos'          => affiliate_wp()->settings->get( 'currency_position', 'before' ),
-		'invalid_url'           => __( 'Please enter a valid URL for this site', 'affiliate-wp' )
-	));
+		'affwp_version'                  => AFFILIATEWP_VERSION,
+		'permalinks'                     => get_option( 'permalink_structure' ),
+		'pretty_affiliate_urls'          => affwp_is_pretty_referral_urls(),
+		'currency_sign'                  => affwp_currency_filter( '' ),
+		'currency_pos'                   => affiliate_wp()->settings->get( 'currency_position', 'before' ),
+		'invalid_url'                    => __( 'Please enter a valid URL for this site', 'affiliate-wp' ),
+		'personal_account_country_label' => __( 'Your Country of Residence', 'affiliate-wp' ),
+		'business_account_country_label' => __( 'Country Where The Business Is Legally Established', 'affiliate-wp' ),
+	) );
 
 	/**
 	 * Filters whether to force frontend scripts to be enqueued.
@@ -233,7 +236,13 @@ function affwp_frontend_creative_styles() {
 		return;
 	}
 
-	if ( has_shortcode( $post->post_content, 'affiliate_creative' ) || has_shortcode( $post->post_content, 'affiliate_creatives' ) || apply_filters( 'affwp_force_frontend_scripts', false ) ) { ?>
+	/** This filter is documented in includes/scripts.php. */
+	$force_frontend_scripts = apply_filters( 'affwp_force_frontend_scripts', false );
+
+	if ( has_shortcode( $post->post_content, 'affiliate_creative' )
+		|| has_shortcode( $post->post_content, 'affiliate_creatives' )
+		|| $force_frontend_scripts
+	) { ?>
 		<style>.affwp-creative{margin-bottom: 4em;}</style>
 	<?php }
 }

@@ -66,7 +66,7 @@ class Affiliate_WP_Tracking {
 
 		add_filter( 'paginate_links', array( $this, 'strip_referral_from_paged_urls' ), 100 );
 
-		add_filter( 'wp_redirect', array( $this, 'redirect_with_referral_link' ), 10, 2 );
+		add_filter( 'wp_redirect', array( $this, 'redirect_with_referral_link' ), 100, 2 );
 	}
 
 	/**
@@ -278,7 +278,14 @@ class Affiliate_WP_Tracking {
 		 * JavaScript debug data to make available in AffiliateWP.
 		 *
 		 * @since 2.0
-		 * @param $data An array of data to pass to the AffiliateWP tracking.js file.
+		 *
+		 * @param array $data {
+		 *     An array of data to pass to the AffiliateWP tracking.js file.
+		 *
+		 *     @type array  $integrations List of enabled integrations.
+		 *     @type string $version      AffiliateWP version.
+		 *     @type string $currency     Currency setting.
+		 * }
 		 */
 		return apply_filters( 'affwp_js_debug_data', (array) $data );
 	}
@@ -619,6 +626,15 @@ class Affiliate_WP_Tracking {
 			$campaign = isset( $_REQUEST['campaign'] ) ? sanitize_text_field( $_REQUEST['campaign'] ) : '';
 
 		}
+
+		/**
+		 * Filters the campaign for the current referral.
+		 *
+		 * @Since 1.7
+		 *
+		 * @param string                 $campaign Campaign name.
+		 * @param \Affiliate_WP_Tracking $this     Tracking class instance.
+		 */
 		return apply_filters( 'affwp_get_campaign', $campaign, $this );
 	}
 
@@ -638,6 +654,14 @@ class Affiliate_WP_Tracking {
 	 */
 	public function set_referral_var() {
 		$var = affiliate_wp()->settings->get( 'referral_var', 'ref' );
+
+		/**
+		 * Filters the referral var for the current request.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $var Referral var.
+		 */
 		$this->referral_var = apply_filters( 'affwp_referral_var', $var );
 	}
 
@@ -655,6 +679,13 @@ class Affiliate_WP_Tracking {
 		$max  = ( 2038 - date( 'Y' ) ) * 365;
 		$days = $days > $max ? $max : $days;
 
+		/**
+		 * Filters the cookie expiration time (in days).
+		 *
+		 * @since 1.0
+		 *
+		 * @param int $days How many days to set the tracking cookie for. Default 1 (day).
+		 */
 		$this->expiration_time = apply_filters( 'affwp_cookie_expiration_time', $days );
 	}
 
@@ -673,8 +704,17 @@ class Affiliate_WP_Tracking {
 	 * @since 1.0
 	 */
 	public function was_referred() {
-		$bool = isset( $_COOKIE['affwp_ref'] ) && $this->is_valid_affiliate( $_COOKIE['affwp_ref'] );
-		return (bool) apply_filters( 'affwp_was_referred', $bool, $this );
+		$was_referred = isset( $_COOKIE['affwp_ref'] ) && $this->is_valid_affiliate( $_COOKIE['affwp_ref'] );
+
+		/**
+		 * Filters whether the current visit was referred.
+		 *
+		 * @since 1.0
+		 *
+		 * @param bool                   $was_referred Whether the current visit was referred.
+		 * @param \Affiliate_WP_Tracking $this         Tracking class instance.
+		 */
+		return (bool) apply_filters( 'affwp_was_referred', $was_referred, $this );
 	}
 
 	/**
@@ -723,6 +763,13 @@ class Affiliate_WP_Tracking {
 
 		}
 
+		/**
+		 * Filters the affiliate ID for the current referral.
+		 *
+		 * @since 1.0
+		 *
+		 * @param int $affiliate_id Affiliate ID.
+		 */
 		return apply_filters( 'affwp_tracking_get_affiliate_id', $affiliate_id );
 	}
 
@@ -860,17 +907,25 @@ class Affiliate_WP_Tracking {
 			$affiliate_id = $this->get_affiliate_id();
 		}
 
-		$ret       = false;
+		$valid     = false;
 		$affiliate = affwp_get_affiliate( $affiliate_id );
 
 		if( $affiliate ) {
 
 			$is_self = is_user_logged_in() && get_current_user_id() == $affiliate->user_id;
 			$active  = 'active' === $affiliate->status;
-			$ret     = ! $is_self && $active;
+			$valid   = ! $is_self && $active;
 		}
 
-		return apply_filters( 'affwp_tracking_is_valid_affiliate', $ret, $affiliate_id );
+		/**
+		 * Filters whether the affiliate for the current referral is valid.
+		 *
+		 * @since 1.0
+		 *
+		 * @param bool $valid        Whether the affiliate is valid.
+		 * @param int  $affiliate_id Affiliate ID.
+		 */
+		return apply_filters( 'affwp_tracking_is_valid_affiliate', $valid, $affiliate_id );
 	}
 
 	/**
@@ -880,14 +935,27 @@ class Affiliate_WP_Tracking {
 	 */
 	public function get_ip() {
 		if ( ! empty( $_SERVER['HTTP_CLIENT_IP'] ) ) {
-			//check ip from share internet
-			$ip = $_SERVER['HTTP_CLIENT_IP'];
+			// check ip from share internet.
+			$ip = filter_var( wp_unslash( $_SERVER['HTTP_CLIENT_IP'] ), FILTER_VALIDATE_IP );
 		} elseif ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
-			//to check ip is pass from proxy
-			$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+			// to check ip is pass from proxy.
+			$ips = explode( ',', wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) );
+			if ( is_array( $ips ) ) {
+				$ip = filter_var( $ips[0], FILTER_VALIDATE_IP );
+			} else {
+				$ip = filter_var( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ), FILTER_VALIDATE_IP );
+			}
 		} else {
-			$ip = $_SERVER['REMOTE_ADDR'];
+			$ip = filter_var( wp_unslash( $_SERVER['REMOTE_ADDR'] ), FILTER_VALIDATE_IP );
 		}
+
+		/**
+		 * Filters the IP address for the current visitor.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $ip IP address of the current visitor.
+		 */
 		return apply_filters( 'affwp_get_ip', $ip );
 	}
 
@@ -911,6 +979,13 @@ class Affiliate_WP_Tracking {
 
 		}
 
+		/**
+		 * Filters the current page URL used as part of the visit record.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $page_url Visit page URL.
+		 */
 		return apply_filters( 'affwp_get_current_page_url', $page_url );
 	}
 
@@ -925,6 +1000,13 @@ class Affiliate_WP_Tracking {
 		$js_works     = (int) get_option( 'affwp_js_works' );
 		$use_fallback = $use_fallback || 1 !== $js_works;
 
+		/**
+		 * Filters whether to use fallback tracking for the current referral request.
+		 *
+		 * @since 1.0
+		 *
+		 * @param bool $use_fallback Whether to use fallback tracking for the current request.
+		 */
 		return apply_filters( 'affwp_use_fallback_tracking_method', $use_fallback );
 	}
 
@@ -989,14 +1071,14 @@ class Affiliate_WP_Tracking {
 		// Get the referral variable being used in AffiliateWP.
 		$referral_var = $this->get_referral_var();
 
-		// Check if pretty referral URLS is enabled in AffiliateWP.
-		$is_pretty_referral_urls = affwp_is_pretty_referral_urls();
-
-		if ( $is_pretty_referral_urls ) {
+			// Bail early if the location already has the referral var set.
+			if ( false !== strpos( $location, '/' . $referral_var . '/' ) ) {
+				return $location;
+			}
 
 			$path = ! empty( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
 
-			if ( false !== strpos( $path, $referral_var . '/' ) ) {
+			if ( false !== strpos( $path,  '/' . $referral_var . '/' ) ) {
 
 				$pieces = explode( '/', str_replace( '?', '/', $path ) );
 				$key    = array_search( $referral_var, $pieces );
@@ -1009,22 +1091,25 @@ class Affiliate_WP_Tracking {
 					$affiliate_id = isset( $pieces[ $key ] ) ? $pieces[ $key ] : false;
 
 					// Append the referral variable and value to the URL after the redirect.
-					$location = trailingslashit( $location ) . trailingslashit( $referral_var ) . trailingslashit( $affiliate_id );
+					$processed_location =  trailingslashit( strtok( $location, '?' ) );
+					$processed_location .= trailingslashit( $referral_var );
+					$processed_location .= trailingslashit( $affiliate_id );
 
+					// If the location has a querystring, append that to the URL.
+					$querystring_position = strpos( $location, '?' );
+					if ( false !== $querystring_position ) {
+						$processed_location .= substr( $location, $querystring_position );
+					}
+
+					$location = $processed_location;
 				}
 
-			}
-
-		} else {
-
-			if ( isset( $_GET[ $referral_var ] ) ) {
+			} elseif ( isset( $_GET[ $referral_var ] ) ) {
 
 				// Append the referral variable and value to the URL after the redirect.
 				$location = add_query_arg( $referral_var, $_GET[ $referral_var ], $location );
 
 			}
-
-		}
 
 		return $location;
 	}

@@ -1,5 +1,133 @@
 *** USPS Shipping ***
 
+2020-07-01 - version 4.4.45
+* Fix - Dimensions not passing correctly when using "Pack into boxes" method.
+
+2020-06-05 - version 4.4.44
+* Add - Setting to control tax status.
+* Tweak - Order shipping line item show quoted package name instead of product dimensions.
+* Tweak - WC 4.2 compatibility.
+
+2020-04-30 - version 4.4.43
+* Tweak - WC 4.1 compatibility.
+
+2020-04-21 - version 4.4.42
+* Fix - Do not include Regional Rate boxes for Retail rates.
+
+2020-04-14 - version 4.4.41
+* Tweak - Adjust debug message, some returned rates may not be shown because of size restrictions.
+* Tweak - Split API requests for regular/large items so that all rates are returned by the API.
+
+2020-04-01 - version 4.4.40
+* Tweak - Remove legacy code.
+* Fix - Split API requests into batches of 25 packages when we exceed the API limit.
+* Fix - Revert padded flat rate envelopes to using a rigid envelope calculation for the box packer.
+* Fix - Apply letter dimension checks for Metered Letters.
+
+2020-03-17 - version 4.4.39
+* Fix - Do not display commercial services when "Retail Rates" are selected.
+
+2020-02-27 - version 4.4.38
+* Fix - Allow percentage adjustments to offer a free rate.
+* Tweak - WC 4.0 compatibility.
+
+2020-02-05 - version 4.4.37
+* Fix - Use proper escape for attributes.
+
+2020-01-16 - version 4.4.36
+* Tweak - WC 3.9 compatibility.
+
+2019-11-12 - version 4.4.35
+* Tweak - Updates flat rates description in USPS settings.
+
+2019-11-04 - version 4.4.34
+* Tweak - Adds a description to the Parcel Packing Method field.
+* Tweak - WC 3.8 compatibility.
+
+2019-10-30 - version 4.4.33
+* Fix - Will not return any rate if any item is greater than 70lbs.
+* Fix - Remove girth for domestic rectangular request since it is miscalculated otherwise.
+
+2019-10-15 - version 4.4.32
+* Tweak - Remove outdated First-Class Mail Parcel service.
+
+2019-09-09 - version 4.4.31
+* Tweak - Removes deprecated <Size> tag from requests.
+* Fix   - Missing flat rates.
+
+2019-08-29 - version 4.4.30
+* Tweak - Ensure origin zip field is never hidden.
+
+2019-08-19 - version 4.4.29
+* Tweak - Move origin zip top of form as it's required for flat rates as well.
+
+2019-08-06 - version 4.4.28
+* Tweak - WC 3.7 compatibility.
+
+2019-07-17 - version 4.4.27
+* Fix    - Flat Rate Box option available when large and small items are in the cart.
+
+2019-06-27 - version 4.4.26
+* Fix    - Flat Rate Box Pricing using incorrect rates for some countries.
+
+2019-06-11 - version 4.4.25
+* Fix    - Change WooThemes.com links to WooCommerce.com links
+* Fix    - Add direct link for premium support form
+* Fix    - Moves support links to under extension description
+
+2019-06-03 - version 4.4.24
+* Fix    - Re-adds First Class Package International Service.
+* Update - Format debug info for better readability and only show to admin users.
+
+2019-05-14 - version 4.4.23
+* Update - Removing First Class International shipping because it has been discontinued by USPS for merchandise as of January, 2018.
+* Fix    - PHP 7.3 switch warning.
+
+2019-04-16 - version 4.4.22
+* Tweak - WC 3.6 compatibility.
+
+2019-03-26 - version 4.4.21
+* Fix    - Request large envelope rates for envelopes longer than 12 inches.
+
+2019-01-29 - version 4.4.20
+* Fix    - Envelope rates returned for boxes thicker than 1inch
+* Update - 2019 price changes.
+
+2018-10-17 - version 4.4.19
+* Fix    - Add i11a package.
+* Update - Add letter option to individual products and declared value option for international shipping.
+* Update - Create .pot file for translations.
+* Update - WC 3.5 compatibility.
+
+2018-05-22 - version 4.4.18
+* Update - Privacy policy notification.
+* Update - WC 3.4 compatibility.
+
+2018-04-24 - version 4.4.17
+* Fix - Priority Mail rates no longer showing.
+
+2018-04-04 - version 4.4.16
+* Fix - Enable flat rate boxes setting not honoring setting.
+
+2018-02-15 - version 4.4.15
+* Fix   - Additional updates for USPS prices per Jan 21 increase.
+
+2018-02-09 - version 4.4.14
+* Fix   - Additional updates for USPS prices per Jan 21 increase.
+
+2018-01-29 - version 4.4.13
+* Tweak - Renamed Medium and Large Flat Rate Boxes to match those on usps.com Postal Store.
+* Fix   - Additional updates for USPS prices per Jan 21 increase.
+
+2018-01-24 - version 4.4.12
+* Tweak - Add filter to be used by developers for boxpacking.
+* Fix   - Envelope rates returned even for boxes thicker than 1 inch.
+* Fix   - Update USPS prices per Jan 21 increase.
+
+2017-12-13 - version 4.4.11
+* Fix - Added missing validation check for domestic "Package" type. Previously, it skips entirely which might causing First-Class Package Service - Retail™ not displayed on the list of available rates.
+* Update - WC tested up to version.
+
 2017-09-20 - version 4.4.10
 * Add - WC minimum requirements to header.
 * Fix - Added new sub service First-Class Package Service - Retail™ so that it's displayed in service settings.

@@ -2,9 +2,15 @@
 
 class Affiliate_WP_WPEC extends Affiliate_WP_Base {
 
-	public function init() {
+	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'wpec';
 
-		$this->context = 'wpec';
+	public function init() {
 
 		add_action( 'wpsc_update_purchase_log_status', array( $this, 'add_pending_referral' ), 10, 4 );
 		add_action( 'wpsc_update_purchase_log_status', array( $this, 'mark_referral_complete' ), 10, 4 );
@@ -119,8 +125,16 @@ class Affiliate_WP_WPEC extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'WP_eCommerce' );
+	}
 }
 
-if ( class_exists( 'WP_eCommerce' ) ) {
 	new Affiliate_WP_WPEC;
-}

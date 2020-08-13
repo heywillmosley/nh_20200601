@@ -17,6 +17,8 @@ $disabled = disabled( (bool) $payout, true, false );
 		/**
 		 * Fires at the top of the edit-referral admin screen.
 		 *
+		 * @since 1.0
+		 *
 		 * @param \AffWP\Referral $referral The referral object.
 		 */
 		do_action( 'affwp_edit_referral_top', $referral );
@@ -168,6 +170,7 @@ $disabled = disabled( (bool) $payout, true, false );
 
 				<td>
 					<input type="text" name="date" id="date" value="<?php echo esc_attr( $referral->date_i18n( 'datetime' ) ); ?>" disabled="disabled" />
+					<p class="description"><?php _e( 'The date the referral was created.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
@@ -301,6 +304,8 @@ $disabled = disabled( (bool) $payout, true, false );
 		<?php
 		/**
 		 * Fires at the bottom of the edit-referral admin screen (inside the form element).
+		 *
+		 * @since 1.0
 		 *
 		 * @param \AffWP\Referral $referral The referral object.
 		 */

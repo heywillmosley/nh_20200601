@@ -11,30 +11,40 @@
  *
  * @since 2.2
  *
- * @see Affiliate_WP_DB
+ * @see Affiliate_WP_Meta_DB
  */
-class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
+class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_Meta_DB {
 
 	/**
-	 * Sets up the Customer Meta DB class.
+	 * Represents the meta table database version.
 	 *
-	 * @access public
-	 * @since  2.2
-	*/
-	public function __construct() {
+	 * @since 2.4
+	 * @var   string
+	 */
+	public $version = '1.0';
+
+	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'customer_meta';
+
+	/**
+	 * Sets the customer meta table name.
+	 *
+	 * @since 2.4
+	 */
+	public function set_table_name() {
 		global $wpdb;
 
-		if( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) {
-			// Allows a single customer meta table for the whole network
+		if ( defined( 'AFFILIATE_WP_NETWORK_WIDE' ) && AFFILIATE_WP_NETWORK_WIDE ) {
+			// Allows a single meta table for the whole network for a given meta type.
 			$this->table_name  = 'affiliate_wp_customermeta';
 		} else {
 			$this->table_name  = $wpdb->prefix . 'affiliate_wp_customermeta';
 		}
-		$this->primary_key = 'meta_id';
-		$this->version     = '1.0';
-
-		add_action( 'plugins_loaded', array( $this, 'register_table' ), 11 );
-		add_filter( 'get_affwp_customer_metadata', array( $this, 'sanitize_meta' ), 100, 4 );
 	}
 
 	/**
@@ -55,122 +65,14 @@ class Affiliate_WP_Customer_Meta_DB extends Affiliate_WP_DB {
 	}
 
 	/**
-	 * Registers the table with $wpdb so the metadata api can find it.
+	 * Retrieves the meta type.
 	 *
-	 * @access public
-	 * @since  2.2
+	 * @since 2.4
 	 *
-	 * @global wpdb $wpdb WordPress database abstraction object.
+	 * @return string Meta type.
 	 */
-	public function register_table() {
-		global $wpdb;
-		$wpdb->affwp_customermeta = $this->table_name;
-	}
-
-	/**
-	 * Retrieves an customer meta field for a customer.
-	 *
-	 * @access public
-	 * @since  2.2
-	 *
-	 * @param int    $customer_id Optional. customer ID. Default 0.
-	 * @param string $meta_key     Optional. The meta key to retrieve. Default empty.
-	 * @param bool   $single       Optional. Whether to return a single value. Default false.
-	 * @return mixed Will be an array if $single is false. Will be value of meta data field if $single is true.
-	 *
-	 */
-	function get_meta( $customer_id = 0, $meta_key = '', $single = false ) {
-		return get_metadata( 'affwp_customer', $customer_id, $meta_key, $single );
-	}
-
-	/**
-	 * Adds a meta data field to a customer.
-	 *
-	 * @access public
-	 * @since  2.2
-	 *
-	 * @param int    $customer_id Optional. customer ID. Default 0.
-	 * @param string $meta_key     Optional. Meta data key. Default empty.
-	 * @param mixed  $meta_value   Optional. Meta data value. Default empty
-	 * @param bool   $unique       Optional. Whether the same key should not be added. Default false.
-	 * @return bool False for failure. True for success.
-	 */
-	function add_meta( $customer_id = 0, $meta_key = '', $meta_value = '', $unique = false ) {
-		return add_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value, $unique );
-	}
-
-	/**
-	 * Updates an customer meta field based on customer ID.
-	 *
-	 * Use the $prev_value parameter to differentiate between meta fields with the
-	 * same key and customer ID.
-	 *
-	 * If the meta field for the customer does not exist, it will be added.
-	 *
-	 * @access public
-	 * @since  2.2
-	 *
-	 * @param int    $customer_id Optional. customer ID. Default 0.
-	 * @param string $meta_key     Optional. Meta data key. Default empty.
-	 * @param mixed  $meta_value   Optional. Meta data value. Default empty.
-	 * @param mixed  $prev_value   Optional. Previous value to check before removing. Default empty.
-	 * @return bool False on failure, true if success.
-	 */
-	function update_meta( $customer_id = 0, $meta_key = '', $meta_value = '', $prev_value = '' ) {
-		return update_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value, $prev_value );
-	}
-
-	/**
-	 * Removes metadata matching criteria from a customer.
-	 *
-	 * You can match based on the key, or key and value. Removing based on key and
-	 * value, will keep from removing duplicate metadata with the same key. It also
-	 * allows removing all metadata matching key, if needed.
-	 *
-	 * @access public
-	 * @since  2.2
-	 *
-	 * @param int    $customer_id Optional. customer ID. Default 0.
-	 * @param string $meta_key     Optional. Meta data key. Default empty.
-	 * @param mixed  $meta_value   Optional. Meta data value. Default empty.
-	 * @return bool False for failure. True for success.
-	 */
-	function delete_meta( $customer_id = 0, $meta_key = '', $meta_value = '' ) {
-		return delete_metadata( 'affwp_customer', $customer_id, $meta_key, $meta_value );
-	}
-
-	/**
-	 * Sanitizes serialized customer meta values when retrieved.
-	 *
-	 * @since 2.1.4.2
-	 *
-	 * @param null   $value        The value get_metadata() should return - a single metadata value,
-	 *                             or an array of values.
-	 * @param int    $customer_id customer ID.
-	 * @param string $meta_key     Meta key.
-	 * @param bool   $single       Whether to return only the first value of the specified $meta_key.
-	 */
-	public function sanitize_meta( $value, $customer_id, $meta_key, $single ) {
-
-		$meta_cache = wp_cache_get( $customer_id, 'affwp_customer_meta' );
-
-		if ( ! $meta_cache ) {
-			$meta_cache = update_meta_cache( 'affwp_customer', array( $customer_id ) );
-			$meta_cache = $meta_cache[ $customer_id ];
-		}
-
-		// Bail and let get_metadata() handle it if there's no cache.
-		if ( ! $meta_cache || ! isset( $meta_cache[ $meta_key ] ) ) {
-			return $value;
-		}
-
-		$value = $meta_cache[ $meta_key ];
-
-		foreach ( $value as $index => $_value ) {
-			$value[ $index ] = affwp_maybe_unserialize( $_value );
-		}
-
-		return $value;
+	public function get_meta_type() {
+		return 'affwp_customer';
 	}
 
 	/**

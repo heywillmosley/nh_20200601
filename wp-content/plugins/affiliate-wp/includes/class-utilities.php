@@ -95,6 +95,7 @@ class Affiliate_WP_Utilities {
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/utilities/class-data-storage.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/class-upgrades.php';
 		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/utilities/class-privacy-tools.php';
+		require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/utilities/processors/class-sql-fields-processor.php';
 	}
 
 	/**

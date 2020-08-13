@@ -21,6 +21,7 @@ include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-referrals-re
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-payouts-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-visits-reports-tab.php';
 include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-campaigns-reports-tab.php';
+include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/reports/tabs/class-sales-reports-tab.php';
 
 class Reports {
 
@@ -98,6 +99,8 @@ class Reports {
 			<?php
 			/**
 			 * Fires at the top of the admin reports page screen.
+			 *
+			 * @since 1.9
 			 */
 			do_action( 'affwp_reports_page_top' );
 			?>
@@ -114,6 +117,8 @@ class Reports {
 			<?php
 			/**
 			 * Fires in the middle of the admin reports page screen.
+			 *
+			 * @since 1.9
 			 */
 			do_action( 'affwp_reports_page_middle' );
 			?>
@@ -125,6 +130,8 @@ class Reports {
 				 * Fires inside the tab container element of the currently-active admin reports screen tab.
 				 *
 				 * The dynamic portion of the hook name, `$active_tab`, refers to the active reports tab.
+				 *
+				 * @since 1.9
 				 */
 				do_action( 'affwp_reports_tab_' . $active_tab );
 				?>
@@ -134,6 +141,8 @@ class Reports {
 			<?php
 			/**
 			 * Fires at the bottom of the admin reports page screen.
+			 *
+			 * @since 1.9
 			 */
 			do_action( 'affwp_reports_page_bottom' );
 			?>
@@ -176,6 +185,7 @@ class Reports {
 	public function register_core_tabs() {
 		new \AffWP\Referral\Admin\Reports\Tab;
 		new \AffWP\Affiliate\Admin\Reports\Tab;
+		new \AffWP\Referral\Sale\Admin\Reports\Tab;
 		new \AffWP\Affiliate\Payout\Admin\Reports\Tab;
 		new \AffWP\Visit\Admin\Reports\Tab;
 		new \AffWP\Campaign\Admin\Reports\Tab;

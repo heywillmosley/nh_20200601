@@ -6,9 +6,12 @@
  *
  * @package LearnDash
  */
-	
+
 if (!defined('WP_UNINSTALL_PLUGIN')) {
     die;
 }
 
-do_action( 'learndash_uninstall' );		
+/**
+ * Fires on plugin uninstall.
+ */
+do_action( 'learndash_uninstall' );

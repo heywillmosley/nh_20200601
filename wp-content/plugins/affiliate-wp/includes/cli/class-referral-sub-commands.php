@@ -32,6 +32,7 @@ class Sub_Commands extends Base {
 		'reference',
 		'description',
 		'status',
+		'type',
 		'date'
 	);
 
@@ -185,6 +186,9 @@ class Sub_Commands extends Base {
 	 * [--status=<status>]
 	 * : Referral status. Accepts 'unpaid', 'paid', 'pending', or 'rejected'.
 	 *
+	 * [--type=<type>]
+	 * : Referral type. Accepts 'sale', 'opt-in', or 'lead'.
+	 *
 	 * ## EXAMPLES
 	 *
 	 *     # Updates referral ID 120 with an amount of $1
@@ -197,6 +201,7 @@ class Sub_Commands extends Base {
 	 *     wp affwp referral update 50 --affiliate=woouser1
 	 *
 	 * @since 1.9
+	 * @since 2.5 Added explicit support for the 'type' field'
 	 * @access public
 	 *
 	 * @param array $args       Top-level arguments.
@@ -236,8 +241,9 @@ class Sub_Commands extends Base {
 		$data['reference']    = Utils\get_flag_value( $assoc_args, 'reference',    $referral->reference    );
 		$data['context']      = Utils\get_flag_value( $assoc_args, 'context',      $referral->context      );
 		$data['status']       = Utils\get_flag_value( $assoc_args, 'status',       $referral->status       );
+		$data['type']         = Utils\get_flag_value( $assoc_args, 'type',         $referral->type         );
 
-		$update = affiliate_wp()->referrals->update( $referral->referral_id, $data );
+		$update = affiliate_wp()->referrals->update_referral( $referral->referral_id, $data );
 
 		if ( $update ) {
 			\WP_CLI::success( __( 'The referral was updated successfully.', 'affiliate-wp' ) );
@@ -437,6 +443,31 @@ class Sub_Commands extends Base {
 		$item->date = mysql2date( 'M j, Y', $item->date, false );
 	}
 
+	/**
+	 * Handler for the 'status' field.
+	 *
+	 * Reformats the raw referral status to use its label.
+	 *
+	 * @since 2.5
+	 *
+	 * @param \AffWP\Referral $item Referral object (passed by reference).
+	 */
+	protected function status_field( &$item ) {
+		$item->status = affwp_get_referral_status_label( $item->status );
+	}
+
+	/**
+	 * Handler for the 'type' field.
+	 *
+	 * Reformats the raw referral type to use its label.
+	 *
+	 * @since 2.5
+	 *
+	 * @param \AffWP\Referral $item Referral object (passed by reference).
+	 */
+	protected function type_field( &$item ) {
+		$item->type = $item->type();
+	}
 }
 
 try {

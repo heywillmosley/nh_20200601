@@ -21,6 +21,14 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 	public $cache_group = 'creatives';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'creatives';
+
+	/**
 	 * Object type to query for.
 	 *
 	 * @since 1.9
@@ -271,6 +279,8 @@ class Affiliate_WP_Creatives_DB extends Affiliate_WP_DB {
 		if ( $add ) {
 			/**
 			 * Fires immediately after a creative has been added to the database.
+			 *
+			 * @since 1.2
 			 *
 			 * @param array $add The creative data being added.
 			 */

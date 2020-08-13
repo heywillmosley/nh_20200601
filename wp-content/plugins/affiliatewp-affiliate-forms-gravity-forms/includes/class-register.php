@@ -39,12 +39,11 @@ class Affiliate_WP_Gravity_forms_Register {
 			return;
 		}
 
-		$password         = affwp_afgf_get_field_value( $entry['id'], 'password' );
-		$username         = affwp_afgf_get_field_value( $entry['id'], 'username' );
-		$website          = affwp_afgf_get_field_value( $entry['id'], 'website' );
-		$payment_email    = affwp_afgf_get_field_value( $entry['id'], 'payment_email' );
-		$promotion_method = affwp_afgf_get_field_value( $entry['id'], 'promotion_method' );
-		$website_url      = affwp_afgf_get_field_value( $entry['id'], 'website' );
+		$password         = affwp_afgf_get_field_value( $entry, 'password' );
+		$username         = affwp_afgf_get_field_value( $entry, 'username' );
+		$payment_email    = affwp_afgf_get_field_value( $entry, 'payment_email' );
+		$promotion_method = affwp_afgf_get_field_value( $entry, 'promotion_method' );
+		$website_url      = affwp_afgf_get_field_value( $entry, 'website' );
 
 		if ( ! $username ) {
 			$username = $email;
@@ -169,30 +168,46 @@ class Affiliate_WP_Gravity_forms_Register {
 		// Get the form object.
 		$form = GFAPI::get_form( $registration_form_id );
 
+		// Set an initial flag as to whether the affiliate needs a password reset link.
+		$password_reset_needed = false;
+
 		if ( $form ) {
+			$password_field_id = '';
 			foreach( $form['fields'] as $field ) {
-				// Find the password field.
+				// Find the password field, if present.
 				if ( 'password' === $field->type ) {
-					// Store the field ID from the form
+					// Store the field ID from the form.
 					$password_field_id = $field['id'];
 					break;
 				}
 			}
 		}
 
-		// Return if there is no password field ID.
-		if ( ! $password_field_id ) {
-			return;
+		// A password field exists on the form.
+		if ( $password_field_id ) {
+			// Construct the key so we can get the value of password from $_POST.
+			$field_id = 'input_' . $password_field_id;
+
+			/*
+			 * If the password field is empty, the affiliate chose not to enter
+			 * a custom password. A password reset link is needed.
+			 */
+			if ( empty( $_POST[$field_id] ) ) {
+				$password_reset_needed = true;
+			}
+		} else {
+			// No password field exists on form, password reset link is needed.
+			$password_reset_needed = true;
 		}
 
-		// Construct the key so we can get the value of password from $_POST.
-		$field_id = 'input_' . $password_field_id;
+		$user_id      = affwp_get_affiliate_user_id( $affiliate_id );
+		$current_user = get_current_user_id();
 
-		// No password found, affiliate needs a password reset link.
-		$password_reset = empty( $_POST[$field_id] ) ? true : false;
-
-		// Add the affiliate meta if the affiliate needs a password reset link.
-		if ( $password_reset ) {
+		/*
+		 * Add the affiliate meta if the affiliate needs a password reset link,
+		 * but skip it if the affiliate user is already logged in.
+		 */
+		if ( true === $password_reset_needed && $user_id !== $current_user ) {
 			affwp_update_affiliate_meta( $affiliate_id, 'gravity_forms_password_reset', true );
 		}
 

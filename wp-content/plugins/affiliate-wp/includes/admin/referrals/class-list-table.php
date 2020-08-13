@@ -181,7 +181,9 @@ class AffWP_Referrals_Table extends List_Table {
 		/**
 		 * Filters the referrals list table columns.
 		 *
-		 * @param function               $prepared_columns Prepared columns.
+		 * @since 1.0
+		 *
+		 * @param array                  $prepared_columns Prepared columns.
 		 * @param array                  $columns          The columns for this list table.
 		 * @param \AffWP_Referrals_Table $this             List table instance.
 		 */
@@ -207,6 +209,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 		/**
 		 * Filters the referrals list table sortable columns.
+		 *
+		 * @since 1.0
 		 *
 		 * @param array                  $columns          The sortable columns for this list table.
 		 * @param \AffWP_Referrals_Table $this             List table instance.
@@ -239,6 +243,8 @@ class AffWP_Referrals_Table extends List_Table {
 				/**
 				 * Filters the referral description column data in the referrals list table.
 				 *
+				 * @since 1.0
+				 *
 				 * @param string $value       Data shown in the Description column.
 				 * @param array  $description The referral description.
 				 */
@@ -251,6 +257,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 				/**
 				 * Filters the referral type column data in the referrals list table.
+				 *
+				 * @since 1.0
 				 *
 				 * @param string $value Data shown in the type column.
 				 * @param array  $type  The referral type.
@@ -269,6 +277,8 @@ class AffWP_Referrals_Table extends List_Table {
 		 * This dynamic filter is appended with a suffix of the column name, for example:
 		 *
 		 *     `affwp_referral_table_description`
+		 *
+		 * @since 1.0
 		 *
 		 * @param string $value    Column data to show.
 		 * @param array  $referral Referral data.
@@ -313,6 +323,8 @@ class AffWP_Referrals_Table extends List_Table {
 		/**
 		 * The referral amount column data.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string          $value    Data shown in the Amount column.
 		 * @param \AffWP\Referral $referral The referral data.
 		 */
@@ -337,6 +349,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 		/**
 		 * Filters the referral status column data in the referrals list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string          $value    Data shown in the Status column.
 		 * @param \AffWP\Referral $referral The referral data.
@@ -370,6 +384,8 @@ class AffWP_Referrals_Table extends List_Table {
 		 * You'll also need to specify the wrapping html for this value (defaults to
 		 * an anchor to the referral admin screen for this referral).
 		 *
+		 * @since 1.0
+		 *
 		 * @param string          $value    Data shown in the Affiliate column.
 		 * @param \AffWP\Referral $referral The referral data.
 		 */
@@ -377,6 +393,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 		/**
 		 * Filters the referring affiliate column data in the referrals list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string          $value    Data shown in the Affiliate column.
 		 * @param \AffWP\Referral $referral The referral data.
@@ -401,6 +419,8 @@ class AffWP_Referrals_Table extends List_Table {
 		/**
 		 * Filters the referral reference column value in the referrals list table.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string          $reference Data shown in the Reference column.
 		 * @param \AffWP\Referral $referral  The current referral.
 		 */
@@ -408,6 +428,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 		/**
 		 * Filters the referral reference column data in the referrals list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string           $value    Data shown in the Reference column.
 		 * @param \AffWP\Referral  $referral The referral data.
@@ -599,6 +621,8 @@ class AffWP_Referrals_Table extends List_Table {
 		 * Fires at the top and bottom of the referral bulk-actions admin screen
 		 * (inside the form element).
 		 *
+		 * @since 1.0
+		 *
 		 * @param string $which Indicator for whether the bulk actions were rendered at the 'top'
 		 *                      or 'bottom' of the referrals list table.
 		 */
@@ -638,6 +662,8 @@ class AffWP_Referrals_Table extends List_Table {
 			<?php
 			/**
 			 * Fires in the admin referrals screen, inside the search filters form area, prior to the submit button.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_referral_filters' );
 
@@ -670,6 +696,8 @@ class AffWP_Referrals_Table extends List_Table {
 
 		/**
 		 * Filters the bulk actions array for the referrals list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param array $actions List of bulk actions.
 		 */
@@ -739,6 +767,8 @@ class AffWP_Referrals_Table extends List_Table {
 			 *
 			 * The dynamic portion of the hook name, `$this->current_action()` refers
 			 * to the current bulk action being performed.
+			 *
+			 * @since 1.0
 			 *
 			 * @param int $id The ID of the object.
 			 */

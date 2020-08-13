@@ -5,6 +5,14 @@ class Affiliate_WP_MarketPress extends Affiliate_WP_Base {
 	var $is_version_3 = true;
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'marketpress';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
@@ -12,7 +20,6 @@ class Affiliate_WP_MarketPress extends Affiliate_WP_Base {
 	*/
 	public function init() {
 
-		$this->context      = 'marketpress';
 		$this->is_version_3 = $this->get_mp_version() == '2.0' ? false : true;
 
 		if( $this->is_version_3 ){
@@ -223,8 +230,16 @@ class Affiliate_WP_MarketPress extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Marketpress' );
+	}
 }
 
-if ( class_exists( 'Marketpress' ) ) {
 	new Affiliate_WP_MarketPress;
-}

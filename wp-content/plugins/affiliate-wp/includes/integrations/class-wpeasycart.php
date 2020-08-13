@@ -3,14 +3,20 @@
 class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'wpeasycart';
+
+	/**
 	 * Setup actions and filters
 	 *
 	 * @access  public
 	 * @since   1.6
 	*/
 	public function init() {
-
-		$this->context = 'wpeasycart';
 
 		add_action( 'wpeasycart_order_inserted', array( $this, 'add_pending_referral' ), 10, 5 );
 
@@ -31,9 +37,12 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 
 		if( $this->was_referred() ) {
 
+      	// get affiliate ID
+      	$affiliate_id = $this->get_affiliate_id( $order_id );
+
 			$this->email = $user->email;
 
-			if( affwp_get_affiliate_email( $this->affiliate_id ) == $this->email ) {
+			if ( $this->email === affwp_get_affiliate_email( $affiliate_id ) ) {
 
 				$this->log( 'Referral not created because affiliate\'s own account was used.' );
 
@@ -49,7 +58,7 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 			$items         = $cart->cart;
 
 			// Calculate the referral amount based on product prices
-			if ( affwp_is_per_order_rate( $this->affiliate_id ) ) {
+			if ( affwp_is_per_order_rate( $affiliate_id ) ) {
 				$amount = $this->calculate_referral_amount();
 			} else {
 				$amount = 0.00;
@@ -101,7 +110,7 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 					$description,
 					$items,
 					array(
-							'affiliate_id' => $this->affiliate_id,
+							'affiliate_id' => $affiliate_id,
 					)
 			);
 		}
@@ -156,8 +165,17 @@ class Affiliate_WP_EasyCart extends Affiliate_WP_Base {
 		return $description;
 
 	}
+
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return function_exists( 'wpeasycart_load_startup' );
+	}
 }
 
-if ( function_exists( 'wpeasycart_load_startup' ) ) {
 	new Affiliate_WP_EasyCart;
-}

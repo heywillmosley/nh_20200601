@@ -118,11 +118,34 @@ class Import_Referrals extends Batch\Import\CSV implements Batch\With_PreFetch {
 			$data = array_slice( $data, $offset, $this->per_step, true );
 
 			foreach ( $data as $key => $row ) {
-				$args = $this->map_row( $row );
+				$args   = $this->map_row( $row );
+				$errors = new \WP_Error();
 
-				// Required fields.
-				if ( empty( $args['amount'] ) || empty( $args['affiliate'] ) ) {
-					continue;
+				// Amount is required.
+				if ( ! isset( $args['amount'] ) ) {
+					$errors->add(
+						'amount_not_set',
+						'Amount is not set.'
+					);
+				}
+
+				// Confirm the affiliate is set, and valid.
+				if ( ! isset( $args['affiliate'] ) || $args['affiliate'] < 1 ) {
+					$errors->add(
+						'affiliate_not_set',
+						'Affiliate is not set, or invalid.',
+						array( 'amount' => $args['affiliate'] )
+					);
+				}
+
+				// Validate the amount
+				$is_valid_amount = affwp_is_valid_amount( $args['amount'] );
+				if ( is_wp_error( $is_valid_amount ) ) {
+					$errors->add(
+						'amount_invalid_value',
+						'Amount is not a valid value. Value must be a number.',
+						array( 'amount' => $args['amount'], 'error' => $is_valid_amount )
+					);
 				}
 
 				// Match with an affiliate or create one.
@@ -134,8 +157,20 @@ class Import_Referrals extends Batch\Import\CSV implements Batch\With_PreFetch {
 					if ( $affiliate_id ) {
 						$args['affiliate_id'] = $affiliate_id;
 					} else {
-						continue;
+						$errors->add(
+							'affwp_importer_failed_to_create_affiliate',
+							'The affiliate could not be created'
+						);
 					}
+				}
+
+				$has_errors = method_exists( $errors, 'has_errors' ) ? $errors->has_errors() : ! empty( $errors->errors );
+				if ( $has_errors ) {
+					affiliate_wp()->utils->log(
+						'Record skipped because the validation failed.',
+						array( 'errors' => $errors, 'args' => $args )
+					);
+					continue;
 				}
 
 				unset( $args['affiliate'] );

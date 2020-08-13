@@ -113,7 +113,9 @@ class AffWP_Visits_Table extends List_Table {
 		/**
 		 * Filters the visits list table columns.
 		 *
-		 * @param function            $prepared_columns Prepared columns.
+		 * @since 1.0
+		 *
+		 * @param array              $prepared_columns Prepared columns.
 		 * @param array               $columns          The columns for this list table.
 		 * @param \AffWP_Visits_Table $this             List table instance.
 		 */
@@ -136,6 +138,8 @@ class AffWP_Visits_Table extends List_Table {
 
 		/**
 		 * Filters the visits list table sortable columns.
+		 *
+		 * @since 1.0
 		 *
 		 * @param array               $columns          The sortable columns for this list table.
 		 * @param \AffWP_Visits_Table $this             List table instance.
@@ -170,6 +174,8 @@ class AffWP_Visits_Table extends List_Table {
 		 *
 		 * The dynamic portion of the hook name, `$column_name`, refers to the column name.
 		 *
+		 * @since 1.0
+		 *
 		 * @param mixed        $value The name of the column
 		 * @param \AffWP\Visit $visit All the data of the visit.
 		 */
@@ -190,6 +196,8 @@ class AffWP_Visits_Table extends List_Table {
 
 		/**
 		 * Filters the affiliate column of the visits list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string       $value The value of the affiliate column in the visits list table.
 		 * @param \AffWP\Visit $visit The current visit object.
@@ -242,6 +250,8 @@ class AffWP_Visits_Table extends List_Table {
 		/**
 		 * Filters the referrer column of the visits list table.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string       $value The value of the referrer column in the visits list table.
 		 * @param \AffWP\Visit $visit Visit data.
 		 */
@@ -263,6 +273,8 @@ class AffWP_Visits_Table extends List_Table {
 
 		/**
 		 * Filters the converted column of the visits list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string       $value The value of the converted column in the visits list table.
 		 * @param \AffWP\Visit $visit The current visit object.

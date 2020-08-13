@@ -18,6 +18,8 @@ function affwp_do_actions() {
 		 * The dynamic portion of the hook name, `$action`, refers to the action passed via
 		 * the `affwp_action` parameter.
 		 *
+		 * @since 1.0
+		 *
 		 * @param array $_REQUEST Request data.
 		 */
 		do_action( "affwp_{$action}", $_REQUEST );
@@ -108,8 +110,22 @@ add_action( 'affwp_insert_affiliate', 'affwp_process_add_affiliate_website', 11,
  */
 function affwp_display_post_states( $post_states, $post ) {
 
-	if ( affwp_get_affiliate_area_page_id() === $post->ID ) {
-		$post_states['affwp_page_for_affiliate_area'] = __( 'Affiliate Area Page', 'affiliate-wp' );
+	if ( function_exists( 'get_current_screen' ) ) {
+		$screen = get_current_screen();
+
+		// Bail if the current screen is unavailable.
+		if ( null === $screen ) {
+			return $post_states;
+		}
+
+		// Bail if not on the Pages screen.
+		if ( 'edit-page' !== $screen->id ) {
+			return $post_states;
+		}
+
+		if ( affwp_get_affiliate_area_page_id() === $post->ID ) {
+			$post_states['affwp_page_for_affiliate_area'] = __( 'Affiliate Area Page', 'affiliate-wp' );
+		}
 	}
 
 	return $post_states;

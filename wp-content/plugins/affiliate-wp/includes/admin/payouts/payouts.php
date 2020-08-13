@@ -27,6 +27,12 @@ function affwp_payouts_admin() {
 
 	if ( 'view_payout' === $action ) {
 		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/payouts/view.php';
+	} elseif ( 'new_payout' === $action ) {
+		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/payouts/new.php';
+	} elseif ( 'preview_payout' === $action ) {
+		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/payouts/preview.php';
+	} elseif ( 'payout_submitted' === $action ) {
+		include AFFILIATEWP_PLUGIN_DIR . 'includes/admin/payouts/submitted.php';
 	} else {
 
 		$payouts_table = new AffWP_Payouts_Table();
@@ -39,6 +45,9 @@ function affwp_payouts_admin() {
 				echo affwp_admin_link( 'reports', _x( 'Reports', 'payouts', 'affiliate-wp' ), array( 'tab' => 'payouts' ), array( 'class' => 'page-title-action' ) );
 				echo affwp_admin_link( 'referrals', __( 'Manage Referrals', 'affiliate-wp' ), array(), array( 'class' => 'page-title-action' ) );
 				?>
+				<?php if ( current_user_can( 'manage_payouts' ) ) : ?>
+					<a href="<?php echo esc_url( affwp_admin_url( 'payouts', array( 'action' => 'new_payout' ) ) ); ?>" class="button-primary page-title-action"><?php _e( 'Pay Affiliates', 'affiliate-wp' ); ?></a>
+				<?php endif; // manage_payouts ?>
 			</h1>
 			<?php
 			/**

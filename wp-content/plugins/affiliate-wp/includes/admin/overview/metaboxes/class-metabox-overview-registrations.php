@@ -47,11 +47,11 @@ class Affiliate_Registrations extends Meta_Box implements Meta_Box\Base {
 			/**
 			 * Filter the get_affiliates() query.
 			 *
+			 * @since 1.9
+			 *
 			 * @param array The query arguments for get_affiliates().
 			 *              By default, this query shows the five
 			 *              most recent affiliate registrations.
-			 * @since 1.9
-			 *
 			 */
 			apply_filters( 'affwp_overview_latest_affiliate_registrations',
 				array(

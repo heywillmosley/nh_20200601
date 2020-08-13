@@ -36,6 +36,13 @@ class Affiliate_WP_Login {
 
 		affiliate_wp()->templates->get_template_part( 'login' );
 
+		/**
+		 * Filters the output for the AffiliateWP login form.
+		 *
+		 * @since 1.2
+		 *
+		 * @param string $output Output for the login form.
+		 */
 		return apply_filters( 'affwp_login_form', ob_get_clean() );
 	}
 
@@ -52,6 +59,8 @@ class Affiliate_WP_Login {
 
 		/**
 		 * Fires immediately prior to processing the affiliate login form.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_pre_process_login_form' );
 
@@ -101,6 +110,8 @@ class Affiliate_WP_Login {
 
 		/**
 		 * Fires immediately after processing an affiliate login form.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_process_login_form' );
 
@@ -114,6 +125,13 @@ class Affiliate_WP_Login {
 
 			$redirect = empty( $data['affwp_redirect'] ) ? affwp_get_affiliate_area_page_url() : $data['affwp_redirect'];
 
+			/**
+			 * Filters the redirect URL used after a successful login via the AffiliateWP login form.
+			 *
+			 * @since 1.0
+			 *
+			 * @param string $redirect Login redirect URL.
+			 */
 			$redirect = apply_filters( 'affwp_login_redirect', $redirect );
 
 			if ( $redirect ) {
@@ -188,6 +206,13 @@ class Affiliate_WP_Login {
 	 * @since 1.1
 	 */
 	function get_login_url() {
+		/**
+		 * Filters the AffiliateWP login URL.
+		 *
+		 * @since 1.1
+		 *
+		 * @param string $url Login URL.
+		 */
 	    return apply_filters( 'affwp_login_url', get_permalink( affiliate_wp()->settings->get( 'affiliates_page' ) ) );
 	}
 

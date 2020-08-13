@@ -31,11 +31,27 @@ if ( !class_exists( 'LearnDash_Import_Post' ) ) {
 					'post' 		=>	$post->ID,
 					'ld_nonce' 	=>	wp_create_nonce( $action .'_'. $post->ID .'_'. $post->post_type .'_'. get_current_user_id() )
 				);
-
+				
+				/**
+				 * Filters post duplicate URL paramaters.
+				 *
+				 * Used in `get_duplicate_link` function to get duplicate post link.
+				 *
+				 * @param array $url_params An array of URL parameters.
+				 */
 				$url_params = apply_filters( 'ld_sensei_url_params',  $url_params );
 			
 				if ( !empty( $url_params ) ) {
 					$url = add_query_arg( $url_params, admin_url( 'admin.php' ) );
+					/**
+					 * Filters duplicate URL link.
+					 *
+					 * Used in `get_duplicate_link` function to get duplicate post link.
+					 *
+					 * @param array  $url        Duplicate link for a post.
+					 * @param array  $url_params An array of URL parameters.
+					 * @param string $action     URL action.
+					 */
 					return apply_filters( 'ld_sensei_url_link', $url, $url_params, $post_id, $action );
 				}
 			}
@@ -66,6 +82,13 @@ if ( !class_exists( 'LearnDash_Import_Post' ) ) {
 						// As per wp_update_post() we need to escape the data from the db.
 						$dest_post = wp_slash( $dest_post );
 
+						/**
+						 * Filters duplicate post array arguments.
+						 *
+						 * Used in `duplicate_post` function to create duplicate post of any post.
+						 *
+						 * @param array $dest_post An array of duplicate post arguments.
+						 */
 						$dest_post = apply_filters( 'learndash_duplicate_post_array', $dest_post, $source_post );
 						$dest_post_id = wp_insert_post( $dest_post );
 
@@ -79,7 +102,16 @@ if ( !class_exists( 'LearnDash_Import_Post' ) ) {
 							if ( !empty( $dest_post_meta ) ) {
 								$dest_post_meta = wp_list_pluck( $dest_post_meta, 'value' );
 							}
-				
+							
+							/**
+							 * Filters duplicate post meta.
+							 *
+							 * Used in `duplicate_post` function to create duplicate post of any post.
+							 *
+							 * @param array   $dest_post_meta An array of post meta values.
+							 * @param WP_Post $source_post    The source post from which copy is created.
+							 * @param WP_Post $dest_post      The duplicate post created from source post.
+							 */
 							$dest_post_meta = apply_filters( 'learndash_sensei_import_meta', $dest_post_meta, $source_post, $dest_post );	
 							add_post_meta( $dest_post->ID, '_' . $dest_post->post_type, $dest_post_meta );
 				

@@ -171,4 +171,28 @@ class Affiliate_WP_Logging {
 
 		return $output;
 	}
+
+	/**
+	 * Retrieves the filesize of the log file.
+	 *
+	 * @since 2.5.4
+	 *
+	 * @param bool $formatted Whether to retrieve the formatted filesize. Default false.
+	 * @return int|string Filesize in bytes or 0 if it doesn't exist. If `$formatted` is true,
+	 *                    a formatted string.
+	 */
+	public function get_log_size( $formatted = false ) {
+		$filesize = 0;
+
+		if ( @file_exists( $this->file ) ) {
+			$filesize = filesize( $this->file );
+		}
+
+		if ( true === $formatted ) {
+			$filesize = size_format( $filesize, 2 );
+		}
+
+		return $filesize;
+	}
+
 }

@@ -3,17 +3,19 @@
 class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'gravityforms';
+
+	/**
 	 * Register hooks for this integration
 	 *
 	 * @access public
 	 */
 	public function init() {
-
-		if ( ! class_exists( 'GFFormsModel' ) || ! class_exists( 'GFCommon' ) ) {
-			return;
-		}
-
-		$this->context = 'gravityforms';
 
 		// Gravity Forms hooks
 		add_filter( 'gform_entry_created', array( $this, 'add_pending_referral' ), 10, 2 );
@@ -303,6 +305,32 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 	}
 
 	/**
+	 * Get all names from form.
+	 *
+	 * @since 2.4.2
+	 * @access public
+	 *
+	 * @param array $entry The Gravity Forms entry.
+	 * @param array $form  The Gravity Forms form.
+	 * @return array $names all names submitted via names fields.
+	 */
+	public function get_names( $entry, $form ) {
+
+		$names = array();
+
+		foreach ( $form['fields'] as $field ) {
+			if ( $field->type == 'name' || $field->inputType == 'name' ) {
+				$names[] = array(
+					'first_name' => rgar( $entry, $field->id . '.3' ),
+					'last_name'  => rgar( $entry, $field->id . '.6' ),
+				);
+			}
+		}
+
+		return $names;
+	}
+
+	/**
 	 * Register the form-specific settings
 	 *
 	 * @since  1.7
@@ -438,9 +466,13 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 			$entry  = GFFormsModel::get_lead( $entry_id );
 			$form   = GFAPI::get_form( $entry['form_id'] );
 			$emails = $this->get_emails( $entry, $form );
+			$names  = $this->get_names( $entry, $form );
 
 			$customer = array(
-				'email' => current( $emails )
+				'first_name' => isset( current( $names )['first_name'] ) ? current( $names )['first_name'] : '',
+				'last_name'  => isset( current( $names )['last_name'] ) ? current( $names )['last_name'] : '',
+				'email'      => current( $emails ),
+				'ip'         => affiliate_wp()->tracking->get_ip(),
 			);
 
 		}
@@ -448,8 +480,16 @@ class Affiliate_WP_Gravity_Forms extends Affiliate_WP_Base {
 		return $customer;
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'GFCommon' );
+	}
 }
 
-if ( class_exists( 'GFCommon' ) ) {
 	new Affiliate_WP_Gravity_Forms;
-}

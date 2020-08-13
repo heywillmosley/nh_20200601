@@ -3,6 +3,10 @@
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+if ( ! class_exists( 'Affiliate_WP_Migrate_Base' ) ) {
+	require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/class-migrate-base.php';
+}
+
 /**
  * User migration class that handles importing existing user accounts as affiliates
  *

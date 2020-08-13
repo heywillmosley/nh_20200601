@@ -46,6 +46,8 @@ function affwp_creatives_admin() {
 			<?php
 			/**
 			 * Fires at the top of the creatives admin screen.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_creatives_page_top' );
 			?>
@@ -61,6 +63,8 @@ function affwp_creatives_admin() {
 			<?php
 			/**
 			 * Fires at the bottom of the creatives admin screen.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_creatives_page_bottom' );
 			?>

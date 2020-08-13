@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 require_once( LEARNDASH_LMS_PLUGIN_DIR . 'includes/import/class-ld-import-post.php' );
 require_once( LEARNDASH_LMS_PLUGIN_DIR . 'includes/import/class-ld-import-course.php' );
 require_once( LEARNDASH_LMS_PLUGIN_DIR . 'includes/import/class-ld-import-lesson.php' );

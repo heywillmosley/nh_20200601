@@ -247,7 +247,7 @@ table.affiliates #unpaid {
 }
 
 #affwp-reports-widgets-wrap #dashboard-widgets {
-	overflow: auto;
+	overflow: visible;
 }
 
 #affwp-reports-widgets-wrap #dashboard-widgets .postbox-container {
@@ -280,7 +280,7 @@ table.affiliates #unpaid {
 }
 
 #affwp-reports-widgets-wrap h2.hndle {
-	margin-left: 25px;
+	padding: 8px 36px;
 	text-align: center;
 	font-weight: normal;
 	color: #999;
@@ -523,6 +523,95 @@ form .spinner {
 	font-size: 14px;
 	font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
 	font-weight: 400;
+}
+
+/**
+ * Reporting data tooltips
+ **/
+
+.affwp-tooltip {
+	cursor: help;
+	position: relative;
+	display: inline-block;
+	color: #404040;
+	margin-left: 5px;
+}
+
+.affwp-tooltip-content {
+	z-index: -1;
+	opacity: 0;
+	position: absolute;
+	font-weight: initial;
+	font-size: 12px;
+	top: -15px;
+	left: 6px;
+	padding: 5px;
+	transform: translate(-50%, -100%);
+	min-width: 200px;
+	background: #222;
+	color: #d8d8d8;
+	display: block;
+}
+
+.affwp-tooltip-content.active {
+	opacity: 1;
+	z-index: 100;
+}
+
+.affwp-tooltip-content:after {
+	content: "";
+	width: 0;
+	height: 0;
+	border-left: 6px solid transparent;
+	border-right: 6px solid transparent;
+	border-top: 10px solid #111;
+	display: block;
+	position: absolute;
+	left: calc(50% - 2px);
+	bottom: 0;
+	transform: translateY(100%)
+}
+
+
+/* Modify tooltip to display below ? mark */
+
+.affwp-tooltip-content.overflow-top {
+	top: 35px;
+	transform: translate(-50%, 0);
+}
+
+.affwp-tooltip-content.overflow-top:after {
+	border-bottom: 10px solid #111;
+	border-top: initial;
+	top: 0;
+	transform: translateY(-100%);
+	bottom: initial;
+}
+
+/* Modify tooltip to justify content to the left of the ? mark */
+
+.affwp-tooltip-content.overflow-right {
+	right: 0;
+	left: initial;
+	transform: translate(0, -100%);
+}
+
+.affwp-tooltip-content.overflow-right:after {
+	right: 3px;
+	left: initial;
+}
+
+/* Modify tooltip to justify content to both left and under the ? mark */
+
+.affwp-tooltip-content.overflow-right.overflow-top {
+	top: 30px;
+	transform: none;
+}
+
+#affwp-reports-widgets-wrap:after {
+	display: block;
+	content: '';
+	clear: both;
 }
 
 /* Media Queries */

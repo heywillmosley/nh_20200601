@@ -28,6 +28,7 @@
 	border: 1px solid #ccc;
 	padding: 5px;
 	width: 100%;
+	max-width: 100%;
 }
 
 .learndash-binary-selector .learndash-binary-selector-section .learndash-binary-selector-items > .learndash-binary-selector-item {

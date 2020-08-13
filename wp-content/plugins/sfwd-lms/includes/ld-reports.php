@@ -7,16 +7,20 @@
  * @package LearnDash\Reports
  */
 
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
- * Utility function to query Users
- * This function is basically a wrapper to the WP_User_Query functions provided by WP
+ * Gets the list of user data.
  *
- * @param  array 	$query_args override query arguments
- * @return mixed   	query results Depends on the 'fields' parameter.
- * 
- * @since 2.3
+ * This function is a wrapper to the `WP_User_Query` function provided by WordPress.
+ *
+ * @since 2.3.0
+ *
+ * @param array $query_args Optional. The `WP_User_query` arguments. Default empty array.
+ *
+ * @return array An array of user query results.
  */
 function learndash_get_users_query( $query_args = array() ) {
 	
@@ -25,6 +29,11 @@ function learndash_get_users_query( $query_args = array() ) {
 	);
 	
 	$query_args = wp_parse_args( $query_args, $default_args );
+	/**
+	 * Filters the query arguments for getting users.
+	 *
+	 * @param array $query_args An array of user query arguments.
+	 */
 	$query_args = apply_filters('learndash_get_users_query_args', $query_args);
 	if ( !empty( $query_args ) ) {
 		$user_query = new WP_User_Query( $query_args );
@@ -33,18 +42,19 @@ function learndash_get_users_query( $query_args = array() ) {
 }
 
 /**
- * Returns an array of user_id to report on. 
- * This function will determined the user the viewing user can see. For example if 
- * group leaser it will shwo only user within the leaders groups. If admin will 
- * show all users
+ * Gets the list of user IDs for the report.
  *
- * @param  int  	$user_id optional user_id to use as source. Default is current user id
- * @param  bool  	$include_admin_users flag to include administrator users in return. Default is false
- * @return array   	array of user_ids
- * 
- * @since 2.3
+ * This function will determine the list of users the current user can see. For example for
+ * group leader, it will show the only user within the leader's groups. For admin, it will
+ * show all users.
+ *
+ * @since 2.3.0
+ *
+ * @param int   $user_id    Optional. User ID. Defaults to the current user ID. Default 0.
+ * @param array $query_args Optional. User query arguments. Default empty array.
+ *
+ * @return array An array of user IDs.
  */
-
 function learndash_get_report_user_ids( $user_id = 0, $query_args = array() ) {
 	if ( empty( $user_id ) ) {
 		// If the current user is not able to be determined. Then abort. 
@@ -76,12 +86,33 @@ function learndash_get_report_user_ids( $user_id = 0, $query_args = array() ) {
 		$query_args['include'] = array( $user_id );
 	} 
 
+	/**
+	 * Filters the query arguments for getting users for the report.
+	 *
+	 * @param array $query_args Query arguments.
+	 */
 	$query_args = apply_filters('learndash_get_report_users_query_args', $query_args);
 	$report_user_ids = learndash_get_users_query( $query_args );
+	/**
+	 * Filters list of get report user ids.
+	 *
+	 * @param array|null $report_user_ids An array of report user ids.
+	 */
 	return apply_filters('learndash_get_report_user_ids', $report_user_ids);
 }
 
-
+/**
+ * Gets the list of user IDs for the report.
+ *
+ * This function will determine the list of users the current user can see. For example for
+ * group leader, it will show the only user within the leader's groups. For admin, it will
+ * show all users.
+ *
+ * @param int   $user_id    Optional. User ID. Defaults to the current user ID. Default 0.
+ * @param array $query_args Optional. User query arguments. Default empty array.
+ *
+ * @return array An array of user IDs.
+ */
 function learndash_get_report_user_ids_NEW_PP21( $user_id = 0, $query_args = array() ) {
 	if ( empty( $user_id ) ) {
 		// If the current user is not able to be determined. Then abort. 
@@ -119,8 +150,13 @@ function learndash_get_report_user_ids_NEW_PP21( $user_id = 0, $query_args = arr
 	}
 
 	if ( !empty( $query_args ) ) {
+		
+		/** This filter is documented in includes/ld-reports.php */
 		$query_args = apply_filters( 'learndash_get_report_users_query_args', $query_args );
+
 		$report_user_ids = learndash_get_users_query( $query_args );
+
+		/** This filter is documented in includes/ld-reports.php */
 		$report_user_ids = apply_filters('learndash_get_report_user_ids', $report_user_ids );
 	} else {
 		$report_user_ids = array();
@@ -147,13 +183,15 @@ function learndash_get_report_user_ids_NEW_PP21( $user_id = 0, $query_args = arr
 
 	
 /**
- * Get count of active / pubished Courses
+ * Gets the count of active/pubished courses.
  *
- * @param  array 	$courses_query_args override query arguments
- * @param  string 	$return_field specific field from WP_Query to return. Default is 'found_posts'
- * @return mixed   	$courses_return if $return_field is empty then return is WP_Query instance. Otherwise specific field from WP_Query returned
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @param array  $query_args  Optional. The query arguments to get the course count. Default empty array.
+ * @param string $return_field Optional. The `WP_Query` field to return. Default 'found_posts'.
+ *
+ * @return mixed  Returns the `WP_Query` object if the return_field is empty
+ *                otherwise the specified `WP_Query` return field.
  */
 function learndash_get_courses_count( $query_args = array(), $return_field = 'found_posts' ) {
 	$return = 0;
@@ -165,6 +203,12 @@ function learndash_get_courses_count( $query_args = array(), $return_field = 'fo
 	);
 	
 	$query_args = wp_parse_args( $query_args, $default_args );
+
+	/**
+	 * Filters courses count query arguments.
+	 *
+	 * @param array $query_args An array of course count query arguments.
+	 */
 	$query_args = apply_filters('learndash_courses_count_args', $query_args);
 
 	if ( $return_field == 'found_posts' ) {
@@ -188,13 +232,15 @@ function learndash_get_courses_count( $query_args = array(), $return_field = 'fo
 
 
 /**
- * Get count of pending Assignments posts ( sfwd-assignment )
+ * Gets the count of pending sfwd-assignment posts.
  *
- * @param  array 	$assigments_query_args override query arguments
- * @param  string 	$return_field specific field from WP_Query to return. Default is 'found_posts'
- * @return mixed   	$assignments_return if $return_field is empty then return is WP_Query instance. Otherwise specific field from WP_Query returned
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @param array  $query_args  Optional. The query arguments to get the pending assignments count. Default empty array.
+ * @param string $return_field Optional. The `WP_Query` field to return. Default 'found_posts'.
+ *
+ * @return mixed Returns the `WP_Query` object if the return_field is empty
+ *               otherwise the specified `WP_Query` return field.
  */
 function learndash_get_assignments_pending_count( $query_args = array(), $return_field = 'found_posts' ) {
 	$return = 0;
@@ -256,6 +302,11 @@ function learndash_get_assignments_pending_count( $query_args = array(), $return
 	}
 	
 	$query_args = wp_parse_args( $query_args, $default_args );
+	/**
+	 * Filters pending assignments count query arguments.
+	 *
+	 * @param array $query_args An array of pending assignment count query arguments.
+	 */
 	$query_args = apply_filters( 'learndash_get_assignments_pending_count_query_args', $query_args );
 
 	if ( $return_field == 'found_posts' ) {
@@ -277,12 +328,13 @@ function learndash_get_assignments_pending_count( $query_args = array(), $return
 }
 
 /**
- * Get link to admin Assignments posts ( sfwd-assignment ) listing
+ * Gets the link to admin assingments(sfwd-assignment) posts listing.
  *
- * @param  array 	$link_args to override or supplement query string
- * @return string   URL to assignment admin page with filters
- * 
- * @since 2.3
+ * @param array $link_args Optional. The query arguments to get the link. Default empty array.
+ *
+ * @since 2.3.0
+ *
+ * @return string The URL to assignment admin page with filters.
  */
 function learndash_admin_get_assignments_listing_link( $link_args = array() ) {
 
@@ -308,12 +360,11 @@ function learndash_admin_get_assignments_listing_link( $link_args = array() ) {
 }
 
 /**
- * Get link to admin pending Assignments posts ( sfwd-assignment ) listing
+ * Gets the link to admin pending assingments(sfwd-assignment) posts listing.
  *
- * @param  none
- * @return string   URL to assignment admin page with filters
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @return string  The URL to pending assignments admin page with filters.
  */
 function learndash_admin_get_assignments_pending_listing_link() {
 	return learndash_admin_get_assignments_listing_link( 'approval_status=0' );
@@ -321,13 +372,15 @@ function learndash_admin_get_assignments_pending_listing_link() {
 
 
 /**
- * Get count of pending Essays posts ( sfwd-essays )
+ * Gets the count of pending Essays(sfwd-essays) posts.
  *
- * @param  array 	$essays_query_args override query arguments
- * @param  string 	$return_field specific field from WP_Query to return. Default is 'found_posts'
- * @return mixed   	$assignments_return if $return_field is empty then return is WP_Query instance. Otherwise specific field from WP_Query returned
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @param array  $query_args  Optional. The query arguments to get the pending essays count. Default empty array.
+ * @param string $return_field Optional. The `WP_Query` field to return. Default 'found_posts'.
+ *
+ * @return mixed Returns the `WP_Query` object if the return_field is empty
+ *               otherwise the specified `WP_Query` return field.
  */
 function learndash_get_essays_pending_count( $query_args = array(), $return_field = 'found_posts' ) {
 	$return = 0;
@@ -382,6 +435,11 @@ function learndash_get_essays_pending_count( $query_args = array(), $return_fiel
 	}
 	
 	$query_args = wp_parse_args( $query_args, $default_args );
+	/**
+	 * Filters pending essays count query arguments.
+	 *
+	 * @param array $query_args An array of pending essays count query arguments.
+	 */
 	$query_args = apply_filters( 'learndash_get_essays_pending_count_query_args', $query_args );
 
 	if ( $return_field == 'found_posts' ) {
@@ -403,12 +461,13 @@ function learndash_get_essays_pending_count( $query_args = array(), $return_fiel
 }
 
 /**
- * Get link to admin Essays posts ( sfwd-essays ) listing
+ * Gets the link to admin Essays(sfwd-essays) posts listing.
  *
- * @param  array 	$link_args to override or supplement query string
- * @return string   URL to essays admin page with filters
- * 
- * @since 2.3
+ * @param array $link_args An array of arguments to override or supplement query string. Default empty array.
+ *
+ * @since 2.3.0
+ *
+ * @return string The URL to essays admin page with filters.
  */
 function learndash_admin_get_essays_listing_link( $link_args = array() ) {
 
@@ -433,12 +492,11 @@ function learndash_admin_get_essays_listing_link( $link_args = array() ) {
 }
 
 /**
- * Get link to admin pending Essays posts ( sfwd-essays ) listing
+ * Gets the link to admin pending Essays(sfwd-essays) posts listing.
  *
- * @param  none
- * @return string   URL to essays admin page with filters
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @return string The URL to essays admin page with filters.
  */
 function learndash_admin_get_essays_pending_listing_link() {
 	return learndash_admin_get_essays_listing_link( 'post_status=not_graded' );
@@ -446,15 +504,15 @@ function learndash_admin_get_essays_pending_listing_link() {
 
 
 /**
- * Get the count of users in the system. 
+ * Gets the count of users in the system.
  *
- * This will automatically exclude the count of 'administrator' role
+ * This will automatically exclude the count of the 'administrator' role.
  *
- * @param  array $user_query_args Refer to WP_User_Quert query args for details
+ * @since 2.3.0
  *
- * @return int count of users (default).
- * 
- * @since 2.3
+ * @param array $user_query_args Optional. The `WP_User_Query` query arguments. Default empty array.
+ *
+ * @return int The count of users excluding admins.
  */
 function learndash_students_enrolled_count( $user_query_args = array() ) {
 	
@@ -465,7 +523,14 @@ function learndash_students_enrolled_count( $user_query_args = array() ) {
 		'count_total'	=>	true,
 		'fields'		=>	'ID'
 	);
+
+	/**
+	 * Filters students enrolled count query arguments.
+	 *
+	 * @param array $query_args An array of students enrolled count query arguments.
+	 */
 	$user_query_args = apply_filters('learndash_students_enrolled_count_qrgs', wp_parse_args( $user_query_args, $default_args ) );
+
 	if ( !empty( $user_query_args ) ) {
 		$user_query = new WP_User_Query( $user_query_args );
 
@@ -474,6 +539,15 @@ function learndash_students_enrolled_count( $user_query_args = array() ) {
 	return $return_total_users;
 }
 
+/**
+ * Gets the list or count of group users for a group leader.
+ *
+ * @param int     $user_id     Optional. Group leader user ID. Defaults to the current user ID. Default 0.
+ * @param boolean $by_group    Optional. Whether to get user IDs or count sorted by group. Default false.
+ * @param boolean $totals_only Optional. Whether to get the only count of users. Default false.
+ *
+ * @return int|array An array of user IDs or user count.
+ */
 function learndash_get_group_leader_groups_users( $user_id = 0, $by_group = false, $totals_only = false ) {
 	
 	if ($by_group == false) {
@@ -534,6 +608,15 @@ function learndash_get_group_leader_groups_users( $user_id = 0, $by_group = fals
 	
 }
 
+/**
+ * Gets the list or count of group courses for a group leader.
+ *
+ * @param int     $group_leader_user_id Optional. Group leader user ID. Defaults to the current user ID. Default 0.
+ * @param boolean $by_group             Optional. Whether to get user IDs or count sorted by group. Default false.
+ * @param boolean $totals_only          Optional. Whether to get the only count of courses. Default false.
+ *
+ * @return int|array An array of user IDs or user count.
+ */
 function learndash_get_group_leader_groups_courses( $group_leader_user_id = 0, $by_group = false, $totals_only = false ) {
 				
 	if ($by_group == false) {
@@ -592,16 +675,19 @@ function learndash_get_group_leader_groups_courses( $group_leader_user_id = 0, $
 
 
 /**
- * Activity Query main function
+ * Queries the user activity for the report.
  *
- * This function will query the new learndash_course_user_activity table for user / Course Activity
+ * This function will query the new learndash_course_user_activity table for user/course Activity.
  *
- * @param  array $query_args usd to override default query args
- * @param  int $current_user_id The user to run the query as. Will user current user id if not provided.
+ * @global wpdb  $wpdb                 WordPress database abstraction object.
+ * @global array $learndash_post_types An array of learndash post types.
  *
- * @return array Returns query reqults. 
- * 
- * @since 2.3
+ * @since 2.3.0
+ *
+ * @param array $query_args      Optional. The query arguments to get user activity. Default empty array.
+ * @param int   $current_user_id Optional. The user to run the query as. Defaults to the current user. Default 0.
+ *
+ * @return array Returns user activity query results.
  */
 function learndash_reports_get_activity( $query_args = array(), $current_user_id = 0 ) {
 	global $wpdb, $learndash_post_types;
@@ -660,6 +746,7 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 		
 		// date values returned from the query will be a gmt timestamp int. If the 'date_format' value is provided
 		// a new field will be include 'activity_date_time_formatted' using the format specifyers provided in this field. 
+		/** This filter is documented in includes/ld-misc-functions.php */
 		'date_format'					=>	apply_filters('learndash_date_time_formats', get_option('date_format') .' '. get_option('time_format') ),
 		
 		'include_meta'					=>	true,
@@ -867,6 +954,12 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 	}
 	
 	if ( ( $query_args['suppress_filters_all'] != true ) && ( $query_args['suppress_filters_query_args'] != true ) ) {
+
+		/**
+		 * Filters query arguments for getting user activity.
+		 *
+		 * @param array $query_args An array query arguments for getting user activity.
+		 */
 		$query_args = apply_filters('learndash_get_activity_query_args', $query_args);
 	}
 	
@@ -899,7 +992,7 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 	  && ( ( !empty( $query_args['post_ids'] ) ) || ( !empty( $query_args['user_ids'] ) ) ) ) {
 
 		$sql_str_joins 	= " INNER JOIN ". $wpdb->posts ." as posts ";
-		$sql_str_joins  .= " LEFT JOIN ". $wpdb->prefix ."learndash_user_activity as ld_user_activity ON users.ID=ld_user_activity.user_id AND posts.ID=ld_user_activity.post_id ";	
+		$sql_str_joins  .= " LEFT JOIN " . LDLMS_DB::get_table_name( 'user_activity' ) . " as ld_user_activity ON users.ID=ld_user_activity.user_id AND posts.ID=ld_user_activity.post_id ";	
 		
 //		if ( $ACTIVITY_STATUS_HAS_NULL === true ) {
 //			// AND ( ld_user_activity.activity_status IN (0,1)  OR ld_user_activity.activity_status IS NULL )  
@@ -916,13 +1009,10 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 //		}
 		
 	} else {
-		$sql_str_joins  = " LEFT JOIN ". $wpdb->prefix ."learndash_user_activity as ld_user_activity ON users.ID=ld_user_activity.user_id ";	
+		$sql_str_joins  = " LEFT JOIN " . LDLMS_DB::get_table_name( 'user_activity' ) . " as ld_user_activity ON users.ID=ld_user_activity.user_id ";	
 		$sql_str_joins  .= " LEFT JOIN ". $wpdb->posts ." as posts ON posts.ID=ld_user_activity.post_id ";	
 	}
-	
-//	$sql_str_joins  .= " LEFT JOIN ". $wpdb->prefix ."learndash_user_activity_meta as ld_user_activity_meta_steps_total ON ld_user_activity_meta_steps_total.activity_id=ld_user_activity.activity_id AND ld_user_activity_meta_steps_total.activity_meta_key='steps_total' \r\n";
-//	$sql_str_joins  .= " LEFT JOIN ". $wpdb->prefix ."learndash_user_activity_meta as ld_user_activity_meta_steps_completed ON ld_user_activity_meta_steps_completed.activity_id=ld_user_activity.activity_id AND ld_user_activity_meta_steps_completed.activity_meta_key='steps_completed' \r\n";
-		
+			
 	$sql_str_where  = " WHERE 1=1 ";
 	
 	if ( !empty( $query_args['user_ids'] ) ) {
@@ -999,11 +1089,53 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 	}
 	
 	if ( ( $query_args['suppress_filters_all'] != true ) && ( $query_args['suppress_filters_query_str'] != true ) ) {
+
+		/**
+		 * Filters user activity query fields.
+		 *
+		 * @param string $sql_query_fields User activity query fields with valid sql syntax.
+		 * @param array  $query_args      An array of user query arguments.
+		 */
 		$sql_str_fields = apply_filters( 'learndash_user_activity_query_fields', $sql_str_fields, $query_args );
+
+		/**
+		 * Filters tables and joins to be used for user activity query. The `from` part of the query with valid SQL syntax.
+		 *
+		 * @param string $sql_query_from The `from` part of the SQL query with valid SQL syntax.
+		 * @param array  $query_args     An array of user query arguments.
+		 */
 		$sql_str_tables = apply_filters( 'learndash_user_activity_query_tables', $sql_str_tables, $query_args );
-		$sql_str_joins 	= apply_filters( 'learndash_user_activity_query_tables', $sql_str_joins, $query_args );
+		
+		/**
+		 * Filters the joins for the user activity query.
+		 *
+		 * @param string $sql_query_where The `where` part of the SQL query with valid SQL syntax.
+		 * @param array  $query_args      An array of user query arguments.
+		 */
+		$sql_str_joins 	= apply_filters( 'learndash_user_activity_query_joins', $sql_str_joins, $query_args );
+		
+		/**
+		 * Filters the where condition of the user activity query.
+		 *
+		 * @param string $sql_query_where The `where` part of the SQL query with valid SQL syntax.
+		 * @param array  $query_args      An array of user query arguments.
+		 */
 		$sql_str_where 	= apply_filters( 'learndash_user_activity_query_where', $sql_str_where, $query_args );
+		
+		/**
+		 * Filters the order by part of the user activity query.
+		 *
+		 * @param string $sql_query_where The `ORDER BY` part of the SQL query with valid SQL syntax.
+		 * @param array  $query_args      An array of user query arguments.
+		 */
 		$sql_str_order 	= apply_filters( 'learndash_user_activity_query_order', $sql_str_order, $query_args );
+		
+		/**
+		 * Filters the limit part of the user activity query.
+		 *
+		 * @param string $sql_query_where The `limit` part of the SQL query with valid SQL syntax.
+		 * @param array  $query_args      An array of user query arguments.
+		 */
 		$sql_str_limit 	= apply_filters( 'learndash_user_activity_query_limit', $sql_str_limit, $query_args );
 	}
 	
@@ -1011,6 +1143,12 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 	//error_log('sql_str['. $sql_str .']');
 	
 	if ( $query_args['suppress_filters_query_str'] != true ) {
+		/**
+		 * Filters the user activity SQL query string.
+		 *
+		 * @param string $sql_str User activity SQL query string.
+		 * @param array $query_args An array of user query arguments.
+		 */
 		$sql_str = apply_filters( 'learndash_user_activity_query_str', $sql_str, $query_args );
 	}
 	
@@ -1065,10 +1203,11 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 		if ( ( !is_wp_error( $activity_query_count ) ) && ( property_exists($activity_query_count, 'count') ) ) {
 	
 			$activity_results['pager'] = array();
-			$activity_results['pager']['total_items'] 	= intval( $activity_query_count->count );
-			$activity_results['pager']['per_page']		= intval($query_args['per_page']);
+			$activity_results['pager']['total_items'] 	= absint( $activity_query_count->count );
+			$activity_results['pager']['per_page']		= absint($query_args['per_page']);
 			if ( $activity_results['pager']['total_items'] > 0 ) {
 				$activity_results['pager']['total_pages'] = ceil( intval( $activity_results['pager']['total_items'] ) / intval( $activity_results['pager']['per_page'] ) );
+				$activity_results['pager']['total_pages'] = absint( $activity_results['pager']['total_pages'] );
 			} else {
 				$activity_results['pager']['total_pages'] = 0;
 			}
@@ -1084,17 +1223,16 @@ function learndash_reports_get_activity( $query_args = array(), $current_user_id
 
 
 /**
- * Primary function to report on the users progress for a given course ID
+ * Gets the user's course progress for the report.
  *
- * @param  int $course_id This is a single course to report user progress on. 
- * @param  array $user_query_args used when determining users to report on. Support normal WP_User_Query parameters. 
- * @param  array $activity_query_args passed to the learndash_reports_get_activity() function to perform the activity query.
+ * @since 2.3.0
  *
- * @return array Returns $course_progress reqults. 
- * 
- * @since 2.3
+ * @param int   $course_id           Optional. The ID of the course to get user progress. Default 0.
+ * @param array $user_query_args     Optional. The ID of the user to get progress. Default empty array.
+ * @param array $activity_query_args Optional. The query arguments to get the user activity. Default empty array.
+ *
+ * @return array Returns user course progress results.
  */
-
 function learndash_report_course_users_progress( $course_id = 0, $user_query_args = array(), $activity_query_args = array() ) {
 	$course_user_progress_data = array();
 	
@@ -1165,13 +1303,13 @@ function learndash_report_course_users_progress( $course_id = 0, $user_query_arg
 					}
 
 					if ( ( !empty( $row['steps_total'] ) ) && ( !empty( $row['steps_completed'] ) ) && ( $row['steps_completed'] >= $row['steps_total'] )) {
-						$row['course_completed'] = _x('YES', 'Course Complete Report label: YES', 'learndash');
+						$row['course_completed'] = esc_html_x('YES', 'Course Complete Report label: YES', 'learndash');
 			
 						if ( property_exists( $result, 'activity_completed_formatted' ) ) {
 							$row['course_completed_on'] = $result->activity_completed_formatted;
 						}
 					} else {
-						$row['course_completed'] = _x('NO', 'Course Complete Report label: NO', 'learndash');
+						$row['course_completed'] = esc_html_x('NO', 'Course Complete Report label: NO', 'learndash');
 					} 
 
 					if ( !empty($row ) ) {
@@ -1187,15 +1325,14 @@ function learndash_report_course_users_progress( $course_id = 0, $user_query_arg
 }
 
 /**
- * Clear report actvity by user id and type
- * 
- * @since 2.5
- * 
- * @param  int $user_id (required)
- * @param  array $activity_types (optional) Controls the 'type' or activity. Any combination of the following: 'access', 'course', 'lesson', 'topic', 'quiz'
- * @return none
+ * Clears user actvity by user id and activity type for the report.
+ *
+ * @since 2.5.0
+ *
+ * @param int   $user_id        Optional. The ID of the user to delete activity. Default 0.
+ * @param array $activity_types Optional. The type of the activity to delete. Any combination of the
+ *                              following: 'access', 'course', 'lesson', 'topic', 'quiz'. Default empty.
  */
-
 function learndash_report_clear_user_activity_by_types( $user_id = 0, $activity_types = '' ) {
 	$activity_ids = learndash_report_get_activity_by_user_id( $user_id, $activity_types);	
 	if ( !empty( $activity_ids ) ) {
@@ -1204,15 +1341,14 @@ function learndash_report_clear_user_activity_by_types( $user_id = 0, $activity_
 }		
 
 /**
- * Clear report actvity by post id and type
- * 
- * @since 2.5
- * 
- * @param  int $post_id (required)
- * @param  array $activity_types (optional) Controls the 'type' or activity. Any combination of the following: 'access', 'course', 'lesson', 'topic', 'quiz'
- * @return none
+ * Clears post actvity by post id and activity type for the report.
+ *
+ * @since 2.5.0
+ *
+ * @param int   $post_id        Optional. The ID of the post to delete activity. Default 0.
+ * @param array $activity_types Optional. The type of the activity to delete. Any combination of the
+ *                              following: 'access', 'course', 'lesson', 'topic', 'quiz'. Default empty.
  */
-
 function learndash_report_clear_post_activity_by_types( $post_id = 0, $activity_types = '' ) {
 	$activity_ids = learndash_report_get_activity_by_post_id( $post_id, $activity_types);	
 	if ( !empty( $activity_ids ) ) {
@@ -1221,24 +1357,23 @@ function learndash_report_clear_post_activity_by_types( $post_id = 0, $activity_
 }		
 
 /**
- * Delete report activity rows by activity_id
- * 
- * @since 2.5
- * 
- * @param  array $activity_ids (required) array of activity_ids to delete
- * @return none
+ * Deletes the activity rows by activity ID for the report.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.5.0
+ *
+ * @param array $activity_ids Optional. An array of activity IDs. Default empty.
  */
-
 function learndash_report_clear_by_activity_ids( $activity_ids = array() ) {
 	global $wpdb;
 
 	if ( !empty( $activity_ids ) ) {
-		$sql_str = "DELETE FROM ". $wpdb->prefix ."learndash_user_activity_meta WHERE activity_id IN (". implode(',', $activity_ids) .") ";
-		//error_log('sql_str['. $sql_str .']');
+		$activity_ids = array_map( 'absint', $activity_ids );
+		$sql_str = "DELETE FROM " . LDLMS_DB::get_table_name( 'user_activity_meta' ) . " WHERE activity_id IN (". implode(',', $activity_ids) .") ";
 		$wpdb->query( $sql_str );
 		
-		$sql_str = "DELETE FROM ". $wpdb->prefix ."learndash_user_activity WHERE activity_id IN (". implode(',', $activity_ids) .") ";
-		//error_log('sql_str['. $sql_str .']');
+		$sql_str = "DELETE FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " WHERE activity_id IN (". implode(',', $activity_ids) .") ";
 		$wpdb->query( $sql_str );
 	}
 }
@@ -1246,21 +1381,24 @@ function learndash_report_clear_by_activity_ids( $activity_ids = array() ) {
 
 
 /**
- * Compares user_id field from report activity DB table to WP users rows. Entries NOT found in report activity will be removed. 
- * 
- * @since 2.5
- * 
- * @param  none
- * @return none
+ * Removes the mismatched user activities.
+ *
+ * Compares user_id field from report activity DB table to WP users rows.
+ * Entries not found in report activity will be removed.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.5.0
  */
 function learndash_activity_clear_mismatched_users() {
 	global $wpdb;
 	
-	$sql_str = "SELECT DISTINCT ". $wpdb->prefix ."learndash_user_activity.user_id 
-	FROM ". $wpdb->prefix ."learndash_user_activity 
-	LEFT JOIN ". $wpdb->users ." ON ". $wpdb->prefix ."learndash_user_activity.user_id=". $wpdb->users .".ID
-	WHERE ". $wpdb->users .".ID is NULL";
-	//error_log('sql_str['. $sql_str .']');
+	$sql_str = "SELECT DISTINCT lua.user_id 
+	FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " as lua
+	LEFT JOIN {$wpdb->usermeta} as um1 ON lua.user_id = um1.user_id AND um1.meta_key = '{$wpdb->prefix}capabilities'
+	LEFT JOIN {$wpdb->users} as users ON lua.user_id = users.ID
+	WHERE 1=1
+	AND ( um1.meta_key IS NULL OR users.ID is NULL )";
 	
 	$process_users = $wpdb->get_col( $sql_str );
 	if ( !empty( $process_users ) ) {
@@ -1271,19 +1409,20 @@ function learndash_activity_clear_mismatched_users() {
 }
 
 /**
- * Compares post_id field from report activity DB table to WP posts rows. Entries NOT found in report activity will be removed. 
- * 
- * @since 2.5
- * 
- * @param  none
- * @return none
+ * Removes the mismatched post activities.
+ *
+ * Compares post_id field from report activity DB table to WP posts rows.
+ * Entries not found in report activity will be removed.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.5.0
  */
 function learndash_activity_clear_mismatched_posts() {
 	global $wpdb;
 	
-	$sql_str = "SELECT DISTINCT ". $wpdb->prefix ."learndash_user_activity.post_id 
-	FROM ". $wpdb->prefix ."learndash_user_activity 
-	LEFT JOIN ". $wpdb->posts ." ON ". $wpdb->prefix ."learndash_user_activity.post_id=". $wpdb->posts .".ID
+	$sql_str = "SELECT DISTINCT " . LDLMS_DB::get_table_name( 'user_activity' ) . ".post_id 
+	FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " LEFT JOIN ". $wpdb->posts . " ON " . LDLMS_DB::get_table_name( 'user_activity' ) . ".post_id=" . $wpdb->posts .".ID
 	WHERE ". $wpdb->posts .".ID is NULL";
 	//error_log('sql_str['. $sql_str .']');
 	
@@ -1296,20 +1435,24 @@ function learndash_activity_clear_mismatched_posts() {
 }
 
 /**
- * Get a report actvity by user id
- * 
- * @since 2.5
- * 
- * @param  int $user_id (required)
- * @param  array $activity_types (required) Controls the 'type' or activity. Any combination of the following: 'access', 'course', 'lesson', 'topic', 'quiz'
- * @return array returns 'activity_id' of rows found
+ * Gets the list of activities by user ID for the report.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.5.0
+ *
+ * @param int          $user_id        Optional. The ID of the user to get activites. Default 0.
+ * @param array|string $activity_types Optional. The type of the activity to delete. Any combination of the
+ *                                     following: 'access', 'course', 'lesson', 'topic', 'quiz'. Default empty.
+ *
+ * @return array|void Returns an array of activity IDs.
  */
 function learndash_report_get_activity_by_user_id( $user_id = 0, $activity_types = '' ) {
 	global $wpdb;
 	
 	if ( empty( $user_id ) ) return;
 
-	$sql_str = "SELECT activity_id FROM ". $wpdb->prefix ."learndash_user_activity WHERE user_id=". intval( $user_id );
+	$sql_str = "SELECT activity_id FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " WHERE user_id=". intval( $user_id );
 
 	if ( !empty( $activity_types ) ) {
 		if ( !is_array( $activity_types ) ) {
@@ -1326,20 +1469,24 @@ function learndash_report_get_activity_by_user_id( $user_id = 0, $activity_types
 }
 
 /**
- * Get a report actvity by post id
- * 
- * @since 2.5
- * 
- * @param  int $post_id (required)
- * @param  array $activity_types (required) Controls the 'type' or activity. Any combination of the following: 'access', 'course', 'lesson', 'topic', 'quiz'
- * @return array returns 'activity_id' of rows found
+ * Gets the list of activities by post id for the report.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.5.0
+ *
+ * @param int           $post_id        Optional. The ID of the post to get activites. Default 0.
+ * @param array|strings $activity_types Optional. The type of the activity to delete. Any combination of the
+ *                                      following: 'access', 'course', 'lesson', 'topic', 'quiz'. Default empty.
+ *
+ * @return array|void Returns an array of activity IDs.
  */
 function learndash_report_get_activity_by_post_id( $post_id = 0, $activity_types = '' ) {
 	global $wpdb;
 	
 	if ( empty( $post_id ) ) return;
 
-	$sql_str = "SELECT activity_id FROM ". $wpdb->prefix ."learndash_user_activity WHERE post_id=". intval( $post_id );
+	$sql_str = "SELECT activity_id FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " WHERE post_id=". intval( $post_id );
 
 	if ( !empty( $activity_types ) ) {
 		if ( !is_array( $activity_types ) ) {
@@ -1355,14 +1502,15 @@ function learndash_report_get_activity_by_post_id( $post_id = 0, $activity_types
 
 
 /**
- * Get a report by user for all Course they have access to. 
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  array $course_query_args  passed to the function learndash_user_get_enrolled_courses and used to control what courses are reported for user.
- * @param  array $activity_query_args passed to learndash_reports_get_activity to query activity table
- * @return array If course query and activirty query were successfule this should be a multi-dimensional array showing 'results', 'pager', 'query_args', 'query_str'
+ * Gets the users course progress for the report.
+ *
+ * @since 2.3.0
+ *
+ * @param int   $user_id             Optional. User ID to get course list. Default 0.
+ * @param array $course_query_args   Optional. The query arguments to get the list of user enrolled courses. Default empty array.
+ * @param array $activity_query_args Optional. The query arguments to get the the user activities. Default empty array.
+ *
+ * @return array If course query and activity query is successfull this should be a multi-dimensional array showing 'results', 'pager', 'query_args', 'query_str'
  */
 function learndash_report_user_courses_progress( $user_id = 0, $course_query_args = array(), $activity_query_args = array() ) {
 	$user_courses_progress_data = array();
@@ -1430,13 +1578,13 @@ function learndash_report_user_courses_progress( $user_id = 0, $course_query_arg
 				}
 
 				if ( ( !empty( $row['steps_total'] ) ) && ( !empty( $row['steps_completed'] ) ) && ( $row['steps_completed'] >= $row['steps_total'] )) {
-					$row['course_completed'] = _x('YES', 'Course Complete Report label: YES', 'learndash');
+					$row['course_completed'] = esc_html_x('YES', 'Course Complete Report label: YES', 'learndash');
 		
 					if ( property_exists( $result, 'activity_completed_formatted' ) ) {
 						$row['course_completed_on'] = $result->activity_completed_formatted;
 					}
 				} else {
-					$row['course_completed'] = _x('NO', 'Course Complete Report label: NO', 'learndash');
+					$row['course_completed'] = esc_html_x('NO', 'Course Complete Report label: NO', 'learndash');
 				} 
 
 				if ( !empty($row ) ) {
@@ -1452,32 +1600,36 @@ function learndash_report_user_courses_progress( $user_id = 0, $course_query_arg
 }
 
 /**
- * Get a user quiz attempts
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  int $quiz_id
- * @return array of activity_id and timestamps or quizzes found
+ * Gets the user quiz attempts activity.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.3.0
+ *
+ * @param int $user_id Optional. The ID of the user to get quiz attempts. Default 0.
+ * @param int $quiz_id Optional. The ID of the quiz to get attempts. Default 0.
+ *
+ * @return array|void An array of quiz attempt activity IDs.
  */
 function learndash_get_user_quiz_attempts( $user_id = 0, $quiz_id = 0) {
 	global $wpdb;
 	
 	if ( ( !empty( $user_id ) ) || ( !empty( $quiz_id ) ) ) {
-		$sql_str = $wpdb->prepare( "SELECT activity_id, activity_started, activity_completed FROM ". $wpdb->prefix .'learndash_user_activity WHERE user_id=%d AND post_id=%d and activity_type=%s ORDER BY activity_id, activity_started ASC', $user_id, $quiz_id, 'quiz' );
+		$sql_str = $wpdb->prepare( "SELECT activity_id, activity_started, activity_completed FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " WHERE user_id=%d AND post_id=%d and activity_type=%s ORDER BY activity_id, activity_started ASC", $user_id, $quiz_id, 'quiz' );
 		//error_log('sql_str['. $sql_str .']');
 		return $wpdb->get_results( $sql_str );
 	}
 }
 
 /**
- * Get a user quiz attempts count
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  int $quiz_id
- * @return int count of quiz entries
+ * Gets the count of user quiz attempts.
+ *
+ * @since 2.3.0
+ *
+ * @param int $user_id The ID of the user to get quiz attempts.
+ * @param int $quiz_id The ID of the quiz to get attempts.
+ *
+ * @return int|void The count of quiz attempts.
  */
 function learndash_get_user_quiz_attempts_count( $user_id, $quiz_id ) {
 	$quiz_attempts = learndash_get_user_quiz_attempts( $user_id, $quiz_id );
@@ -1487,13 +1639,16 @@ function learndash_get_user_quiz_attempts_count( $user_id, $quiz_id ) {
 }
 
 /**
- * Get a user quiz time spent. Total of each started/complete time set
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  int $quiz_id
- * @return int total number of seconds spent
+ * Gets the time spent by user on the quiz.
+ *
+ * Total of each started/complete time set.
+ *
+ * @since 2.3.0
+ *
+ * @param int $user_id The ID of the user to get quiz time spent.
+ * @param int $quiz_id The ID of the quiz to get time spent.
+ *
+ * @return int The total number of seconds spent on a quiz.
  */
 function learndash_get_user_quiz_attempts_time_spent( $user_id, $quiz_id ) {
 	$total_time_spent = 0;
@@ -1511,19 +1666,22 @@ function learndash_get_user_quiz_attempts_time_spent( $user_id, $quiz_id ) {
 
 
 /**
- * Get a user course attempts
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  int $course_id
- * @return array of activity_id and timestamps or quizzes found
+ * Gets the user course attempts activity.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.3.0
+ *
+ * @param int $user_id   Optional. The ID of the user to get course attempts. Default 0.
+ * @param int $course_id Optional. The ID of the course to get attempts. Default 0.
+ *
+ * @return array|void An array of activity IDs and timestamps or quizzes found.
  */
 function learndash_get_user_course_attempts( $user_id = 0, $course_id = 0) {
 	global $wpdb;
 	
 	if ( ( !empty( $user_id ) ) || ( !empty( $course_id ) ) ) {
-		$sql_str = $wpdb->prepare( "SELECT activity_id, activity_started, activity_completed, activity_updated FROM ". $wpdb->prefix .'learndash_user_activity WHERE user_id=%d AND post_id=%d and activity_type=%s ORDER BY activity_id, activity_started ASC', $user_id, $course_id, 'course' );
+		$sql_str = $wpdb->prepare( "SELECT activity_id, activity_started, activity_completed, activity_updated FROM " . LDLMS_DB::get_table_name( 'user_activity' ) . " WHERE user_id=%d AND post_id=%d and activity_type=%s ORDER BY activity_id, activity_started ASC", $user_id, $course_id, 'course' );
 		//error_log('sql_str['. $sql_str .']');
 		return $wpdb->get_results( $sql_str );
 	}
@@ -1531,13 +1689,16 @@ function learndash_get_user_course_attempts( $user_id = 0, $course_id = 0) {
 
 
 /**
- * Get a user course time spent. Total of each started/complete time set
- * 
- * @since 2.3
- * 
- * @param  int $user_id
- * @param  int $course_id
- * @return int total number of seconds spent
+ * Gets the time spent by user in the course.
+ *
+ * Total of each started/complete time set.
+ *
+ * @since 2.3.0
+ *
+ * @param int $user_id   Optional. The ID of the user to get course time spent. Default 0.
+ * @param int $course_id Optional. The ID of the course to get time spent. Default 0.
+ *
+ * @return int Total number of seconds spent.
  */
 function learndash_get_user_course_attempts_time_spent( $user_id = 0, $course_id = 0 ) {
 	$total_time_spent = 0;
@@ -1563,7 +1724,16 @@ function learndash_get_user_course_attempts_time_spent( $user_id = 0, $course_id
 	return $total_time_spent;
 }
 
-
+/**
+ * Gets the activity meta fields.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @param int   $activity_id        Optional. The ID of the activity to get meta fields. Default 0.
+ * @param array $activity_meta_keys Optional. The array of meta field keys to get. Default empty array.
+ *
+ * @return array
+ */
 function learndash_get_activity_meta_fields( $activity_id = 0, $activity_meta_keys = array() ) {
 	global $wpdb;
 
@@ -1571,7 +1741,7 @@ function learndash_get_activity_meta_fields( $activity_id = 0, $activity_meta_ke
 	
 	if ( !empty( $activity_id ) ) {
 	
-		$sql_str = $wpdb->prepare("SELECT activity_meta_key, activity_meta_value FROM ". $wpdb->prefix ."learndash_user_activity_meta WHERE activity_id=%d", $activity_id);
+		$sql_str = $wpdb->prepare( "SELECT activity_meta_key, activity_meta_value FROM ". LDLMS_DB::get_table_name( 'user_activity_meta' ) . " WHERE activity_id=%d", $activity_id );
 		$activity_meta_raw = $wpdb->get_results( $sql_str );
 
 		// If we have some rows returned we want to restructure the meta to be proper key => value array pairs. 
@@ -1590,17 +1760,16 @@ function learndash_get_activity_meta_fields( $activity_id = 0, $activity_meta_ke
 
 /**
  * Calculate the human readable time spent on activity. 
- * 
- * @since 2.3
- * 
- * @param  int $activity_started The start timestamp to compare (required)
- * @param  int $activity_completed The completed timestamp to compare (required)
- * @param  int $minumim_diff The minumm difference between started and completed time (optional)
- * @return string The human readable time difference. 
- * @uses human_time_diff
- * @since 2.3.0.3
+ *
+ * @since 2.3.0
+ * @since 2.3.0.3 Use `human_time_diff` function for output.
+ *
+ * @param int $activity_started   The start timestamp to compare. Default 0.
+ * @param int $activity_completed The completed timestamp to compare. Default 0.
+ * @param int $minumim_diff       Optional. The minumm difference between started and completed time. Default 60.
+ *
+ * @return string The human readable time difference.
  */
-
 function learndash_get_activity_human_time_diff( $activity_started = 0, $activity_completed = 0, $minumim_diff = 60 ) {
 	if ( empty( $activity_started ) ) return;
 	if ( empty( $activity_completed ) ) return;

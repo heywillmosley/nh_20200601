@@ -8,7 +8,7 @@
  * @since      1.9
  */
 
-$payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
+$payout = affwp_get_payout( intval( $_GET['payout_id'] ) );
 ?>
 
 <div class="wrap">
@@ -104,7 +104,40 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 			</th>
 
 			<td>
-				<?php echo empty( $payout->payout_method ) ? __( '(none)', 'affiliate-wp' ) : esc_html( $payout->payout_method ); ?>
+				<?php echo empty( $payout->payout_method ) ? _x( '(none)', 'payout method', 'affiliate-wp' ) : esc_html( $payout->payout_method ); ?>
+			</td>
+
+		</tr>
+
+		<tr class="form-row">
+
+			<th scope="row">
+				<?php _e( 'Payout Account', 'affiliate-wp' ); ?>
+			</th>
+
+			<td>
+				<?php echo empty( $payout->service_account ) ? _x( '(none)', 'payout service acccount', 'affiliate-wp' ) : esc_html( $payout->service_account ); ?>
+			</td>
+
+		</tr>
+
+		<tr class="form-row">
+
+			<th scope="row">
+				<?php _e( 'Invoice Link', 'affiliate-wp' ); ?>
+			</th>
+
+			<td>
+				<?php
+				if ( empty( $payout->service_invoice_link) ) {
+					_ex( '(none)', 'payout service invoice link', 'affiliate-wp' );
+				} else {
+					printf( '<a href="%1$s" target="_blank">%2$s</a>',
+						esc_url( $payout->service_invoice_link ),
+						esc_url( $payout->service_invoice_link )
+					);
+				}
+				?>
 			</td>
 
 		</tr>
@@ -122,6 +155,19 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 					affwp_get_payout_status_label( $payout )
 				);
 				?>
+			</td>
+
+		</tr>
+
+
+		<tr class="form-row">
+
+			<th scope="row">
+				<?php _e( 'Description', 'affiliate-wp' ); ?>
+			</th>
+
+			<td>
+				<?php echo empty( $payout->description ) ? _x( '(none)', 'payout description', 'affiliate-wp' ) : esc_html( $payout->description ); ?>
 			</td>
 
 		</tr>
@@ -177,7 +223,7 @@ $payout = affwp_get_payout( absint( $_GET['payout_id'] ) );
 	 *
 	 * @param \AffWP\Affiliate\Payout $payout Payout object.
 	 */
-	do_action( 'affwp_edit_payout_bottom', $affiliate );
+	do_action( 'affwp_edit_payout_bottom', $payout );
 	?>
 
 </div>

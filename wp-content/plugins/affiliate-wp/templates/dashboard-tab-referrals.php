@@ -23,7 +23,9 @@ $affiliate_id = affwp_get_affiliate_id();
 
 	<?php
 	/**
-	 * Fires before the referrals dashbaord data able within the referrals template.
+	 * Fires before the referrals dashboard data table within the referrals template.
+	 *
+	 * @since 1.0
 	 *
 	 * @param int $affiliate_id Affiliate ID.
 	 */
@@ -41,6 +43,8 @@ $affiliate_id = affwp_get_affiliate_id();
 				<?php
 				/**
 				 * Fires in the dashboard referrals template, within the table header element.
+				 *
+				 * @since 1.0
 				 */
 				do_action( 'affwp_referrals_dashboard_th' );
 				?>
@@ -61,6 +65,8 @@ $affiliate_id = affwp_get_affiliate_id();
 						/**
 						 * Fires within the table data of the dashboard referrals template.
 						 *
+						 * @since 1.0
+						 *
 						 * @param \AffWP\Referral $referral Referral object.
 						 */
 						do_action( 'affwp_referrals_dashboard_td', $referral ); ?>
@@ -80,6 +86,8 @@ $affiliate_id = affwp_get_affiliate_id();
 	<?php
 	/**
 	 * Fires after the data table within the affiliate area referrals template.
+	 *
+	 * @since 1.0
 	 *
 	 * @param int $affiliate_id Affiliate ID.
 	 */

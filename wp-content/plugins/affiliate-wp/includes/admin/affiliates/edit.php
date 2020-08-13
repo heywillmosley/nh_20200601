@@ -1,16 +1,18 @@
 <?php
-$affiliate        = affwp_get_affiliate( absint( $_GET['affiliate_id'] ) );
-$user_info        = get_userdata( $affiliate->user_id );
-$rate_type        = ! empty( $affiliate->rate_type ) ? $affiliate->rate_type : '';
-$flat_rate_basis  = ! empty( $affiliate->flat_rate_basis ) ? $affiliate->flat_rate_basis : '';
-$rate             = isset( $affiliate->rate ) ? $affiliate->rate : null;
-$rate             = affwp_abs_number_round( $affiliate->rate );
-$default_rate     = affiliate_wp()->settings->get( 'referral_rate', 20 );
-$default_rate     = affwp_abs_number_round( $default_rate );
-$email            = ! empty( $affiliate->payment_email ) ? $affiliate->payment_email : '';
-$reason           = affwp_get_affiliate_meta( $affiliate->affiliate_id, '_rejection_reason', true );
-$promotion_method = get_user_meta( $affiliate->user_id, 'affwp_promotion_method', true );
-$notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes', true );
+$affiliate                    = affwp_get_affiliate( absint( $_GET['affiliate_id'] ) );
+$user_info                    = get_userdata( $affiliate->user_id );
+$rate_type                    = ! empty( $affiliate->rate_type ) ? $affiliate->rate_type : '';
+$flat_rate_basis              = ! empty( $affiliate->flat_rate_basis ) ? $affiliate->flat_rate_basis : '';
+$rate                         = isset( $affiliate->rate ) ? $affiliate->rate : null;
+$rate                         = affwp_abs_number_round( $affiliate->rate );
+$default_rate                 = affiliate_wp()->settings->get( 'referral_rate', 20 );
+$default_rate                 = affwp_abs_number_round( $default_rate );
+$email                        = ! empty( $affiliate->payment_email ) ? $affiliate->payment_email : '';
+$reason                       = affwp_get_affiliate_meta( $affiliate->affiliate_id, '_rejection_reason', true );
+$promotion_method             = get_user_meta( $affiliate->user_id, 'affwp_promotion_method', true );
+$notes                        = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes', true );
+$payout_service_account       = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'payouts_service_account', true );
+$payout_service_payout_method = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'payouts_service_payout_method', true );
 ?>
 <div class="wrap">
 
@@ -21,6 +23,8 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 		<?php
 		/**
 		 * Fires at the top of the edit-affiliate admin screen, just inside of the form element.
+		 *
+		 * @since 1.0
 		 *
 		 * @param \AffWP\Affiliate $affiliate The affiliate object being edited.
 		 */
@@ -38,7 +42,7 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 				<td>
 					<input class="regular-text" type="text" name="affiliate_first_last" id="affiliate_first_last" value="<?php echo esc_attr( affwp_get_affiliate_name( $affiliate->affiliate_id ) ); ?>" disabled="1" />
 					<p class="description">
-						<?php echo wp_sprintf( __( 'The affiliate&#8217;s first and/or last name. Will be empty if no name is specified. This can be changed on the <a href="%1$s" alt="%2$s">user edit screen</a>.', 'affiliate-wp' ),
+						<?php echo sprintf( __( 'The affiliate&#8217;s first and/or last name. Will be empty if no name is specified. This can be changed on the <a href="%1$s" alt="%2$s">user edit screen</a>.', 'affiliate-wp' ),
 							esc_url( get_edit_user_link( $affiliate->user_id ) ),
 							esc_attr__( 'A link to the user edit screen for this user.', 'affiliate-wp' )
 						); ?>
@@ -170,13 +174,13 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 					<fieldset id="rate_type">
 						<legend class="screen-reader-text"><?php _e( 'Referral Rate Type', 'affiliate-wp' ); ?></legend>
 						<label for="rate_type_default">
-							<input type="radio" name="rate_type" id="rate_type_default" value="" <?php checked( $rate_type, '' ); ?>/><?php echo __( 'Site Default', 'affiliate-wp' ); ?>
+							<input type="radio" name="rate_type" id="rate_type_default" value="" <?php checked( $rate_type, '' ); ?>/> <?php echo __( 'Site Default', 'affiliate-wp' ); ?>
 						</label>
 						<br/>
 						<?php foreach ( affwp_get_affiliate_rate_types() as $key => $type ) :
 							$value = esc_attr( $key ); ?>
 							<label for="rate_type_<?php echo $value; ?>">
-								<input type="radio" name="rate_type" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>"<?php checked( $rate_type, $key ); ?>><?php echo esc_html( $type ); ?>
+								<input type="radio" name="rate_type" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>"<?php checked( $rate_type, $key ); ?>> <?php echo esc_html( $type ); ?>
 							</label>
 							<br/>
 						<?php endforeach; ?>
@@ -198,7 +202,7 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 						<?php foreach ( affwp_get_affiliate_flat_rate_basis_types() as $key => $type ) :
 							$value = esc_attr( $key ); ?>
 							<label for="rate_type_<?php echo $value; ?>">
-								<input type="radio" name="flat_rate_basis" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>" <?php checked( $flat_rate_basis, $key ); ?>><?php echo esc_html( $type ); ?>
+								<input type="radio" name="flat_rate_basis" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>" <?php checked( $flat_rate_basis, $key ); ?>> <?php echo esc_html( $type ); ?>
 							</label>
 							<br/>
 						<?php endforeach; ?>
@@ -247,6 +251,78 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 
 			</tr>
 
+			<?php if ( affiliate_wp()->settings->get( 'enable_payouts_service' ) ) : ?>
+
+				<tr class="form-row form-required">
+
+					<th scope="row">
+						<label for="payment_email"><?php _e( 'Payout Method', 'affiliate-wp' ); ?></label>
+					</th>
+					<td>
+						<?php if ( $payout_service_payout_method ) : ?>
+
+							<?php if ( 'bank_account' === $payout_service_payout_method['payout_method'] ) : ?>
+
+								<p><?php printf( __( '<strong>Bank Name: </strong> %s', 'affiliate-wp' ), $payout_service_payout_method['bank_name'] ); ?></p>
+								<p><?php printf( __( '<strong>Account Holder Name: </strong> %s', 'affiliate-wp' ), $payout_service_payout_method['account_name'] ); ?></p>
+								<p><?php printf( __( '<strong>Account Number: </strong> %s', 'affiliate-wp' ), $payout_service_payout_method['account_no'] ); ?></p>
+
+							<?php else: ?>
+
+								<p><?php printf( __( '<strong>Card: </strong> %s', 'affiliate-wp' ), $payout_service_payout_method['card'] ); ?></p>
+								<p><?php printf( __( '<strong>Expiry: </strong> %s', 'affiliate-wp' ), $payout_service_payout_method['expiry'] ); ?></p>
+
+							<?php endif; ?>
+
+						<?php endif; ?>
+						<p class="description"><?php _e( 'Affiliate&#8217;s payout method details on the Payouts Service.', 'affiliate-wp' ); ?></p>
+					</td>
+
+				</tr>
+
+				<tr class="form-row form-required">
+
+					<th scope="row">
+						<label for="kyc_status"><?php _e( 'Identity Verification', 'affiliate-wp' ); ?></label>
+					</th>
+
+					<td>
+						<?php
+						$value = '';
+						if ( $payout_service_account && isset( $payout_service_account['kyc_status'] ) ) {
+							$value = ucfirst( $payout_service_account['kyc_status'] );
+						}
+						echo esc_attr( $value );
+						?>
+						<p class="description"><?php _e( 'Affiliate&#8217;s identity verification status on the Payouts Service.', 'affiliate-wp' ); ?></p>
+					</td>
+
+				</tr>
+
+				<tr class="form-row form-required">
+
+					<th scope="row">
+						<label for="kyc_link"><?php _e( 'Identity Verification Link', 'affiliate-wp' ); ?></label>
+					</th>
+
+					<td>
+						<?php
+						if ( $payout_service_account && isset( $payout_service_account['kyc_link'] ) ) {
+							$kyc_link = $payout_service_account['kyc_link'];
+							echo wp_sprintf( __( '<a href="%1$s" target="_blank" alt="%2$s">%3$s</a>', 'affiliate-wp' ),
+								esc_url( $kyc_link ),
+								esc_attr__( 'A link to the identity verification page on the Payouts Service', 'affiliate-wp' ),
+								esc_url( $kyc_link )
+							);
+						}
+						?>
+
+						<p class="description"><?php _e( 'Affiliate&#8217;s identity verification link on the Payouts Service.', 'affiliate-wp' ); ?></p>
+					</td>
+
+				</tr>
+			<?php endif; ?>
+
 			<tr class="form-row form-required">
 
 				<th scope="row">
@@ -291,6 +367,8 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 			/**
 			 * Fires at the end of the edit-affiliate admin screen form area, below form fields.
 			 *
+			 * @since 1.0
+			 *
 			 * @param \AffWP\Affiliate $affiliate The affiliate object being edited.
 			 */
 			do_action( 'affwp_edit_affiliate_end', $affiliate );
@@ -301,6 +379,8 @@ $notes            = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'notes',
 		<?php
 		/**
 		 * Fires at the bottom of the edit-affiliate admin screen, just before the submit button.
+		 *
+		 * @since 1.0
 		 *
 		 * @param \AffWP\Affiliate $affiliate The affiliate object being edited.
 		 */

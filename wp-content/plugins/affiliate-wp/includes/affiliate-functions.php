@@ -296,6 +296,8 @@ function affwp_set_affiliate_status( $affiliate, $status = '' ) {
 	/**
 	 * Fires just prior to update the affiliate status.
 	 *
+	 * @since 1.0
+	 *
 	 * @param  string $status     The new affiliate status. Optional.
 	 * @param  string $old_status The old affiliate status.
 	 */
@@ -415,11 +417,13 @@ function affwp_get_affiliate_rate( $affiliate = 0, $formatted = false, $product_
 	$rate = ( 'percentage' === $type ) ? $rate / 100 : $rate;
 
 	/**
-	 * Filter the affiliate rate
+	 * Filters the affiliate rate.
 	 *
-	 * @param  string  $rate
-	 * @param  int     $affiliate_id
-	 * @param  string  $type
+	 * @since 1.0
+	 *
+	 * @param float  $rate         The affiliate rate.
+	 * @param int    $affiliate_id Affiliate ID.
+	 * @param string $type         Rate type, usually 'flat' or 'percentage'.
 	 */
 	$rate = (string) apply_filters( 'affwp_get_affiliate_rate', $rate, $affiliate_id, $type, $reference );
 
@@ -759,6 +763,8 @@ function affwp_delete_affiliate( $affiliate, $delete_data = false ) {
 
 		/**
 		 * Fires immediately after an affiliate is deleted.
+		 *
+		 * @since 1.0
 		 *
 		 * @param int             $affiliate_id The affiliate ID.
 		 * @param bool            $delete_data  Whether the user data was also flagged for deletion.
@@ -1342,6 +1348,11 @@ function affwp_add_affiliate( $data = array() ) {
 
 		affwp_set_affiliate_status( $affiliate_id, $status );
 
+		// Add or delete affiliate notes
+		if ( ! empty( $args['notes'] ) ) {
+			affwp_update_affiliate_meta( $affiliate_id, 'notes', $args['notes'] );
+		}
+
 		return $affiliate_id;
 	}
 
@@ -1749,19 +1760,31 @@ function affwp_get_active_affiliate_area_tab() {
 }
 
 /**
- * Show a tab in the Affiliate Area
+ * Determines whether to render a given Affiliate Area area tab.
  *
- * @since  1.8
- * @return boolean
+ * @since 1.8
+ *
+ * @param string $tab Optional. Affiliate Area tab slug. Default empty.
+ * @return bool True if the tab should be rendered, otherwise false.
  */
 function affwp_affiliate_area_show_tab( $tab = '' ) {
+	/**
+	 * Filters whether to show a given Affiliate Area tab or not.
+	 *
+	 * @since 1.8
+	 *
+	 * @param bool   $show Whether to show the given tab.
+	 * @param string $tab  The given tab slug.
+	 */
 	return apply_filters( 'affwp_affiliate_area_show_tab', true, $tab );
 }
 
 /**
- * Render a specified tab of the affiliate area
+ * Renders a specified Affiliate Area tab.
  *
- * @since  2.1.7
+ * @since 2.1.7
+ *
+ * @param string $tab Optional. Slug for the Affiliate Area tab to render. Default empty.
  * @return void
  */
 function affwp_render_affiliate_dashboard_tab( $tab = '' ) {
@@ -1770,7 +1793,27 @@ function affwp_render_affiliate_dashboard_tab( $tab = '' ) {
 	affiliate_wp()->templates->get_template_part( 'dashboard-tab', $tab );
 	$content = ob_get_clean();
 
+	/**
+	 * Filters the contents of a specific Affiliate Area tab.
+	 *
+	 * The dynamic portion of the hook name, `$tab`, refers to the current Affiliate Area
+	 * tab slug.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string $content Contents of the tab.
+	 * @param string $tab     The tab slug.
+	 */
 	$content = apply_filters( 'affwp_render_affiliate_dashboard_tab_' . $tab, $content, $tab );
+
+	/**
+	 * Filters the contents of the current Affiliate Area tab.
+	 *
+	 * @since 2.1.7
+	 *
+	 * @param string $content Contents of the tab.
+	 * @param string $tab     The tab slug.
+	 */
 	echo apply_filters( 'affwp_render_affiliate_dashboard_tab', $content, $tab );
 
 }
@@ -1789,7 +1832,7 @@ function affwp_get_affiliate_payouts( $affiliate = 0 ) {
 	}
 
 	$payouts = affiliate_wp()->affiliates->payouts->get_payouts( array(
-		'affilate_id' => $affiliate->ID,
+		'affiliate_id' => $affiliate->ID,
 	) );
 
 	/**
@@ -1801,4 +1844,128 @@ function affwp_get_affiliate_payouts( $affiliate = 0 ) {
 	 * @param int   $affiliate_id Affiliate ID.
 	 */
 	return apply_filters( 'affwp_get_affiliate_payouts', $payouts, $affiliate->ID );
+}
+
+/**
+ * Get the account ID of the affiliate on the Payouts Service.
+ * Also checks if the account ID is valid on the Payouts Service.
+ *
+ * @since 2.4
+ *
+ * @param  int $affiliate_id Affiliate ID.
+ * @return array Payout service account details for the given affiliate.
+ */
+function affwp_get_payouts_service_account( $affiliate_id = 0 ) {
+
+	if ( ! $affiliate = affwp_get_affiliate( $affiliate_id ) ) {
+		$account_details = array(
+			'status' => 'invalid_account',
+			'valid'  => false,
+		);
+
+		return $account_details;
+	}
+
+	if ( ! $affiliate->user ) {
+		$account_details = array(
+			'status' => 'user_account_deleted',
+			'valid'  => false,
+		);
+
+		return $account_details;
+	}
+
+	$payout_service_account_meta = affwp_get_affiliate_meta( $affiliate->affiliate_id, 'payouts_service_account', true );
+
+	if ( ! $payout_service_account_meta || empty( $payout_service_account_meta['account_id'] ) ) {
+		$account_details = array(
+			'status' => 'no_ps_account',
+			'valid'  => false,
+		);
+
+		return $account_details;
+	}
+
+	$vendor_id  = affiliate_wp()->settings->get( 'payouts_service_vendor_id', 0 );
+	$access_key = affiliate_wp()->settings->get( 'payouts_service_access_key', '' );
+
+	$headers = array(
+		'Authorization' => 'Basic ' . base64_encode( $vendor_id . ':' . $access_key ),
+	);
+
+	$api_params = array(
+		'account_id'    => $payout_service_account_meta['account_id'],
+		'affwp_version' => AFFILIATEWP_VERSION,
+	);
+
+	$args = array(
+		'body'      => $api_params,
+		'headers'   => $headers,
+		'timeout'   => 60,
+		'sslverify' => false,
+	);
+
+	$request = wp_remote_get( AFFILIATEWP_PAYOUTS_SERVICE_URL . '/wp-json/payouts/v1/account/validate-account', $args );
+
+	if ( is_wp_error( $request ) ) {
+
+		$account_details = array(
+			'status' => 'unable_to_retrieve_ps_account',
+			'valid'  => false,
+		);
+
+	} else {
+
+		$response      = json_decode( wp_remote_retrieve_body( $request ) );
+		$response_code = wp_remote_retrieve_response_code( $request );
+
+		if ( 200 === (int) $response_code ) {
+
+			if ( $response->status ) {
+
+				switch ( $payout_service_account_meta['status'] ) {
+
+					case 'payout_method_added':
+						$account_details = array(
+							'account_id' => $payout_service_account_meta['account_id'],
+							'valid'      => true,
+						);
+
+						break;
+
+					case 'account_created':
+						$account_details = array(
+							'status' => 'no_ps_payout_method',
+							'valid'  => false,
+						);
+
+						break;
+
+					default:
+						$account_details = array(
+							'status' => 'unable_to_retrieve_ps_account',
+							'valid'  => false,
+						);
+
+						break;
+				}
+			} else {
+
+				$account_details = array(
+					'status' => $response->reason,
+					'valid'  => false,
+				);
+
+			}
+		} else {
+
+			$account_details = array(
+				'status' => 'unable_to_retrieve_ps_account',
+				'valid'  => false,
+			);
+
+		}
+	}
+
+	return $account_details;
 }

@@ -141,6 +141,14 @@ class Affiliate_WP_Graph {
 	 * @since 1.0
 	 */
 	public function get_data() {
+		/**
+		 * Filters the data for the current reporting graph.
+		 *
+		 * @since 1.0
+		 *
+		 * @param array               $data     Graph data.
+		 * @param \Affiliate_WP_Graph $instance Current Affiliate_WP_Graph instance.
+		 */
 		return apply_filters( 'affwp_get_graph_data', $this->data, $this );
 	}
 
@@ -173,6 +181,13 @@ class Affiliate_WP_Graph {
 			$ret = false;
 		}
 
+		/**
+		 * Filters whether to load the resize script for a Flot.js.
+		 *
+		 * @since 1.1
+		 *
+		 * @param bool $load Whether to load the resize script or not.
+		 */
 		return apply_filters( 'affwp_load_flot_resize', $ret );
 	}
 
@@ -193,7 +208,7 @@ class Affiliate_WP_Graph {
 		if ( false !== $this->get( 'show_controls' ) ) {
 			echo $this->graph_controls();
 		}
-		?><div id="affwp-graph-<?php echo $this->id; ?>" class="affwp-graph" style="height: 300px; width:100%;"></div><?php
+		?><div id="affwp-graph-<?php echo $this->id; ?>" class="affwp-graph" style="height: 300px; width:97%;"></div><?php
 		return ob_get_clean();
 	}
 
@@ -333,6 +348,8 @@ class Affiliate_WP_Graph {
 		/**
 		 * Fires just prior to the graph output.
 		 *
+		 * @since 1.0
+		 *
 		 * @param stdClass $graph The graph object.
 		 */
 		do_action( 'affwp_before_graph', $this );
@@ -341,6 +358,8 @@ class Affiliate_WP_Graph {
 
 		/**
 		 * Fires immediately after the graph output.
+		 *
+		 * @since 1.0
 		 *
 		 * @param stdClass $graph The graph object.
 		 */
@@ -357,6 +376,13 @@ class Affiliate_WP_Graph {
 	 * @since  1.0
 	*/
 	public function graph_controls() {
+		/**
+		 * Filters the date filter options to use in the controls for the current reports graph.
+		 *
+		 * @since 1.0
+		 *
+		 * @param array $date_options List of date options and their user-facing, translatable labels.
+		 */
 		$date_options = apply_filters( 'affwp_report_date_options', array(
 			'today' 	    => __( 'Today', 'affiliate-wp' ),
 			'yesterday'     => __( 'Yesterday', 'affiliate-wp' ),
@@ -441,7 +467,17 @@ class Affiliate_WP_Graph {
  * selected date-range (if any)
  *
  * @since 1.0
- * @return array
+ *
+ * @return array {
+ *     Date values used by the reports API.
+ *
+ *     @type int $day      Day of the month (1-31) to start filtering results by.
+ *     @type int $day_end  Day of the month (1-31) to end filtering results by.
+ *     @type int $m_start  Month of the year (1-12) to start filtering results by.
+ *     @type int $m_end    Month of the year (1-12) to end filtering results by.
+ *     @type int $year     Year to start filtering results by.
+ *     @type int $year_end Year to end filtering results by.
+ * }
 */
 function affwp_get_report_dates() {
 	$dates = array();
@@ -628,5 +664,21 @@ function affwp_get_report_dates() {
 
 	endswitch;
 
+	/**
+	 * Filters the dates array for the current reports graph.
+	 *
+	 * @since 1.0
+	 *
+	 * @param array $dates {
+	 *     Date values used by the reports API.
+	 *
+	 *     @type int $day      Day of the month (1-31) to start filtering results by.
+	 *     @type int $day_end  Day of the month (1-31) to end filtering results by.
+	 *     @type int $m_start  Month of the year (1-12) to start filtering results by.
+	 *     @type int $m_end    Month of the year (1-12) to end filtering results by.
+	 *     @type int $year     Year to start filtering results by.
+	 *     @type int $year_end Year to end filtering results by.
+	 * }
+	 */
 	return apply_filters( 'affwp_report_dates', $dates );
 }

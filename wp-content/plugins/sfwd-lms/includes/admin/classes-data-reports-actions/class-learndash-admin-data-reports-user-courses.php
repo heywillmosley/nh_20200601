@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 	class Learndash_Admin_Data_Reports_Courses extends Learndash_Admin_Settings_Data_Reports {
 		
@@ -43,7 +47,9 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 			?>
 			<tr id="learndash-data-reports-container-<?php echo $this->data_slug ?>" class="learndash-data-reports-container">
 				<td class="learndash-data-reports-button-container" style="width:20%">
-					<button class="learndash-data-reports-button button button-primary" data-nonce="<?php echo wp_create_nonce( 'learndash-data-reports-'. $this->data_slug .'-'. get_current_user_id() ); ?>" data-slug="<?php echo $this->data_slug ?>"><?php printf( _x( 'Export User %s Data', 'Export User Course Data Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></button></td>
+					<button class="learndash-data-reports-button button button-primary" data-nonce="<?php echo wp_create_nonce( 'learndash-data-reports-'. $this->data_slug .'-'. get_current_user_id() ); ?>" data-slug="<?php echo $this->data_slug ?>"><?php 
+					// translators: Export User Course Data Label.
+					printf( esc_html_x( 'Export User %s Data', 'Export User Course Data Label', 'learndash' ), LearnDash_Custom_Label::get_label( 'course' ) ); ?></button></td>
 				<td class="learndash-data-reports-status-container" style="width: 80%">
 					
 					<div style="display:none;" class="meter learndash-data-reports-status">
@@ -86,7 +92,7 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 			
 			$_DOING_INIT = false;
 						
-			require_once( LEARNDASH_LMS_PLUGIN_DIR . 'includes/vendor/parsecsv.lib.php' );
+			require_once( LEARNDASH_LMS_LIBRARY_DIR . '/parsecsv.lib.php' );
 			
 			if ( ( isset( $data['nonce'] ) ) && ( !empty( $data['nonce'] ) ) ) {
 				if ( wp_verify_nonce( $data['nonce'], 'learndash-data-reports-'. $this->data_slug .'-'. get_current_user_id() ) ) {
@@ -145,8 +151,7 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 						$reports_fp = fopen( $this->report_filename, 'w' );
 						fclose($reports_fp);
 						
-						//set_transient( $this->transient_key, $this->transient_data, MINUTE_IN_SECONDS );
-						$this->set_transient( $this->transient_key, $this->transient_data );
+						$this->set_option_cache( $this->transient_key, $this->transient_data );
 						
 						$this->send_report_headers_to_csv();
 						
@@ -182,15 +187,18 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 							foreach( $this->transient_data['users_ids'] as $user_id_idx => $user_id ) {
 						
 								unset( $this->transient_data['users_ids'][$user_id_idx] );
-								$this->set_transient( $this->transient_key, $this->transient_data );
+								$this->set_option_cache( $this->transient_key, $this->transient_data );
 							
 								$report_user = get_user_by('id', $user_id);
 								if ( $report_user !== false ) {
-								
-									if ( ( !isset( $this->transient_data['posts_ids'] ) ) || ( empty( $this->transient_data['posts_ids'] ) ) ) {
-										$post_ids = learndash_user_get_enrolled_courses( intval( $user_id ), $course_query_args, true );
-									} else {
+									if ( ( isset( $this->transient_data['course_ids'] ) ) && ( !empty( $this->transient_data['course_ids'] ) ) ) {
+										$post_ids = $this->transient_data['course_ids'];
+										
+									} else if ( ( isset( $this->transient_data['posts_ids'] ) ) && ( !empty( $this->transient_data['posts_ids'] ) ) ) {
 										$post_ids = $this->transient_data['posts_ids'];
+
+									} else {
+										$post_ids = learndash_user_get_enrolled_courses( intval( $user_id ), $course_query_args, true );
 									}
 
 									if ( !empty( $post_ids ) ) {
@@ -269,25 +277,29 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 								$this->csv_parse->output_filename = $this->report_filename;
 
 								// legacy 
+								/** This filter is documented in includes/class-ld-lms.php */
 								$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, 'courses' );
 
-								/**
-								 * Filter to override CSV object attributes
-								 * @since 2.4.7
-								 * This is basically the same as the above line with the exeption of the last param used 
-								 * being the proper data slug instead of just 'courses'.
-								 */
+								/** This filter is documented in includes/class-ld-lms.php */
 								$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, $this->data_slug );
+
+								/**
+								 * Filters CSV data.
+								 *
+								 * @param array  $csv_data  An array of CSV data.
+								 * @param string $data_slug The slug of the data in the CSV.
+								 */
 								$course_progress_data = apply_filters('learndash_csv_data', $course_progress_data, $this->data_slug );
 
-								$save_ret = $this->csv_parse->save( $this->report_filename, $course_progress_data, true );
+								$save_ret = $this->csv_parse->save( $this->report_filename, $course_progress_data, true, wp_list_pluck( $this->data_headers, 'label' ) );
 								
 							}
 						} 
 						
 						$data['result_count'] 		= 	$data['total_count'] - count( $this->transient_data['users_ids'] );
 						$data['progress_percent'] 	= 	( $data['result_count'] / $data['total_count'] ) * 100;
-						$data['progress_label']		= 	sprintf( __('%d of %s Users', 'learndash'), $data['result_count'], $data['total_count']);
+						// translators: placeholders: result count, total count.
+						$data['progress_label']		= 	sprintf( esc_html_x('%1$d of %2$s Users', 'placeholders: result count, total count', 'learndash'), $data['result_count'], $data['total_count']);
 			
 					}
 				} 
@@ -299,54 +311,58 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 		function set_report_headers() {
 			$this->data_headers									=	array();
 			$this->data_headers['user_id']  					= 	array( 
-																		'label'		=>	'user_id',
+																		'label'		=>	esc_html__( 'user_id', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 			$this->data_headers['user_name'] 					= 	array( 
-																		'label'		=>	'name',
+																		'label'		=>	esc_html__( 'name', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 
 			$this->data_headers['user_email'] 					=	array( 
-																		'label'		=>	'email',
+																		'label'		=>	esc_html__( 'email', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 																	
 			$this->data_headers['course_id'] 					= 	array( 
-																		'label'		=>	'course_id',
+																		'label'		=>	esc_html__( 'course_id', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 			$this->data_headers['course_title'] 				= 	array( 
-																		'label'		=>	'course_title',
+																		'label'		=>	esc_html__( 'course_title', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 
 			$this->data_headers['course_steps_completed'] 		= 	array( 
-																		'label'		=>	'steps_completed',
+																		'label'		=>	esc_html__( 'steps_completed', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 			$this->data_headers['course_steps_total'] 			= 	array( 
-																		'label'		=>	'steps_total',
+																		'label'		=>	esc_html__( 'steps_total', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 			$this->data_headers['course_completed'] 			= 	array( 
-																		'label'		=>	'course_completed',
+																		'label'		=>	esc_html__( 'course_completed', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
 			$this->data_headers['course_completed_on']			=	array( 
-																		'label'		=>	'course_completed_on',
+																		'label'		=>	esc_html__( 'course_completed_on', 'learndash' ),
 																		'default'	=>	'',
 																		'display'	=>	array( $this, 'report_column' )
 																	);
-		
+			/**
+			 * Filters data reports headers.
+			 *
+			 * @param array $data_headers An array of data report header details.
+			 */
 			$this->data_headers = apply_filters('learndash_data_reports_headers', $this->data_headers, $this->data_slug );
 		}
 
@@ -356,20 +372,17 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 				$this->csv_parse->output_filename = $this->report_filename;
 
 				// legacy 
+				/** This filter is documented in includes/class-ld-lms.php */
 				$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, 'courses' );
 				
 
-				/**
-				 * Filter to override CSV object attributes
-				 * @since 2.4.7
-				 * This is basically the same as the above line with the exeption of the last param used 
-				 * being the proper data slug instead of just 'courses'.
-				 */
+				/** This filter is documented in includes/class-ld-lms.php */
 				$this->csv_parse = apply_filters('learndash_csv_object', $this->csv_parse, $this->data_slug );
-				
+
+				/** This filter is documented in includes/admin/classes-data-reports-actions/class-learndash-admin-data-reports-user-courses.php */
 				$this->data_headers = apply_filters('learndash_csv_data', $this->data_headers, $this->data_slug );
 
-				$this->csv_parse->save( $this->report_filename, array( wp_list_pluck( $this->data_headers, 'label' ) ), false );
+				$this->csv_parse->save( $this->report_filename, array(), false, wp_list_pluck( $this->data_headers, 'label' ) );
 			}
 		}
 
@@ -382,14 +395,20 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 			
 			$ld_wp_upload_filename = $wp_upload_dir['basedir'] . $ld_file_part;
 			if ( wp_mkdir_p( dirname( $ld_wp_upload_filename ) ) === false ) {
-				$data['error_message'] = __("ERROR: Cannot create working folder. Check that the parent folder is writable", 'learndash') ." ". $ld_wp_upload_dir;
+				$data['error_message'] = esc_html__("ERROR: Cannot create working folder. Check that the parent folder is writable", 'learndash') ." ". $ld_wp_upload_dir;
 				return $data;
 			}
 			file_put_contents( trailingslashit( dirname( $ld_wp_upload_filename ) ) .'index.php', '// nothing to see here');
 		
 			// Because we on;y want to store the relative path 
 			//$ld_wp_upload_filename = str_replace( ABSPATH, '', $ld_wp_upload_filename );
-		
+			
+			/**
+			 * Filters data report file path.
+			 *
+			 * @param string $report_file_name The name of the report file path.
+			 * @param string $data_slug       The slug of the data in the CSV.
+			 */
 			$this->transient_data['report_filename'] = apply_filters( 'learndash_report_filename', $ld_wp_upload_filename, $this->data_slug );
 
 			//$this->transient_data['report_url'] = $wp_upload_dir['baseurl'] . $ld_file_part;
@@ -483,14 +502,14 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 					break;
 
 				case 'course_completed':
-					$column_value = _x('NO', 'Course Complete Report label: NO', 'learndash');
+					$column_value = esc_html_x('NO', 'Course Complete Report label: NO', 'learndash');
 					
 					$completed_on = get_user_meta( $report_item->user_id, 'course_completed_' . $report_item->post_id, true );
 					if ( !empty( $completed_on ) ) {
-						$column_value = _x('YES', 'Course Complete Report label: YES', 'learndash');
+						$column_value = esc_html_x('YES', 'Course Complete Report label: YES', 'learndash');
 					} else if ( property_exists( $report_item, 'activity_status' ) ) {
 						if ( $report_item->activity_status == true ) {
-							$column_value = _x('YES', 'Course Complete Report label: YES', 'learndash');
+							$column_value = esc_html_x('YES', 'Course Complete Report label: YES', 'learndash');
 						} 	
 					} 
 					break;
@@ -512,8 +531,15 @@ if ( !class_exists( 'Learndash_Admin_Data_Reports_Courses' ) ) {
 					break;
 			}
 			/**
-			 * Allow filtering of the report column data
+			 * Filters report column data.
+			 *
 			 * @since 2.4.7
+			 *
+			 * @param int|string $column_value Report column value.
+			 * @param string     $column_key   Column key.
+			 * @param object     $report_item  Report Item.
+			 * @param WP_User    $report_user  WP_User object.
+			 * @param string     $data_slug    The slug of the data in the CSV.
 			 */
 			return apply_filters('learndash_report_column_item', $column_value, $column_key, $report_item, $report_user, $this->data_slug );
 		}

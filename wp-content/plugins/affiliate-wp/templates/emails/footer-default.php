@@ -46,7 +46,18 @@ $credit = "
                                                 <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                                     <tr>
                                                         <td colspan="2" valign="middle" id="credit" style="<?php echo $credit; ?>">
-                                                           <?php echo wpautop( wp_kses_post( wptexturize( apply_filters( 'affwp_email_footer_text', '<a href="' . esc_url( home_url() ) . '">' . get_bloginfo( 'name' ) . '</a>' ) ) ) ); ?>
+															<?php
+															/**
+															 * Filters the email footer text.
+															 *
+															 * Note: the return value will be passed through wptexturize(), then wp_kses_post(), then wpautop().
+															 *
+															 * @since 1.6
+															 *
+															 * @param string $footer_text Email footer text.
+															*/
+															echo wpautop( wp_kses_post( wptexturize( apply_filters( 'affwp_email_footer_text', '<a href="' . esc_url( home_url() ) . '">' . get_bloginfo( 'name' ) . '</a>' ) ) ) );
+															?>
                                                         </td>
                                                     </tr>
                                                 </table>

@@ -9,7 +9,6 @@ use AffWP\Utils\Batch_Process as Batch;
  *
  * @see \AffWP\Utils\Batch_Process\Base
  * @see \AffWP\Utils\Batch_Process
- * @package AffWP\Utils\Batch_Process
  */
 class Recount_Affiliate_Stats extends Utils\Batch_Process implements Batch\With_PreFetch {
 

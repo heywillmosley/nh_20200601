@@ -12,7 +12,6 @@ return apply_filters( 'wc_usps_services', array(
 		// Services which costs are merged if returned (cheapest is used). This gives us the best possible rate.
 		'services' => array(
 			'0'  => array(
-				'first-class-mail-parcel'            => 'First-Class Mail&#0174; Parcel',
 				'first-class-mail-large-envelope'    => 'First-Class Mail&#0174; Large Envelope',
 				'first-class-mail-postcards'         => 'First-Class Mail&#0174; Postcards',
 				'first-class-mail-stamped-letter'    => 'First-Class Mail&#0174; Stamped Letter',
@@ -75,7 +74,10 @@ return apply_filters( 'wc_usps_services', array(
 			"33" => "Priority Mail&#0174; Hold For Pickup",
 			"47" => "Priority Mail&#0174; Regional Rate Box A",
 			"49" => "Priority Mail&#0174; Regional Rate Box B",
-		)
+		),
+
+		// Service IDs which are only available for commercial rates.
+		'commercial' => array( 47, 49 ),
 	),
 	// International
 	'I_EXPRESS_MAIL' => array(
@@ -110,14 +112,11 @@ return apply_filters( 'wc_usps_services', array(
 		)
 	),
 	'I_FIRST_CLASS' => array(
-		// Name of the service shown to the user
+		// Name of the service shown to the user.
 		'name'  => "First Class Mail&#0174; International",
-
 		// Services which costs are merged if returned (cheapest is used). This gives us the best possible rate.
 		'services' => array(
-			"13"  => "First Class Mail&#0174; International Letters",
-			"14"  => "First Class Mail&#0174; International Large Envelope",
-			"15"  => "First Class Package International Service&#8482;"
+			"15"  => "First Class Package International Service&#8482;",
 		)
 	),
 	'I_POSTCARDS' => array(

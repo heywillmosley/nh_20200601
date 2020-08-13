@@ -3,14 +3,20 @@
 class Affiliate_WP_PayPal extends Affiliate_WP_Base {
 
 	/**
-	 * Get thigns started
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'paypal';
+
+	/**
+	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.9
 	 */
 	public function init() {
-
-		$this->context = 'paypal';
 
 		add_action( 'wp_footer', array( $this, 'scripts' ) );
 		add_action( 'wp_ajax_affwp_maybe_insert_paypal_referral', array( $this, 'maybe_insert_referral' ) );
@@ -378,5 +384,15 @@ class Affiliate_WP_PayPal extends Affiliate_WP_Base {
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return true;
+	}
 }
 new Affiliate_WP_PayPal;

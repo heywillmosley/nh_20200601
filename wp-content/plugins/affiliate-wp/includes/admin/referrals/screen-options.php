@@ -33,6 +33,8 @@ function affwp_referrals_screen_options() {
 	/**
 	 * Fires in the screen-options area of the referrals screen.
 	 *
+	 * @since 1.7
+	 *
 	 * @param string $screen The current screen.
 	 */
 	do_action( 'affwp_referrals_screen_options', $screen );

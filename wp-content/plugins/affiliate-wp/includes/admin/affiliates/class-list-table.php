@@ -170,17 +170,24 @@ class AffWP_Affiliates_Table extends List_Table {
 			'username'        => __( 'Username', 'affiliate-wp' ),
 			'earnings'        => __( 'Paid Earnings', 'affiliate-wp' ),
 			'unpaid_earnings' => __( 'Unpaid Earnings', 'affiliate-wp' ),
-			'rate'     	      => __( 'Rate', 'affiliate-wp' ),
+			'rate'            => __( 'Rate', 'affiliate-wp' ),
 			'unpaid'          => __( 'Unpaid Referrals', 'affiliate-wp' ),
 			'referrals'       => __( 'Paid Referrals', 'affiliate-wp' ),
 			'visits'          => __( 'Visits', 'affiliate-wp' ),
+			'kyc_status'      => __( 'Identity Verification', 'affiliate-wp' ),
 			'status'          => __( 'Status', 'affiliate-wp' ),
 		);
+
+		if ( ! affiliate_wp()->settings->get( 'enable_payouts_service' ) ) {
+			unset( $columns['kyc_status'] );
+		}
 
 		/**
 		 * Filters the affiliate list table columns.
 		 *
-		 * @param function                $prepared_columns Prepared columns.
+		 * @since 1.0
+		 *
+		 * @param array                   $prepared_columns Prepared columns.
 		 * @param array                   $columns          The columns for this list table.
 		 * @param \AffWP_Affiliates_Table $this             List table instance.
 		 */
@@ -211,8 +218,10 @@ class AffWP_Affiliates_Table extends List_Table {
 		/**
 		 * Filters the affiliates list table sortable columns.
 		 *
-		 * @param array                   $columns          The sortable columns for this list table.
-		 * @param \AffWP_Affiliates_Table $this             List table instance.
+		 * @since 1.0
+		 *
+		 * @param array                   $columns The sortable columns for this list table.
+		 * @param \AffWP_Affiliates_Table $this    List table instance.
 		 */
 		return apply_filters( 'affwp_affiliate_table_sortable_columns', $columns, $this );
 	}
@@ -388,6 +397,8 @@ class AffWP_Affiliates_Table extends List_Table {
 		/**
 		 * Filters the name column data for the affiliates list table.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string           $value     Data shown in the Name column.
 		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
 		 */
@@ -418,6 +429,8 @@ class AffWP_Affiliates_Table extends List_Table {
 
 		/**
 		 * Filters the username column data for the affiliates list table.
+		 *
+		 * @since 1.8
 		 *
 		 * @param string           $value     Data shown in the Username column.
 		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
@@ -453,6 +466,8 @@ class AffWP_Affiliates_Table extends List_Table {
 
 		/**
 		 * Filters the earnings column data for the affiliates list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string           $value     Data shown in the Earnings column.
 		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
@@ -497,6 +512,8 @@ class AffWP_Affiliates_Table extends List_Table {
 
 		/**
 		 * Filters the rate column data for the affiliates list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string           $value     Data shown in the Rate column.
 		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
@@ -546,6 +563,8 @@ class AffWP_Affiliates_Table extends List_Table {
 		/**
 		 * Filters the referrals column data for the affiliates list table.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string $value     Data shown in the Referrals column.
 		 * @param array  $affiliate Contains all the data of the affiliate.
 		 */
@@ -567,10 +586,40 @@ class AffWP_Affiliates_Table extends List_Table {
 		/**
 		 * Filters the username visits data for the affiliates list table.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string           $value     Data shown in the Visits column.
 		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
 		 */
 		return apply_filters( 'affwp_affiliate_table_visits', $value, $affiliate );
+	}
+
+	/**
+	 * Renders the identity verification column in the affiliates list table.
+	 *
+	 * @since 2.4
+	 *
+	 * @param \AffWP\Affiliate $affiliate The current affiliate object.
+	 * @return string Visits link.
+	 */
+	public function column_kyc_status( $affiliate ) {
+
+		$value = '';
+		$payouts_service_account_meta = affwp_get_affiliate_meta( $affiliate->ID, 'payouts_service_account', true );
+
+		if ( $payouts_service_account_meta && isset( $payouts_service_account_meta['kyc_status'] ) ) {
+			$value = $payouts_service_account_meta['kyc_status'];
+		}
+
+		/**
+		 * Filters the identity verification data for the affiliates list table.
+		 *
+		 * @since 2.4
+		 *
+		 * @param string           $value     Data shown in the Visits column.
+		 * @param \AffWP\Affiliate $affiliate The current affiliate object.
+		 */
+		return apply_filters( 'affwp_affiliate_table_kyc_status', $value, $affiliate );
 	}
 
 	/**
@@ -601,6 +650,8 @@ class AffWP_Affiliates_Table extends List_Table {
 
 		/**
 		 * Filters the bulk actions to return in the affiliates list table.
+		 *
+		 * @since 1.0
 		 *
 		 * @param array $actions Bulk actions.
 		 */
@@ -747,6 +798,17 @@ class AffWP_Affiliates_Table extends List_Table {
 			'orderby' => sanitize_text_field( $orderby ),
 			'order'   => sanitize_text_field( $order )
 		) );
+
+		/**
+		 * Filters the arguments used to retrieve affiliates for the Affiliates list table.
+		 *
+		 * @since 2.4.4
+		 *
+		 * @param array                   $args Arguments passed to get_affiliates() to retrieve
+		 *                                      the affiliate records for display.
+		 * @param \AffWP_Affiliates_Table $this Affiliates list table instance.
+		 */
+		$args = apply_filters( 'affwp_affiliate_table_get_affiliates', $args, $this );
 
 		$affiliates = affiliate_wp()->affiliates->get_affiliates( $args );
 

@@ -51,7 +51,8 @@ class Affiliate_WP_Forms_For_Gravity_Forms_Upgrades {
 	 * @since  1.0.10
 	 */
 	private function v1010_upgrades() {
-		$forms = GFAPI::get_forms();
+		$forms   = GFAPI::get_forms();
+		$form_id = false;
 
 		if ( $forms ) {
 			foreach ( $forms as $form ) {
@@ -59,7 +60,7 @@ class Affiliate_WP_Forms_For_Gravity_Forms_Upgrades {
 					$form_id = $form['id'];
 				}
 			}
-			if ( $form_id ) {
+			if ( false !== $form_id ) {
 				@affiliate_wp()->settings->set( array( 'affwp_gravity_forms_registration_form' => $form_id ), true );
 			}
 		}

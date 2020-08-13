@@ -35,6 +35,13 @@ function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = 
 
 	$admin_email      = affiliate_wp()->settings->get( 'affiliate_manager_email', get_option( 'admin_email' ) );
 
+	/**
+	 * Filters the registration admin email address.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $admin_email Admin email address.
+	 */
 	$email            = apply_filters( 'affwp_registration_admin_email', $admin_email );
 	$user_info        = get_userdata( affwp_get_affiliate_user_id( $affiliate_id ) );
 	$user_url         = $user_info->user_url;
@@ -64,7 +71,25 @@ function affwp_notify_on_registration( $affiliate_id = 0, $status = '', $args = 
 
 	// $args is setup for backwards compatibility with < 1.6
 	$args    = array( 'affiliate_id' => $affiliate_id, 'name' => $args['display_name'] );
+
+	/**
+	 * Filters the registration email subject.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $subject Email subject.
+	 * @param array  $args    Arguments for sending the registration email.
+	 */
 	$subject = apply_filters( 'affwp_registration_subject', $subject, $args );
+
+	/**
+	 * Filters the registration email message.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $message Email message.
+	 * @param array  $args    Arguments for sending the registration email.
+	 */
 	$message = apply_filters( 'affwp_registration_email', $message, $args );
 
 	$emails->send( $email, $subject, $message );
@@ -128,7 +153,25 @@ function affwp_notify_on_approval( $affiliate_id = 0, $status = '', $old_status 
 
 	// $args is setup for backwards compatibility with < 1.6
 	$args        = array( 'affiliate_id' => $affiliate_id );
+
+	/**
+	 * Filters the Application Accepted email subject.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $subject Email subject.
+	 * @param array  $args    Arguments for sending the email.
+	 */
 	$subject     = apply_filters( 'affwp_application_accepted_subject', $subject, $args );
+
+	/**
+	 * Filters the Application Accepted email message.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $message Email message contents.
+	 * @param array  $args    Arguments for sending the email.
+	 */
 	$message     = apply_filters( 'affwp_application_accepted_email', $message, $args );
 	$user_id     = affwp_get_affiliate_user_id( $affiliate_id );
 
@@ -217,6 +260,13 @@ function affwp_notify_on_pending_affiliate_registration( $affiliate_id = 0, $sta
 		$message .= network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n";
 	}
 
+	/**
+	 * Filters whether to notify the affiliate upon pending registration.
+	 *
+	 * @since 1.6.1
+	 *
+	 * @param bool $send Whether to send the pending affiliate registration email.
+	 */
 	if ( apply_filters( 'affwp_notify_on_pending_affiliate_registration', true ) ) {
 		$emails->send( $email, $subject, $message );
 	}
@@ -259,6 +309,13 @@ function affwp_notify_on_rejected_affiliate_registration( $affiliate_id = 0, $st
 		$message .= __( 'We regret to inform you that your recent affiliate registration on {site_name} was rejected.', 'affiliate-wp' ) . "\n\n";
 	}
 
+	/**
+	 * Filters whether to notify the affiliate upon rejected registration.
+	 *
+	 * @since 1.6.1
+	 *
+	 * @param bool $send Whether to send the rejected affiliate registration email.
+	 */
 	if ( apply_filters( 'affwp_notify_on_rejected_affiliate_registration', true ) ) {
 		$emails->send( $email, $subject, $message );
 	}
@@ -310,9 +367,35 @@ function affwp_notify_on_new_referral( $affiliate_id = 0, $referral ) {
 
 	// $args is setup for backwards compatibility with < 1.6
 	$args    = array( 'affiliate_id' => $affiliate_id, 'amount' => $referral->amount, 'referral' => $referral );
+
+	/**
+	 * Filters the subject for the New Referral email.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $subject Email subject.
+	 * @param array  $args    Arguments for sending the email.
+	 */
 	$subject = apply_filters( 'affwp_new_referral_subject', $subject, $args );
+
+	/**
+	 * Filters the message contents for the New Referral email.
+	 *
+	 * @since 1.6
+	 *
+	 * @param string $message Email subject.
+	 * @param array  $args    Arguments for sending the email.
+	 */
 	$message = apply_filters( 'affwp_new_referral_email', $message, $args );
 
+	/**
+	 * Filters whether to notify the affiliate with the New Referral email.
+	 *
+	 * @since 1.6
+	 *
+	 * @param bool            $send     Whether to send the email.
+	 * @param \AffWP\Referral $referral Referral object.
+	 */
 	if ( apply_filters( 'affwp_notify_on_new_referral', true, $referral ) ) {
 		$emails->send( $email, $subject, $message );
 	}
@@ -386,6 +469,8 @@ function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
 	 */
 	$message = apply_filters( 'affwp_new_admin_referral_email', $message, $affiliate_id, $referral );
 
+	$admin_email = affiliate_wp()->settings->get( 'affiliate_manager_email', get_option( 'admin_email' ) );
+
 	/**
 	 * Filters the recipient email address for the email sent to admins when a new referral is generated.
 	 *
@@ -395,9 +480,7 @@ function affwp_notify_admin_on_new_referral( $affiliate_id = 0, $referral ) {
 	 * @param int             $affiliate_id Affiliate ID.
 	 * @param \AffWP\Referral $referral     Referral object.
 	 */
-	$admin_email = affiliate_wp()->settings->get( 'affiliate_manager_email', get_option( 'admin_email' ) );
-
-	$to_email    = apply_filters( 'affwp_new_admin_referral_email_to', $admin_email, $affiliate_id, $referral );
+	$to_email = apply_filters( 'affwp_new_admin_referral_email_to', $admin_email, $affiliate_id, $referral );
 
 	$emails->send( $to_email, $subject, $message );
 

@@ -64,6 +64,8 @@ function affwp_visits_contextual_help() {
 	/**
 	 * Fires in the contextual-help area of the Visits admin screen.
 	 *
+	 * @since 1.2
+	 *
 	 * @param string $screen The current screen.
 	 */
 	do_action( 'affwp_visits_contextual_help', $screen );

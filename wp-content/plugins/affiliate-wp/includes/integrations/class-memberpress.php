@@ -3,14 +3,20 @@
 class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'memberpress';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.5
 	*/
 	public function init() {
-
-		$this->context = 'memberpress';
 
 		if( ! defined( 'MEPR_VERSION' ) ) {
 			return;
@@ -374,8 +380,17 @@ class Affiliate_WP_MemberPress extends Affiliate_WP_Base {
 
 		return false;
 	}
+
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'MeprAppCtrl' );
+	}
 }
 
-if ( class_exists( 'MeprAppCtrl' ) ) {
 	new Affiliate_WP_MemberPress;
-}

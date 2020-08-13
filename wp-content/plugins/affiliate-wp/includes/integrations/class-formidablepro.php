@@ -3,13 +3,19 @@
 class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'formidablepro';
+
+	/**
 	 * @see Affiliate_WP_Base::init
 	 * @access  public
 	 * @since   1.6
 	 */
 	public function init() {
-
-		$this->context = 'formidablepro';
 
 		add_filter( 'frm_add_form_settings_section', array( $this, 'frm_add_form_settings_section' ), 10, 2 );
 		add_filter( 'frm_form_options_before_update', array( $this, 'frm_form_options_before_update' ), 15, 2 );
@@ -355,8 +361,16 @@ class Affiliate_WP_Formidable_Pro extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'FrmHooksController' );
+	}
 }
 
-if ( class_exists( 'FrmHooksController' ) ) {
 	new Affiliate_WP_Formidable_Pro;
-}

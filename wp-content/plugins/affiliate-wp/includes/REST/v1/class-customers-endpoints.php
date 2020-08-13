@@ -48,14 +48,28 @@ class Endpoints extends Controller {
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
 
-		// /customers/ID
-		register_rest_route( $this->namespace, '/' . $this->rest_base . '/(?P<id>\d+)', array(
+		// /customers/ID || /customers/email
+		register_rest_route( $this->namespace, '/' . $this->rest_base . '/((?P<id>\d+)|(?P<email>.+))', array(
 			array(
-				'methods'             => \WP_REST_Server::READABLE,
-				'callback'            => array( $this, 'get_item' ),
+				'methods'  => \WP_REST_Server::READABLE,
+				'callback' => array( $this, 'get_item' ),
+				'args'     => array(
+					'user' => array(
+						'description'       => __( 'Whether to include a modified user object in the response.', 'affiliate-wp' ),
+						'validate_callback' => function( $param, $request, $key ) {
+							return is_string( $param );
+						}
+					),
+					'meta' => array(
+						'description'       => __( 'Whether to include the customer meta in the response.', 'affiliate-wp' ),
+						'validate_callback' => function( $param, $request, $key ) {
+							return is_string( $param );
+						}
+					),
+				),
 				'permission_callback' => function( $request ) {
 					return current_user_can( 'manage_customers' );
-				}
+				},
 			),
 			'schema' => array( $this, 'get_public_item_schema' ),
 		) );
@@ -126,26 +140,75 @@ class Endpoints extends Controller {
 	}
 
 	/**
-	 * Endpoint to retrieve a customer by ID.
+	 * Endpoint to retrieve a customer by ID or email.
 	 *
 	 * @since 2.3
+	 * @since 2.4.1 Added support for retrieving a customer by email
 	 *
 	 * @param \WP_REST_Request $request Request arguments.
 	 * @return \WP_REST_Response|\WP_Error Customer object response or \WP_Error object if not found.
 	 */
 	public function get_item( $request ) {
-		if ( ! $customer = \affwp_get_customer( $request['id'] ) ) {
+		if ( isset( $request['email'] ) ) {
+			$customer_to_fetch = sanitize_text_field( $request['email'] );
+			$error_msg = 'Invalid customer email';
+		} else {
+			$customer_to_fetch = intval( $request['id'] );
+			$error_msg = 'Invalid customer ID';
+		}
+
+		/**
+		 * Filters the requested customer ID or email.
+		 *
+		 * @since 2.4.1
+		 *
+		 * @param int|string       $customer_to_fetch Customer ID or email to (attempt to) retrieve.
+		 * @param \WP_REST_Request $request           Request arguments.
+		 */
+		$customer_to_fetch = apply_filters( 'affwp_rest_get_customer', $customer_to_fetch, $request );
+
+		if ( ! $customer = \affwp_get_customer( $customer_to_fetch ) ) {
 			$customer = new \WP_Error(
-				'invalid_customer_id',
-				'Invalid customer ID',
+				'invalid_customer',
+				$error_msg,
 				array( 'status' => 404 )
 			);
 		} else {
-			// Populate extra fields.
-			$customer = $this->process_for_output( $customer, $request );
+			$user = (bool) $request->get_param( 'user' );
+			$meta = (bool) $request->get_param( 'meta' );
+
+			// Populate extra fields and return.
+			$customer = $this->process_for_output( $customer, $request, $user, $meta );
 		}
 
 		return $this->response( $customer );
+
+	}
+
+	/**
+	 * Processes a Customer object for output.
+	 *
+	 * Populates non-public properties with derived values.
+	 *
+	 * @since 2.4.1
+	 *
+	 * @param \AffWP\Customer  $customer Customer object.
+	 * @param \WP_REST_Request $request  Full details about the request.
+	 * @param bool             $user     Optional. Whether to lazy load the user object. Default false.
+	 * @param bool             $meta     Optional. Whether to lazy load the customer meta. Default false.
+	 * @return \AffWP\Customer Customer object.
+	 */
+	protected function process_for_output( $customer, $request, $user = false, $meta = false ) {
+
+		if ( true === $user ) {
+			$customer->user = $customer->get_user();
+		}
+
+		if ( true === $meta ) {
+			$customer->meta = $customer->get_meta();
+		}
+
+		return parent::process_for_output( $customer, $request );
 	}
 
 	/**

@@ -106,6 +106,7 @@ class Endpoints extends Controller {
 		$args['status']       = isset( $request['status'] )       ? $request['status'] : '';
 		$args['order']        = isset( $request['order'] )        ? $request['order'] : 'ASC';
 		$args['orderby']      = isset( $request['orderby'] )      ? $request['orderby'] : '';
+		$args['search']       = isset( $request['search'] )       ? $request['search'] : '';
 		$args['fields']       = isset( $request['fields'] )       ? $request['fields'] : '*';
 
 		if ( is_array( $request['filter'] ) ) {

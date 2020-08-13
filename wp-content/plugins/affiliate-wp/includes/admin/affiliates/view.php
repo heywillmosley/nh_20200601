@@ -9,6 +9,8 @@ $affiliate_id = isset( $_GET['affiliate_id'] ) ? absint( $_GET['affiliate_id'] )
 	<?php
 	/**
 	 * Fires at the top of the view-affiliate report admin screen.
+	 *
+	 * @since 1.9
 	 */
 	do_action( 'affwp_view_affiliate_report_top' );
 	?>
@@ -35,6 +37,8 @@ $affiliate_id = isset( $_GET['affiliate_id'] ) ? absint( $_GET['affiliate_id'] )
 	<?php
 	/**
 	 * Fires at the bottom of view-affiliate-report screens.
+	 *
+	 * @since 1.9
 	 */
 	do_action( 'affwp_view_affiliate_report_bottom' );
 	?>

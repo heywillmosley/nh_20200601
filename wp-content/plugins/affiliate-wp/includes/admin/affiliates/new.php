@@ -14,12 +14,14 @@ $disabled     = disabled( (bool) $user, false, false );
 		<?php
 		/**
 		 * Fires at the top of the new-affiliate admin screen, just inside of the form element.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_affiliate_top' );
 		?>
 
 		<?php if ( $user ): ?>
-			<p><?php printf( __( 'Use this form to add %1$s (%2$s) as a new affiliate.', 'affiliate_wp' ), esc_attr( $user->user_login ), esc_attr( $user->user_email ) ); ?></p>
+			<p><?php printf( __( 'Use this form to add %1$s (%2$s) as a new affiliate.', 'affiliate-wp' ), esc_attr( $user->user_login ), esc_attr( $user->user_email ) ); ?></p>
 		<?php else: ?>
 			<p><?php printf( __( 'Use this form to create a new affiliate account. Each affiliate is tied directly to a user account, so if the user account for the affiliate does not yet exist, <a href="%s" target="_blank">create one</a>.', 'affiliate-wp' ), admin_url( 'user-new.php' ) ); ?></p>
 		<?php endif; ?>
@@ -106,14 +108,14 @@ $disabled     = disabled( (bool) $user, false, false );
 					<fieldset id="rate_type">
 						<legend class="screen-reader-text"><?php _e( 'Referral Rate Type', 'affiliate-wp' ); ?></legend>
 						<label for="rate_type_default">
-							<input type="radio" name="rate_type" id="rate_type_default" value="" checked="checked"  <?php echo $disabled; ?> />
+							<input type="radio" name="rate_type" id="rate_type_default" value="" checked="checked" <?php echo $disabled; ?> />
 							<?php _e( 'Site Default', 'affiliate-wp' ); ?>
 						</label>
 						<br/>
 						<?php foreach ( affwp_get_affiliate_rate_types() as $key => $type ) :
 							$value = esc_attr( $key ); ?>
 							<label for="rate_type_<?php echo $value; ?>">
-								<input type="radio" name="rate_type" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>"  <?php echo $disabled; ?>><?php echo esc_html( $type ); ?>
+								<input type="radio" name="rate_type" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>"  <?php echo $disabled; ?>> <?php echo esc_html( $type ); ?>
 							</label>
 							<br/>
 						<?php endforeach; ?>
@@ -135,7 +137,7 @@ $disabled     = disabled( (bool) $user, false, false );
 						<?php foreach ( affwp_get_affiliate_flat_rate_basis_types() as $key => $type ) :
 							$value = esc_attr( $key ); ?>
 							<label for="rate_type_<?php echo $value; ?>">
-								<input type="radio" name="flat_rate_basis" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>" <?php echo $disabled; ?>><?php echo esc_html( $type ); ?>
+								<input type="radio" name="flat_rate_basis" id="rate_type_<?php echo $value; ?>" value="<?php echo $value; ?>" <?php echo $disabled; ?>> <?php echo esc_html( $type ); ?>
 							</label>
 							<br/>
 						<?php endforeach; ?>
@@ -185,7 +187,7 @@ $disabled     = disabled( (bool) $user, false, false );
 				</th>
 
 				<td>
-					<textarea name="notes" rows="5" cols="50" id="notes" class="large-text" <?php echo $disabled; ?>></textarea>
+					<textarea name="notes" rows="5" cols="50" id="notes" class="large-text"></textarea>
 					<p class="description"><?php _e( 'Enter any notes for this affiliate. Notes are only visible to the admin.', 'affiliate-wp' ); ?></p>
 				</td>
 
@@ -209,6 +211,8 @@ $disabled     = disabled( (bool) $user, false, false );
 			<?php
 			/**
 			 * Fires at the end of the new-affiliate admin screen form area, below form fields.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_new_affiliate_end' );
 			?>
@@ -218,6 +222,8 @@ $disabled     = disabled( (bool) $user, false, false );
 		<?php
 		/**
 		 * Fires at the bottom of the new-affiliate admin screen, prior to the submit button.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_affiliate_bottom' );
 		?>

@@ -79,6 +79,14 @@ function affwp_get_currencies() {
 		'VND' => __( 'Vietnamese Dong', 'affiliate-wp' ),
 	);
 
+	/**
+	 * Filters the list of supported currencies.
+	 *
+	 * @since 1.0
+	 *
+	 * @param array $currencies Key/value pairs of currencies where the key is the currency slug
+	 *                          and the value is the translatable labels.
+	 */
 	return apply_filters( 'affwp_currencies', $currencies );
 }
 
@@ -91,6 +99,14 @@ function affwp_get_currencies() {
  */
 function affwp_get_currency() {
 	$currency = affiliate_wp()->settings->get( 'currency', 'USD' );
+
+	/**
+	 * Filters the currency.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $currency Slug for the current currency.
+	 */
 	return apply_filters( 'affwp_currency', $currency );
 }
 
@@ -187,6 +203,14 @@ function affwp_format_amount( $amount, $decimals = true ) {
 	}
 
 	if( $decimals ) {
+		/**
+		 * Filters the number of decimals to use when formatting amounts.
+		 *
+		 * @since 1.0
+		 *
+		 * @param int   $decimals Number of decimals to use.
+		 * @param float $amount   Amount to format.
+		 */
 		$decimals = apply_filters( 'affwp_format_amount_decimals', affwp_get_decimal_count(), $amount );
 	} else {
 		$decimals = 0;
@@ -194,6 +218,17 @@ function affwp_format_amount( $amount, $decimals = true ) {
 
 	$formatted = number_format( $amount, $decimals, $decimal_sep, $thousands_sep );
 
+	/**
+	 * Filters the formatted amount.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $formatted     Formatted amount.
+	 * @param float  $amount        Amount to format.
+	 * @param int    $decimals      Number of decimals used to format the amount.
+	 * @param string $decimal_sep   Decimal separator used when formatting the amount.
+	 * @param string $thousands_sep Thousands separator used when formatting the amount.
+	 */
 	return apply_filters( 'affwp_format_amount', $formatted, $amount, $decimals, $decimal_sep, $thousands_sep );
 }
 
@@ -204,6 +239,13 @@ function affwp_format_amount( $amount, $decimals = true ) {
  * @return int Number of decimal places
  */
 function affwp_get_decimal_count() {
+	/**
+	 * Filter the number decimals to round to.
+	 *
+	 * @since 1.8
+	 *
+	 * @param int $decimals Number of decimals. Default 2.
+	 */
 	return apply_filters( 'affwp_decimal_count', 2 );
 }
 
@@ -290,6 +332,18 @@ function affwp_currency_filter( $amount ) {
 			    $formatted = $currency . ' ' . $amount;
 				break;
 		endswitch;
+
+		/**
+		 * Filters the formatted amount when the currency is displayed before the amount.
+		 *
+		 * The dynamic portion of the hook, `$currency`, refers to the currency.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $formatted The formatted amount.
+		 * @param string $currency  Currency used to format the amount.
+		 * @param float  $amount    Amount to be formatted.
+		 */
 		$formatted = apply_filters( 'affwp_' . strtolower( $currency ) . '_currency_filter_before', $formatted, $currency, $amount );
 	else :
 		switch ( $currency ) :
@@ -331,6 +385,18 @@ function affwp_currency_filter( $amount ) {
 			    $formatted = $amount . ' ' . $currency;
 				break;
 		endswitch;
+
+		/**
+		 * Filters the formatted amount when the currency is displayed following the amount.
+		 *
+		 * The dynamic portion of the hook, `$currency`, refers to the currency.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $formatted The formatted amount.
+		 * @param string $currency  Currency used to format the amount.
+		 * @param float  $amount    Amount to be formatted.
+		 */
 		$formatted = apply_filters( 'affwp_' . strtolower( $currency ) . '_currency_filter_after', $formatted, $currency, $amount );
 	endif;
 
@@ -375,8 +441,8 @@ add_filter( 'affwp_decimal_count', 'affwp_currency_decimal_filter' );
  *
  * @since 1.0
  *
- * @param unknown $data
- * @return array
+ * @param array|object $data Object or array to process.
+ * @return array Array.
  */
 function affwp_object_to_array( $data ) {
 	if ( is_array( $data ) || is_object( $data ) ) {
@@ -458,6 +524,15 @@ function affwp_get_referral_format_value( $format = '', $affiliate_id = 0 ) {
 
 	}
 
+	/**
+	 * Filters the value of the given referral format.
+	 *
+	 * @since 1.6
+	 *
+	 * @param int|string $value        Affiliate field.
+	 * @param string     $format       Affiliate format (field). Accepts 'username' or 'id'.
+	 * @param int        $affiliate_id Affiliate ID.
+	 */
 	return apply_filters( 'affwp_get_referral_format_value', $value, $format, $affiliate_id );
 }
 
@@ -506,6 +581,13 @@ function affwp_is_recaptcha_enabled() {
 	$secret_key = affiliate_wp()->settings->get( 'recaptcha_secret_key', '' );
 	$enabled    = ( ! empty( $checkbox ) && ! empty( $site_key ) && ! empty( $secret_key ) );
 
+	/**
+	 * Filters whether ReCpatcha is enabled.
+	 *
+	 * @since 1.7
+	 *
+	 * @param bool $enabled Whether ReCaptch is enabled.
+	 */
 	return (bool) apply_filters( 'affwp_recaptcha_enabled', $enabled );
 
 }
@@ -719,6 +801,7 @@ function affwp_get_logout_url() {
 	 * Filters the URL to log out the current user.
 	 *
 	 * @since 1.8.8
+	 *
 	 * @param string $logout_url URL to log out the current user.
 	 */
 	return apply_filters( 'affwp_logout_url', wp_logout_url( get_permalink() ) );
@@ -1033,7 +1116,18 @@ function affwp_has_upgrade_completed( $upgrade_action ) {
 
 	$completed_upgrades = affwp_get_completed_upgrades();
 
-	return in_array( $upgrade_action, $completed_upgrades, true );
+	$has_completed = in_array( $upgrade_action, $completed_upgrades, true );
+
+	// (Maybe) force an upgrade action to show.
+	if ( ! empty( $_REQUEST['affwp_force_notice'] ) ) {
+		$foced_upgrade_action = sanitize_key( $_REQUEST['affwp_force_notice'] );
+
+		if ( $foced_upgrade_action === $upgrade_action ) {
+			$has_completed = false;
+		}
+	}
+
+	return $has_completed;
 }
 
 /**
@@ -1090,7 +1184,7 @@ function affwp_get_affiliate_import_fields() {
 		'rate'            => __( 'Rate', 'affiliate-wp' ),
 		'rate_type'       => __( 'Rate Type', 'affiliate-wp' ),
 		'flat_rate_basis' => __( 'Flat Rate Basis', 'affiliate-wp' ),
-		'earnings'        => __( 'Earnings', 'afiliate-wp' ),
+		'earnings'        => __( 'Earnings', 'affiliate-wp' ),
 		'unpaid_earnings' => __( 'Unpaid Earnings', 'affiliate-wp' ),
 		'referrals'       => __( 'Referral Count', 'affiliate-wp' ),
 		'visits'          => __( 'Visit Count', 'affiliate-wp' ),
@@ -1250,4 +1344,188 @@ function affwp_get_current_page_number() {
 	}
 
 	return max( $page, 1 );
+}
+
+/**
+ * Get SEPA countries
+ *
+ * @since 2.4
+ * @return array $sepa_countries A list of SEPA countries.
+ */
+function affwp_get_sepa_countries() {
+
+	$sepa_countries = array(
+		'AT' => __( 'Austria', 'affiliate-wp' ),
+		'BE' => __( 'Belgium', 'affiliate-wp' ),
+		'DK' => __( 'Denmark', 'affiliate-wp' ),
+		'FI' => __( 'Finland', 'affiliate-wp' ),
+		'FR' => __( 'France', 'affiliate-wp' ),
+		'DE' => __( 'Germany', 'affiliate-wp' ),
+		'IE' => __( 'Ireland', 'affiliate-wp' ),
+		'IT' => __( 'Italy', 'affiliate-wp' ),
+		'LU' => __( 'Luxembourg', 'affiliate-wp' ),
+		'NL' => __( 'Netherlands', 'affiliate-wp' ),
+		'NO' => __( 'Norway', 'affiliate-wp' ),
+		'PT' => __( 'Portugal', 'affiliate-wp' ),
+		'ES' => __( 'Spain', 'affiliate-wp' ),
+		'SE' => __( 'Sweden', 'affiliate-wp' ),
+		'CH' => __( 'Switzerland', 'affiliate-wp' ),
+		'GB' => __( 'United Kingdom', 'affiliate-wp' ),
+	);
+
+	return $sepa_countries;
+}
+
+/**
+ * Get Payouts Service Country List
+ *
+ * @since 2.4
+ * @return array $countries A list of the countries support by the payouts service.
+ */
+function affwp_get_payouts_service_country_list() {
+
+	$countries = array(
+		'US' => __( 'United States', 'affiliate-wp' ),
+		'CA' => __( 'Canada', 'affiliate-wp' ),
+		'GB' => __( 'United Kingdom', 'affiliate-wp' ),
+		'AU' => __( 'Australia', 'affiliate-wp' ),
+		'AT' => __( 'Austria', 'affiliate-wp' ),
+		'BE' => __( 'Belgium', 'affiliate-wp' ),
+		'BG' => __( 'Bulgaria', 'affiliate-wp' ),
+		'CY' => __( 'Cyprus', 'affiliate-wp' ),
+		'CZ' => __( 'Czech Republic', 'affiliate-wp' ),
+		'DK' => __( 'Denmark', 'affiliate-wp' ),
+		'EE' => __( 'Estonia', 'affiliate-wp' ),
+		'FI' => __( 'Finland', 'affiliate-wp' ),
+		'FR' => __( 'France', 'affiliate-wp' ),
+		'DE' => __( 'Germany', 'affiliate-wp' ),
+		'GR' => __( 'Greece', 'affiliate-wp' ),
+		'HK' => __( 'Hong Kong', 'affiliate-wp' ),
+		'JP' => __( 'Japan', 'affiliate-wp' ),
+		'IE' => __( 'Ireland', 'affiliate-wp' ),
+		'IT' => __( 'Italy', 'affiliate-wp' ),
+		'LV' => __( 'Latvia', 'affiliate-wp' ),
+		'LT' => __( 'Lithuania', 'affiliate-wp' ),
+		'LU' => __( 'Luxembourg', 'affiliate-wp' ),
+		'MY' => __( 'Malaysia', 'affiliate-wp' ),
+		'MT' => __( 'Malta', 'affiliate-wp' ),
+		'NL' => __( 'Netherlands', 'affiliate-wp' ),
+		'NZ' => __( 'New Zealand', 'affiliate-wp' ),
+		'NO' => __( 'Norway', 'affiliate-wp' ),
+		'PL' => __( 'Poland', 'affiliate-wp' ),
+		'PT' => __( 'Portugal', 'affiliate-wp' ),
+		'RO' => __( 'Romania', 'affiliate-wp' ),
+		'SG' => __( 'Singapore', 'affiliate-wp' ),
+		'SK' => __( 'Slovakia', 'affiliate-wp' ),
+		'SI' => __( 'Slovenia', 'affiliate-wp' ),
+		'ES' => __( 'Spain', 'affiliate-wp' ),
+		'SE' => __( 'Sweden', 'affiliate-wp' ),
+		'CH' => __( 'Switzerland', 'affiliate-wp' ),
+	);
+
+	return $countries;
+
+}
+
+/**
+ * Determines whether the given element is part of the database component.
+ *
+ * @since 2.5
+ *
+ * @param mixed $element Element to check.
+ * @return bool Whether or not the element is an instance of Affiliate_WP_DB.
+ */
+function affwp_is_db( $element ) {
+	return $element instanceof \Affiliate_WP_DB;
+}
+
+/**
+ * Calculates the percentage of two values.
+ *
+ * Answers the question like so: $value is what percent of $divided_by?
+ *
+ * @since 2.5
+ *
+ * @param float  $value      The base value to get percentage from.
+ * @param float  $divided_by What to divide the value by to get the percent.
+ * @return float The percentage, as a float. Will return INF if `$divided_by` is 0.
+ */
+function affwp_calculate_percentage( $value, $divided_by ) {
+	$value      = (float) $value;
+	$divided_by = (float) $divided_by;
+
+	// Return INF if dividing by zero.
+	if ( $divided_by === 0.0 ) {
+		return INF;
+	}
+
+	$percentage = ( $value / $divided_by ) * 100;
+
+	return $percentage;
+}
+
+/**
+ * Formats a number as a percentage.
+ *
+ * @since 2.5
+ *
+ * @param number       $percentage The percentage to format.
+ * @param int          $precision  Optional. The number of decimal places to round the percentage. Default 0.
+ * @return string The formatted percentage, or an empty string if infinite.
+ */
+function affwp_format_percentage( $percentage, $precision = 0 ) {
+
+	if ( is_infinite( $percentage ) ) {
+		return '';
+	}
+
+	$percentage = round( $percentage, $precision );
+
+	/* translators: Formatted percentage value. If using '%' to format percentage, must be expressed as '%%' to avoid errors */
+
+	return sprintf( __( '%s%%', 'affiliate-wp' ), $percentage );
+}
+
+/**
+ * Determines if the provided amount is something that can be converted to an amount.
+ *
+ * @since 2.5.5
+ *
+ * @param mixed $amount The amount to check.
+ * @return true|WP_Error True if the amount if valid. Otherwise, WP_Error explaining why.
+ */
+function affwp_is_valid_amount( $amount ) {
+
+	// If this is a number, then it's valid. Go ahead and return true.
+	if ( is_numeric( $amount ) ) {
+		return true;
+	}
+
+	// If this is a string, run a regex to see if it is valid.
+	if ( is_string( $amount ) ) {
+
+		$separator = affiliate_wp()->settings->get( 'decimal_separator', '.' );
+
+		// Determine if the item is an intended zero string.
+		$matched = preg_match( sprintf( '/\$%1$s[0-9]+$|^[0-9]+$|^[0-9]+[\%1$s]([0-9]+$|$)/', $separator ), $amount );
+
+		if ( 1 === $matched ) {
+			$valid = true;
+		} else {
+			$valid = new \WP_Error(
+				'affwp_amount_is_malformed',
+				'The provided amount is not a valid amount.',
+				array( 'amount' => $amount )
+			);
+		}
+		// Otherwise, this is invalid. Return an error.
+	} else {
+		$valid = new \WP_Error(
+			'affwp_amount_is_invalid_type',
+			'The provided amount is not a valid type. Must be a valid numerical string, a float, or an integer.',
+			array( 'amount' => $amount, 'type' => gettype( $amount ) )
+		);
+	}
+
+	return $valid;
 }

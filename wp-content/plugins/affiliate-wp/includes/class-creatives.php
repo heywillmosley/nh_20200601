@@ -113,10 +113,17 @@ class Affiliate_WP_Creatives {
 	}
 
 	/**
-	 * Shortcode HTML
+	 * Renders the HTML output for a given Creative.
 	 *
 	 * @since  1.2
-	 * @param  $image the image URL. Either the URL from the image column in DB or external URL of image.
+	 *
+	 * @param string $html             HTML output for the Creative.
+	 * @param string $url              Creative URL.
+	 * @param string $image_link       The image URL. Either the URL from the image column in DB
+	 *                                 or external URL of image.
+	 * @param array  $image_attributes Image attributes.
+	 * @param string $preview          Creative's preview parameter. Usually 'yes' or 'no'.
+	 * @param string $text             Text description for the Creative.
 	 * @return string
 	 */
 	public function html( $id = '', $url, $image_link, $image_attributes, $preview, $text, $desc = '' ) {
@@ -141,6 +148,20 @@ class Affiliate_WP_Creatives {
 		affiliate_wp()->templates->get_template_part( 'creative' );
 
 		$html = ob_get_clean();
+
+		/**
+		 * Filters the HTML output for the current Creative.
+		 *
+		 * @since 1.2
+		 *
+		 * @param string $html             HTML output for the Creative.
+		 * @param string $url              Creative URL.
+		 * @param string $image_link       The image URL. Either the URL from the image column in DB
+		 *                                 or external URL of image.
+		 * @param array  $image_attributes Image attributes.
+		 * @param string $preview          Creative's preview parameter. Usually 'yes' or 'no'.
+		 * @param string $text             Text description for the Creative.
+		 */
 		return apply_filters( 'affwp_affiliate_creative_html', $html, $url, $image_link, $image_attributes, $preview, $text );
 	}
 

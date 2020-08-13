@@ -5,7 +5,7 @@
  * Description: Create an affiliate registration form using Gravity Forms
  * Author: Sandhills Development, LLC
  * Author URI: https://sandhillsdev.com
- * Version: 1.0.19
+ * Version: 1.0.21
  * Text Domain: affiliatewp-afgf
  * Domain Path: languages
  *
@@ -57,7 +57,7 @@ if ( ! class_exists( 'AffiliateWP_Affiliate_Forms_For_Gravity_Forms' ) ) {
 		 * @var    string
 		 * @static
 		 */
-		private static $version = '1.0.19';
+		private static $version = '1.0.21';
 
 		/**
 		 * The affiliate registration handler instance variable.
@@ -288,7 +288,7 @@ if ( ! class_exists( 'AffiliateWP_Affiliate_Forms_For_Gravity_Forms' ) ) {
 			$form_id = affwp_afgf_get_registration_form_id();
 
 			// Bail if not the registration form.
-			if ( ! $form_id || $form['id'] !== $form_id ) {
+			if ( ! $form_id || (int) $form['id'] !== $form_id ) {
 				return;
 			}
 

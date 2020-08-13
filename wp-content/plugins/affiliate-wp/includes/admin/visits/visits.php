@@ -44,6 +44,8 @@ function affwp_visits_admin() {
 		<?php
 		/**
 		 * Fires at the top of the Visits admin screen (outside the form element).
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_visits_page_top' );
 
@@ -72,6 +74,8 @@ function affwp_visits_admin() {
 
 		/**
 		 * Fires at the bottom of the Visits admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_visits_page_bottom' );
 

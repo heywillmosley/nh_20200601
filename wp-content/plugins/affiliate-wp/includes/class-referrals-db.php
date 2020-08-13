@@ -21,6 +21,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	public $cache_group = 'referrals';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'referrals';
+
+	/**
 	 * Object type to query for.
 	 *
 	 * @since 1.9
@@ -37,6 +45,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * @var object
 	 */
 	public $types_registry;
+
+	/**
+	 * The sales instance variable.
+	 *
+	 * @since 2.5
+	 * @var   \Affiliate_WP_Sales_DB
+	 */
+	public $sales;
 
 	/**
 	 * Get things started
@@ -56,12 +72,14 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		$this->primary_key = 'referral_id';
 		$this->version     = '1.2';
 
+		$this->sales = new \Affiliate_WP_Sales_DB;
+
 		// REST endpoints.
 		if ( version_compare( $wp_version, '4.4', '>=' ) ) {
 			$this->REST = new \AffWP\Referral\REST\v1\Endpoints;
 		}
 
-		$this->types_registry = new AffWP\Utils\Referral_Types\Registry;
+		$this->types_registry = new \AffWP\Utils\Referral_Types\Registry;
 		$this->types_registry->init();
 	}
 
@@ -141,23 +159,24 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	/**
 	 * Adds a referral.
 	 *
-	 * @access  public
-	 * @since   1.0
+	 * @since 1.0
+	 * @since 2.5 Added an `order_total` argument.
 	 *
 	 * @param array $data {
 	 *     Optional. Referral data. Default empty array.
 	 *
 	 *     @type string $status Referral status. Default 'pending'.
-	 *     @type int    $amount Referral amount. Defualt 0.
+	 *     @type int    $amount Referral amount. Default 0.
 	 * }
 	 * @return int|false Referral ID if successfully added, false otherwise.
 	*/
 	public function add( $data = array() ) {
 
 		$defaults = array(
-			'status' => 'pending',
-			'amount' => 0,
-			'type'   => 'sale'
+			'status'        => 'pending',
+			'amount'        => 0,
+			'type'          => 'sale',
+			'order_total'   => 0,
 		);
 
 		$args = wp_parse_args( $data, $defaults );
@@ -222,11 +241,31 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				$args['type'] = 'sale';
 			}
 
+			if ( ! empty( $args['context'] ) ) {
+				// Force context to lowercase for system-wide compatibility.
+				$args['context'] = strtolower( $args['context'] );
+			}
+
 			$args['customer_id'] = $this->setup_customer( $args );
 
 			$add = $this->insert( $args, 'referral' );
 
 			if ( $add ) {
+
+				$referral    = affwp_get_referral( $add );
+				$integration = affiliate_wp()->integrations->get( $referral->context );
+
+				// If the order_total is empty, try to get it from the integration directly.
+				if ( ! is_wp_error( $integration ) && empty( $args['order_total'] ) ) {
+					$args['order_total'] = $integration->get_order_total( $referral->reference );
+				}
+
+				affiliate_wp()->referrals->sales->add( array(
+					'order_total'   => $args['order_total'],
+					'amount'        => $referral->amount,
+					'affiliate_id'  => $referral->affiliate_id,
+					'referral_id'   => $referral->referral_id,
+				) );
 
 				/**
 				 * Fires once a new referral has successfully been inserted into the database.
@@ -306,6 +345,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 			$args['type'] = 'sale';
 		}
 
+		// Force context to lowercase for system-wide compatibility.
+		$args['context'] = strtolower( $args['context'] );
+
 		/*
 		 * Deliberately defer updating the status – it will be updated instead
 		 * in affwp_set_referral_status() if changed.
@@ -315,8 +357,10 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		 * adjustments. Now the status is only updated once as needed. See #2257.
 		 */
 		$new_status = ! empty( $data['status'] ) ? sanitize_key( $data['status'] ) : $referral->status;
+		$new_type   = ! empty( $args['type'] )   ? sanitize_key( $args['type'] )   : $referral->type;
 
-		$updated = $this->update( $referral->ID, $args, '', 'referral' );
+		$updated          = $this->update( $referral->ID, $args, '', 'referral' );
+		$updated_referral = affwp_get_referral( $referral );
 
 		/**
 		 * Fires immediately after a referral update has been attempted.
@@ -327,7 +371,7 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 		 * @param \AffWP\Referral $referral         Original referral object.
 		 * @param bool            $updated          Whether the referral was successfully updated.
 		 */
-		do_action( 'affwp_updated_referral', affwp_get_referral( $referral ), $referral, $updated );
+		do_action( 'affwp_updated_referral', $updated_referral, $referral, $updated );
 
 		if( $updated ) {
 
@@ -364,11 +408,59 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 				}
 			}
 
+			// If the referral is now a sale, add the sales record.
+			if ( 'sale' === $new_type && 'sale' !== $referral->type ) {
+
+				affiliate_wp()->referrals->sales->add( array(
+					'referral_id' => $updated_referral->ID
+				) );
+
+			// If the referral is still a sale, check for any updated sales data.
+			} elseif ( 'sale' === $new_type && 'sale' === $referral->type ) {
+
+				// If any columns that impact sales data were updated, update the corresponding sales record.
+				$sales_data = array_intersect_key( $data, $this->sales->get_columns() );
+
+				if ( ! empty( $sales_data ) ) {
+					affiliate_wp()->referrals->sales->update_sale( $updated_referral, $sales_data );
+				}
+
+			// If the referral used to be a sale and now isn't, delete the corresponding sales record.
+			} elseif ( 'sale' !== $new_type && 'sale' === $referral->type ) {
+
+				affiliate_wp()->referrals->sales->delete( $updated_referral->ID );
+
+			}
+
 			return true;
 		}
 
 		return false;
 
+	}
+
+	/**
+	 * Deletes a referral from the database.
+	 *
+	 * Please note: successfully deleting a record flushes the cache.
+	 *
+	 * @since 2.5
+	 *
+	 * @param int|string $row_id Referral ID.
+	 * @param string     $type   Object type. Unused at this level.
+	 * @return bool True if the record was deleted, otherwise false.
+	 */
+	public function delete( $row_id = 0, $type = '' ) {
+		$referral_id = $row_id;
+
+		$deleted = parent::delete( $referral_id, 'referral' );
+
+		// If the referral was removed, trash collect any associated sales data as well.
+		if ( $deleted ) {
+			affiliate_wp()->referrals->sales->delete( $referral_id );
+		}
+
+		return $deleted;
 	}
 
 	/**
@@ -481,6 +573,10 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 		if( $args['number'] < 1 ) {
 			$args['number'] = 999999999999;
+		}
+
+		if ( ! is_array( $args['sum_fields'] ) ) {
+			$args['sum_fields'] = (array) $args['sum_fields'];
 		}
 
 		$where = $join = '';
@@ -629,10 +725,12 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 
 			$where .= empty( $where ) ? "WHERE " : "AND ";
 
-			if( is_array( $args['context'] ) ) {
+			if ( is_array( $args['context'] ) ) {
+				$args['context'] = array_map( 'strtolower', $args['context'] );
+
 				$where .= "`context` IN('" . implode( "','", array_map( 'esc_sql', $args['context'] ) ) . "') ";
 			} else {
-				$context = esc_sql( $args['context'] );
+				$context = esc_sql( strtolower( $args['context'] ) );
 
 				if ( ! empty( $args['search'] ) ) {
 					$where .= "`context` LIKE '%%" . $context . "%%' ";
@@ -781,35 +879,42 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 	 * Retrieves sum of all earnings filtered by the status, affiliate id, or date.
 	 *
 	 * @since 2.3
+	 * @since 2.5 Added optional `$context` and `$type` parameters.
 	 *
 	 * @param array|string $status       The earning status to get. Can be a single status, or an array of multiple
 	 *                                   statuses.
 	 * @param int          $affiliate_id Optional. The affiliate ID to sum from. Default 0. This will get the total
 	 *                                   earnings for all affiliates if set to 0.
 	 * @param array|string $date         Optional. Date range in which to calculate sum from. Default empty.
+	 * @param array|string $context      Optional. The context type or array of types to use in the calculation.
+	 *                                   Default empty.
+	 * @param array|string $type         Optional. The referral type or array of types to use in the calculation.
+	 *                                   Default empty.
 	 * @return int|float The total earnings from the provided parameters. Returns 0 if affiliate does not exist.
 	 */
-	public function get_earnings_by_status( $status, $affiliate_id = 0, $date = '' ) {
+	public function get_earnings_by_status( $status, $affiliate_id = 0, $date = '', $context = '', $type = '' ) {
 
 		$affiliate_id = absint( $affiliate_id );
 
 		$args = array(
 			'status'       => $status,
 			'affiliate_id' => $affiliate_id,
-			'number'       => - 1,
+			'number'       => -1,
 			'fields'       => 'amount',
+			'context'      => $context,
 			'groupby'      => $affiliate_id > 0 ? 'affiliate_id' : '',
-			'sum_fields'   => 'amount',
+			'sum_fields'   => array( 'amount' ),
 		);
 
-		if ( 'alltime' == $date ) {
-			return $this->get_alltime_earnings();
-		} elseif ( 0 !== $args['affiliate_id'] && false === affwp_get_affiliate( $args['affiliate_id'] ) ) {
+		if ( ! empty( $type ) ) {
+			$args['type'] = $type;
+		}
+
+		if ( 0 !== $args['affiliate_id'] && false === affwp_get_affiliate( $args['affiliate_id'] ) ) {
 			return 0;
 		}
 
-		if( ! empty( $date ) ) {
-
+		if ( ! empty( $date ) ) {
 			// Back-compat for string date rates.
 			if ( is_string( $date ) ) {
 				switch ( $date ) {
@@ -827,6 +932,9 @@ class Affiliate_WP_Referrals_DB extends Affiliate_WP_DB  {
 							'start' => date( 'Y-m-01 00:00:00', ( current_time( 'timestamp' ) - MONTH_IN_SECONDS ) ),
 							'end'   => date( 'Y-m-' . cal_days_in_month( CAL_GREGORIAN, date( 'n' ), date( 'Y' ) ) . ' 23:59:59', ( current_time( 'timestamp' ) - MONTH_IN_SECONDS ) ),
 						);
+						break;
+					case 'alltime':
+						$date = '';
 						break;
 				}
 			}

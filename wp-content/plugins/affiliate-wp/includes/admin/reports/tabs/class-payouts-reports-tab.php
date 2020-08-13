@@ -155,7 +155,7 @@ class Tab extends Reports\Tab {
 			'date'         => $this->date_query,
 			'status'       => array( 'paid', 'unpaid', 'pending' ),
 			'affiliate_id' => $affiliate_id,
-			'fields'       => array( 'affiliate_id', 'amount_sum' ),
+			'fields'       => array( 'affiliate_id' ),
 			'sum_fields'   => array( 'amount' ),
 			'orderby'      => 'amount_sum',
 			'number'       => -1,

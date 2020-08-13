@@ -50,12 +50,12 @@ class Most_Valuable_Affiliates extends Meta_Box implements Meta_Box\Base {
 		$affiliates = affiliate_wp()->affiliates->get_affiliates(
 			/**
 	 		 * Filter the get_affiliates() query.
+			 *
+			 * @since 1.9
 	 		 *
 	 		 * @param array The query arguments for get_affiliates().
 	 		 *              By default, this query shows the five highest
 	 		 *              earning affiliates, in descending order.
-	 		 * @since 1.9
-	 		 *
 	 		 */
 			apply_filters( 'affwp_overview_most_valuable_affiliates_query_args',
 				array(

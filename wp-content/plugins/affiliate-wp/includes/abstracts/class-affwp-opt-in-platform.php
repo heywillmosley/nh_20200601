@@ -152,6 +152,15 @@ abstract class Platform {
 			'sslverify'   => false,
 			'httpversion' => '1.1',
 			'headers'     => $headers,
+
+			/**
+			 * Filters the opt-in platform subscription arguments.
+			 *
+			 * @since 2.2
+			 *
+			 * @param string                              $body Subscription arguments for the opt-in platform.
+			 * @param \AffWP\Integrations\Opt_In\Platform $this Platform instance.
+			 */
 			'body'        => apply_filters( 'affwp_opt_in_platform_subscribe_args', $body, $this ),
 		);
 

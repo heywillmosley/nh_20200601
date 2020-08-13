@@ -25,14 +25,20 @@ class Affiliate_WP_ZippyCourses extends Affiliate_WP_Base {
 	public $transaction_affiliate_visit;
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'zippycourses';
+
+	/**
 	 * Setup actions and filters
 	 *
 	 * @access  public
 	 * @since   1.7
 	*/
 	public function init() {
-
-		$this->context = 'zippycourses';
 
 		add_action( 'admin_init', array( $this, 'metabox' ) );
 		add_action( 'save_post', array( $this, 'save_meta' ) );
@@ -329,8 +335,16 @@ class Affiliate_WP_ZippyCourses extends Affiliate_WP_Base {
 			||  ( $event->new_status == 'active' && $event->old_status != 'active') );
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Zippy_Event' );
+	}
 }
 
-if ( class_exists( 'Zippy_Event' ) ) {
 	new Affiliate_WP_ZippyCourses;
-}

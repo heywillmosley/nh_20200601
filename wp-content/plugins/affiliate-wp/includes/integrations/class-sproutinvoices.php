@@ -3,14 +3,20 @@
 class Affiliate_WP_Sprout_Invoices extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'sproutinvoices';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.6
 	 */
 	public function init() {
-		$this->context = 'sproutinvoices';
-
 		add_action( 'payment_authorized', array( $this, 'add_pending_referral' ) );
 		add_action( 'payment_complete', array( $this, 'mark_referral_complete' ) );
 		add_action( 'si_void_payment', array( $this, 'revoke_referral_on_refund' ) );
@@ -105,8 +111,16 @@ class Affiliate_WP_Sprout_Invoices extends Affiliate_WP_Base {
 		return '<a href="' . esc_url( $url ) . '">' . $reference . '</a>';
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'SI_Payment' );
+	}
 }
 
-if ( class_exists( 'SI_Payment' ) ) {
 	new Affiliate_WP_Sprout_Invoices;
-}

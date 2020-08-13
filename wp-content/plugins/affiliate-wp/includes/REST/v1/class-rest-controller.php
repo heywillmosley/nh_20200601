@@ -279,6 +279,10 @@ abstract class Controller {
 	 * @return mixed (Maybe) modified object for a response.
 	 */
 	protected function process_for_output( $object, $request ) {
+		if ( is_wp_error( $object ) ) {
+			return $this->response( $object );
+		}
+
 		$object_type = $this->get_object_type();
 		$addl_fields = array();
 

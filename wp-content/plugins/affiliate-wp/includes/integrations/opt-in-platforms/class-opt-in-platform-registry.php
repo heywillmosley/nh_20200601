@@ -47,8 +47,8 @@ class Platform_Registry extends Utils\Registry {
 
 		$this->register_platform( 'mailchimp', array(
 			'file'  => AFFILIATEWP_PLUGIN_DIR . 'includes/integrations/opt-in-platforms/class-opt-in-platform-mailchimp.php',
-			'class' => '\AFFWP\Integrations\Opt_In\MailChimp',
-			'label' => 'MailChimp',
+			'class' => '\AFFWP\Integrations\Opt_In\Mailchimp',
+			'label' => 'Mailchimp',
 		) );
 
 		$this->register_platform( 'activecampaign', array(

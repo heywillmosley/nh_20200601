@@ -3,14 +3,20 @@
 class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'edd';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.0
 	*/
 	public function init() {
-
-		$this->context = 'edd';
 
 		add_action( 'edd_insert_payment', array( $this, 'add_pending_referral' ), 99999, 2 );
 
@@ -46,6 +52,55 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 		add_action( 'download_category_edit_form_fields', array( $this, 'edit_download_category_rate' ), 10 );
 		add_action( 'edited_download_category', array( $this, 'save_download_category_rate' ) );  
 		add_action( 'create_download_category', array( $this, 'save_download_category_rate' ) );
+
+		// Downloads archive
+		add_action( 'init', array( $this, 'downloads_page_rewrites' ) );
+	}
+
+	/**
+	 * Gets the total sales for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date  {
+	 *    Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 *     @type string        $start Start date to retrieve orders for.
+	 *     @type string        $end   End date to retrieve orders for.
+	 * }
+	 * @return float The total sales based on the date range provided.
+	 */
+	public function get_total_sales( $date = '' ) {
+
+		// Short circuit the EDD cache
+		add_filter( 'pre_transient_edd_stats_earnings', '__return_empty_array' );
+
+		$date_range = $this->prepare_date_range( $date );
+
+		$result = (float) EDD()->payment_stats->get_earnings( 0, $date_range['start'], $date_range['end'] );
+
+		remove_filter( 'pre_transient_edd_stats_earnings', '__return_empty_array' );
+
+		return $result;
+	}
+
+	/**
+	 * Gets the total order count for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date  {
+	 *     Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 *     @type string $start Start date to retrieve orders for.
+	 *     @type string $end   End date to retrieve orders for.
+	 * }
+	 * @return int Order total count.
+	 */
+	public function get_total_order_count( $date = '' ) {
+		$date_range = $this->prepare_date_range( $date );
+
+		return EDD()->payment_stats->get_sales( 0, $date_range['start'], $date_range['end'] );
 	}
 
 	/**
@@ -55,7 +110,8 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	 *
 	 * @param int   $payment_id   Optional. Payment ID. Defualt 0.
 	 * @param array $payment_data Optional. Payment data. Default empty array.
-	*/
+	 * @return bool|int Returns the referral ID on success, false on failure.
+	 */
 	public function add_pending_referral( $payment_id = 0, $payment_data = array() ) {
 
 		if ( $this->was_referred() ) {
@@ -90,7 +146,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 					$this->log( 'Referral not created because order was a renewal.' );
 
-					return;
+					return false;
 				}
 
 			}
@@ -133,13 +189,14 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 				// Update the previously created referral
 				affiliate_wp()->referrals->update_referral( $existing->referral_id, array(
-					'amount'       => $referral_total,
-					'reference'    => $payment_id,
-					'description'  => $desc,
-					'currency'     => $existing->currency,
-					'campaign'     => affiliate_wp()->tracking->get_campaign(),
-					'products'     => $this->get_products( $payment_id ),
-					'context'      => $this->context
+					'amount'      => $referral_total,
+					'reference'   => $payment_id,
+					'description' => $desc,
+					'currency'    => $existing->currency,
+					'order_total' => $this->get_order_total( $payment_id ),
+					'campaign'    => affiliate_wp()->tracking->get_campaign(),
+					'products'    => $this->get_products( $payment_id ),
+					'context'     => $this->context,
 				) );
 
 				$this->log( sprintf( 'EDD Referral #%d updated successfully.', $existing->referral_id ) );
@@ -153,6 +210,19 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 		}
 
+	}
+
+	/**
+	 * Retrieves the order total from the order.
+	 *
+	 * @access public
+	 * @since  2.5
+	 *
+	 * @param int $order
+	 * @return float The order total for the current integration.
+	 */
+	public function get_order_total( $order = 0 ) {
+		return edd_get_payment_amount( $order );
 	}
 
 	/**
@@ -213,6 +283,7 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 					'reference'    => $payment_id,
 					'description'  => $desc,
 					'currency'     => $existing->currency,
+					'order_total' => $this->get_order_total( $payment_id ),
 					'campaign'     => affiliate_wp()->tracking->get_campaign(),
 					'products'     => $this->get_products( $payment_id ),
 					'context'      => $this->context
@@ -364,6 +435,13 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 	 */
 	public function get_referral_total( $payment_id = 0, $affiliate_id = 0 ) {
 
+		/**
+		 * Filters the EDD cart details before determining the referral total.
+		 *
+		 * @since 1.3.1
+		 *
+		 * @param array $cart_details EDD cart details.
+		 */
 		$downloads = apply_filters( 'affwp_get_edd_cart_details', edd_get_payment_meta_cart_details( $payment_id ) );
 
 		if ( is_array( $downloads ) ) {
@@ -899,8 +977,39 @@ class Affiliate_WP_EDD extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Sets up rewrites for the downloads post type archive page as core's rule is a bit too greedy.
+	 *
+	 * @since 2.4.2
+	 */
+	public function downloads_page_rewrites() {
+		$download_pt = get_post_type_object( 'download' );
+
+		if ( null === $download_pt ) {
+			return;
+		}
+
+		if ( ! empty( $download_pt->rewrite['slug'] ) ) {
+			$slug = $download_pt->rewrite['slug'];
+		} else {
+			$slug = 'downloads';
+		}
+
+		$ref = affiliate_wp()->tracking->get_referral_var();
+
+		add_rewrite_rule( $slug . '/' . $ref . '(/(.*))?/?$', 'index.php?post_type=download&' . $ref . '=$matches[2]', 'top' );
+	}
+
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Easy_Digital_Downloads' );
+	}
 }
 
-if ( class_exists( 'Easy_Digital_Downloads' ) ) {
 	new Affiliate_WP_EDD;
-}

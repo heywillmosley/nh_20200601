@@ -21,48 +21,57 @@ jQuery(document).ready(function($) {
 		 */
 		submit : function() {
 
-			var	self = this,
-				form = $( '.affwp-batch-form' );
+			var self = this;
 
-			form.on( 'submit', function( event ) {
-				event.preventDefault();
+			$( '.affwp-batch-form' ).each( function(){
 
-				var submitButton = $(this).find( 'input[type="submit"]' );
+				$( this ).on( 'submit', function( event ){
+					event.preventDefault();
 
-				if ( ! submitButton.hasClass( 'button-disabled' ) ) {
+					var submitButton = $( this ).find( 'input[type="submit"]' );
 
-					// Handle the Are You Sure (AYS) if present on the form element.
-					var ays = $( this ).data( 'ays' );
+					if( !submitButton.hasClass( 'button-disabled' ) ){
 
-					if ( ays !== undefined ) {
-						if ( ! confirm( ays ) ) {
-							return;
+						// Handle the Are You Sure (AYS) if present on the form element.
+						var ays = $( this ).data( 'ays' );
+
+						if( ays !== undefined ){
+							if( !confirm( ays ) ){
+								return;
+							}
 						}
+
+						var data = {
+							batch_id: $( this ).data( 'batch_id' ),
+							nonce: $( this ).data( 'nonce' ),
+							form: $( this ).serializeAssoc(),
+						};
+
+						if( 'generate-payouts' === data.batch_id ){
+							var cancelButton = $( '#cancel-new-payout' );
+							cancelButton.remove();
+							submitButton.remove();
+						}
+
+						// Disable the button.
+						submitButton.addClass( 'button-disabled' );
+
+						$( this ).find( '.notice-wrap' ).remove();
+
+						// Add the progress bar.
+						$( this ).append( '<div class="notice-wrap"><div class="affwp-batch-progress"><div></div></div></div>' );
+
+						// Add the spinner.
+						submitButton.parent().append( '<span class="spinner is-active"></span>' );
+
+						// Start the process.
+						self.process_step( 1, data, this );
+
 					}
 
-					var data = {
-						batch_id: $( this ).data( 'batch_id' ),
-						nonce: $( this ).data( 'nonce' ),
-						form: $( this ).serializeAssoc(),
-					};
-
-					// Disable the button.
-					submitButton.addClass( 'button-disabled' );
-
-					$( this ).find('.notice-wrap').remove();
-
-					// Add the progress bar.
-					$( this ).append( '<div class="notice-wrap"><div class="affwp-batch-progress"><div></div></div></div>' );
-
-					// Add the spinner.
-					submitButton.parent().append( '<span class="spinner is-active"></span>' );
-
-					// Start the process.
-					self.process_step( 1, data, self );
-
-				}
-
+				} );
 			} );
+
 		},
 
 		/**
@@ -72,11 +81,12 @@ jQuery(document).ready(function($) {
 		 *
 		 * @param {integer}  step Step in the process.
 		 * @param {string[]} data Form data.
-		 * @param {object}   self Instance.
+		 * @param {object}   form Form jQuery object.
 		 */
-		process_step : function( step, data, self ) {
+		process_step: function( step, data, form ) {
 
 			var self = this;
+			form = $( form );
 
 			$.ajax({
 				type: 'POST',
@@ -94,14 +104,14 @@ jQuery(document).ready(function($) {
 
 					if( response.data.done || response.data.error ) {
 
-						var batchSelector = response.data.mapping ? '.affwp-batch-import-form' : '.affwp-batch-form';
-
 						// We need to get the actual in progress form, not all forms on the page
-						var	batchForm   = $( batchSelector ),
-							spinner     = batchForm.find( '.spinner' ),
-							notice_wrap = batchForm.find('.notice-wrap');
+						var spinner = form.find( '.spinner' ),
+							notice_wrap = form.find( '.notice-wrap' ),
+							dismiss_on_complete = true === form.data( 'dismiss-when-complete' );
 
-						batchForm.find('.button-disabled').removeClass('button-disabled');
+						if( false === dismiss_on_complete ){
+							form.find( '.button-disabled' ).removeClass( 'button-disabled' );
+						}
 
 						if ( response.data.error ) {
 
@@ -117,19 +127,25 @@ jQuery(document).ready(function($) {
 								window.location = response.data.url;
 							}
 
+							if( true === dismiss_on_complete ){
+								setTimeout( function(){
+									form.parent( '.notice' ).remove();
+								}, 3000 );
+							}
+
 						} else {
 
 							notice_wrap.remove();
 
 						}
 					} else {
-						$('.affwp-batch-progress div').animate({
+						form.find( '.affwp-batch-progress div' ).animate( {
 							width: response.data.percentage + '%',
 						}, 50, function() {
 							// Animation complete.
 						});
 
-						self.process_step( parseInt( response.data.step ), data, self );
+						self.process_step( parseInt( response.data.step ), data, form );
 					}
 
 				}

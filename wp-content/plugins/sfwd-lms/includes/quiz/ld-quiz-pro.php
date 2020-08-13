@@ -7,14 +7,16 @@
  * @package LearnDash\Quiz
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 /**
  * Include WP Pro Quiz Plugin
  */
-
-require_once dirname( dirname( __FILE__ ) ) . '/vendor/wp-pro-quiz/wp-pro-quiz.php';
-
+//require_once dirname( dirname( __FILE__ ) ) . '/vendor/wp-pro-quiz/wp-pro-quiz.php';
+require_once LEARNDASH_LMS_LIBRARY_DIR . '/wp-pro-quiz/wp-pro-quiz.php';
 
 
 /**
@@ -31,7 +33,7 @@ class LD_QuizPro {
 
 		//add_action( 'wp_head', array( $this, 'certificate_details' ) );
 		add_action( 'wp_pro_quiz_completed_quiz', array( $this, 'wp_pro_quiz_completed' ) );
-		add_action( 'save_post', array( $this, 'edit_process' ), 2000 );
+		//add_action( 'save_post', array( $this, 'edit_process' ), 2000 );
 		add_action( 'plugins_loaded', array( $this, 'quiz_edit_redirect' ), 1 );
 
 		add_filter( 'ldadvquiz_the_content', 'wptexturize' );
@@ -107,42 +109,49 @@ class LD_QuizPro {
 	 * @return string  JSON representation of checked answers
 	 */
 	function checkAnswers( $data ) {
-		
+
 		//error_log('in '. __FUNCTION__ );
 		//error_log('_POST<pre>'. print_r($_POST, true) .'</pre>');
-		
-		if (is_user_logged_in() )
-			$user_id	= 	get_current_user_id();
-		else
-			$user_id	=	0;
-		
-		if ( isset( $data['quizId'] ) )
-			$id 		= 	$data['quizId'];
-		else
-			$id			= 	0;
 
-		if ( isset( $data['quiz'] ) )
-			$quiz_post_id 		= 	$data['quiz'];
-		else
-			$quiz_post_id		= 	0;
-		
-		if ( ( !isset( $data['quiz_nonce'] ) ) || ( !wp_verify_nonce( $data['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-'. $id .'-'. $user_id ) ) ) {
+		if ( is_user_logged_in() ) {
+			$user_id = get_current_user_id();
+		} else {
+			$user_id = 0;
+		}
+
+		if ( isset( $data['quizId'] ) ) {
+			$id = absint( $data['quizId'] );
+		} else {
+			$id = 0;
+		}
+
+		if ( isset( $data['quiz'] ) ) {
+			$quiz_post_id = absint( $data['quiz'] );
+		} else {
+			$quiz_post_id = 0;
+		}
+
+		if ( ( ! isset( $data['quiz_nonce'] ) ) || ( ! wp_verify_nonce( $data['quiz_nonce'], 'sfwd-quiz-nonce-' . $quiz_post_id . '-' . $id . '-' . $user_id ) ) ) {
 			//wp_send_json_error();
 			die();
 		}
-		
-		$view       = new WpProQuiz_View_FrontQuiz();
+
+		$view = new WpProQuiz_View_FrontQuiz();
 		$quizMapper = new WpProQuiz_Model_QuizMapper();
-		$quiz       = $quizMapper->fetch( $id );
+		$quiz = $quizMapper->fetch( $id );
+		if ( $quiz_post_id !== absint( $quiz->getPostId() ) ) {
+			$quiz->setPostId( $quiz_post_id );
+		}
+
 		$questionMapper = new WpProQuiz_Model_QuestionMapper();
 		$categoryMapper = new WpProQuiz_Model_CategoryMapper();
 		$formMapper     = new WpProQuiz_Model_FormMapper();
 
-		$questionModels = $questionMapper->fetchAll( $id );
+		$questionModels = $questionMapper->fetchAll( $quiz );
 
 		$view->quiz     = $quiz;
 		$view->question = $questionModels;
-		$view->category = $categoryMapper->fetchByQuiz( $quiz->getId() );
+		$view->category = $categoryMapper->fetchByQuiz( $quiz );
 
 		$question_count = count( $questionModels );
 		ob_start();
@@ -190,9 +199,9 @@ class LD_QuizPro {
 							//$correct = (strtolower( $userResponse ) == strtolower( $questionData['correct'][0] ));
 					
 							$correct = false;
-							foreach($questionData['correct'] as $questionData_correct) {
-								if (stripslashes(strtolower( $userResponse )) == stripslashes(strtolower( $questionData_correct ))) {
 							
+							foreach($questionData['correct'] as $questionData_correct) {
+								if (  stripslashes( strtolower( trim( $userResponse ) ) ) == stripslashes( strtolower( trim( $questionData_correct ) ) ) ) {
 									$correct = true;
 									break;
 								}
@@ -200,6 +209,24 @@ class LD_QuizPro {
 
 							$points  = ( $correct) ? $questionData['points'] : 0;
 
+							/**
+							 * Filters answer points for free question type.
+							 *
+							 * @param int   $points        Points for the question.
+							 * @param array $question_data An array of question data.
+							 * @param array $user_response An array of user response data.
+							 */
+							$points = apply_filters( 'learndash_ques_free_answer_pts', $points, $questionData, $userResponse );
+
+							/**
+							 * Filters whether the answer is correct or not for a free question type.
+							 *
+							 * @param boolean $correct       Whether the answer is correct or not.
+							 * @param array   $question_data An array of question data.
+							 * @param array   $user_response An array of user response data.
+							 */
+							$correct = apply_filters( 'learndash_ques_free_answer_correct', $correct, $questionData, $userResponse );
+								
 							$extra['r'] = $userResponse;
 							if ( ! $quiz->isDisabledAnswerMark() && empty( $questionData['disCorrect'] ) ) {
 								$extra['c'] = $questionData['correct'];
@@ -213,27 +240,96 @@ class LD_QuizPro {
 
 							foreach ( $questionData['correct'] as $answerIndex => $correctAnswer ) {
 
-								$checked = $questionData['correct'][ $userResponse[ $answerIndex ] ];
+								//$checked = $questionData['correct'][ $userResponse[ $answerIndex ] ];
 
 
 								if ( $answer_pointed_activated ){
-
+									
 									/**
 									 * Points are calculated per answer, add up all the points the user marked correctly
 									 */
+									
+									/*
 									if ( ! empty( $correctAnswer ) && ! empty( $userResponse[ $answerIndex ] ) ) {
 										$r[ $answerIndex ] = true;
+										$correct = true;
 										$points += $questionData['points'][ $answerIndex ];
 									} else {
 										$r[ $answerIndex ] = false;
-									}
-
-									if ( $userResponse != $questionData['correct'] ) {
 										$correct = false;
 									}
 
+									//if ( $userResponse != $questionData['correct'] ) {
+									// $correct = false;
+									//}
+
 									$points = apply_filters( 'learndash_ques_multiple_answer_pts_each', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
 									$correct = apply_filters( 'learndash_ques_multiple_answer_correct_each', $correct, $questionData, $answerIndex, $correctAnswer, $userResponse );
+									*/
+									
+									
+									
+									if ( ( isset( $userResponse[ $answerIndex ] ) ) && ( $userResponse[ $answerIndex ] == $correctAnswer ) ) { 
+										$r[ $answerIndex ] = $userResponse[ $answerIndex ];
+										$correct_this_item = true;
+										
+										if ( $userResponse[ $answerIndex ] == true )
+											$points += $questionData['points'][ $answerIndex ];
+										
+									} else {
+										$r[ $answerIndex ] = false;
+										$correct_this_item = false;
+									}
+
+									if ( has_filter( 'learndash_ques_multiple_answer_pts_each' ) ) {
+										/**
+										 * Filters the points of each answer for multiple answer type question.
+										 *
+										 * @param int        $point          Points for the question.
+										 * @param int|string $answer_index   Index of the answer.
+										 * @param array      $question_data  An array of question data.
+										 * @param mixed      $correct_answer Correct answer for the question.
+										 * @param array      $user_response  An array of user response data.
+										 */
+										$points = apply_filters( 'learndash_ques_multiple_answer_pts_each', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
+									} else {
+										/**
+										 * Added logic to subtract points on selected incorrect answers. 
+										 *
+										 * @since 2.5.7
+										 */
+										if ( $questionData['correct'][ $answerIndex ] == 0 ) {
+											if ( $correct_this_item == false ) {
+												if ( intval( $questionData['points'][ $answerIndex ] ) > 0 ) {
+													$points -= intval( $questionData['points'][ $answerIndex ] );
+												} //else {
+												//	$points -= 1;
+												//}
+											}
+
+											end( $questionData['correct'] );
+											$last_key = key( $questionData['correct'] );
+
+											// If we are at the last index and the points is less than zero we keep it from being negative.
+											if ( ( $last_key == $answerIndex ) && ( $points < 0 ) ) {
+												$points = 0;
+											}
+										}
+									}
+									
+									/**
+									 * Filters whether to correct the answer for a multiple answer type question or not.
+									 *
+									 * @param boolean    $correct_item   Whether to correct the answer or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
+									$correct_this_item = apply_filters( 'learndash_ques_multiple_answer_correct_each', $correct_this_item, $questionData, $answerIndex, $correctAnswer, $userResponse );
+									if ( ( $correct_this_item != true ) && ( $correct == true ) )
+										$correct = false;
+									 
 
 								} else {
 
@@ -265,8 +361,31 @@ class LD_QuizPro {
 										break;
 									}
 
-									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter. 
+									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter.
+									/**
+									 * Filters points awarded for a multiple answer type question.
+									 *
+									 * LearnDash multiple answer question, allow points to be allocated for not marking an incorrect answer.
+									 * LearnDash Core loops over all the answers in a multiple answer question. If the user does not mark an incorrect answer,
+									 * allow the possibility of giving them points.
+									 *
+									 * @param int        $points         Points awarded to quiz
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$points = apply_filters( 'learndash_ques_multiple_answer_pts_whole', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
+
+									/**
+									 * Filters whether the answer to the multiple type question is correct or not.
+									 *
+									 * @param boolean    $correct        Whether the answer is correct or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$correct = apply_filters( 'learndash_ques_multiple_answer_correct_whole', $correct, $questionData, $answerIndex, $correctAnswer, $userResponse );
 
 								}
@@ -301,7 +420,28 @@ class LD_QuizPro {
 									}
 							
 									// See https://bitbucket.org/snippets/learndash/aKdpz for examples of this filter. 
+									/**
+									 * Filters points awarded for a single answer type question.
+									 *
+									 * LearnDash single answer question, allow points to be allocated for not marking an incorrect answer.
+									 * Allow all possibility of given answer to be correct answer.
+									 *
+									 * @param integer    $points         Points awarded to quiz
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$points = apply_filters( 'learndash_ques_single_answer_pts', $points, $questionData, $answerIndex, $correctAnswer, $userResponse );
+									/**
+									 * Filters whether the answer to the single type question is correct or not.
+									 *
+									 * @param boolean    $correct        Whether the answer is correct or not.
+									 * @param array      $question_data  An array of question data.
+									 * @param int|string $answer_index   Index of the answer.
+									 * @param mixed      $correct_answer Correct answer for the question.
+									 * @param array      $user_response  An array of user response data.
+									 */
 									$correct = apply_filters( 'learndash_ques_single_answer_correct', $correct, $questionData, $answerIndex, $correctAnswer, $userResponse );
 							
 								}
@@ -350,79 +490,68 @@ class LD_QuizPro {
 							break;
 
 						case 'cloze_answer':
-							$correct = true;
-				
-							foreach ( $questionData['correct'] as $answerIndex => $correctArray ) {
-								if ( ! isset( $userResponse[ $answerIndex ] ) )
-									$correct = false;
+							$answerData = array();
 							
+							foreach ( $questionData['correct'] as $answerIndex => $correctArray ) {
+								$answerData[$answerIndex] = false;
+																
+								if ( ! isset( $userResponse[ $answerIndex ] ) )
+									$answerData[$answerIndex] = false;
 							
 								$userResponse[ $answerIndex ] =  stripslashes( trim( $userResponse[ $answerIndex ] ) );
+								/** This filter is documented in includes/lib/wp-pro-quiz/wp-pro-quiz.php */
 								if ( apply_filters('learndash_quiz_question_cloze_answers_to_lowercase', true ) ) {
-									$user_answer_formatted = strtolower( $userResponse[ $answerIndex ] );
+									if ( function_exists( 'mb_strtolower' ) ) {
+										$user_answer_formatted = mb_strtolower( $userResponse[ $answerIndex ] );
+									} else {
+										$user_answer_formatted = strtolower( $userResponse[ $answerIndex ] );
+									}
 								} else {
 									$user_answer_formatted = $userResponse[ $answerIndex ];
 								}
 							
-								if ( !in_array( $user_answer_formatted, $correctArray ) )
-									$correct = false;
-							
-								if ( !apply_filters( 'learndash_quiz_check_answer', $correct, $questionData['type'], $userResponse[ $answerIndex ], $correctArray, $answerIndex, $questionModel ) ) 
-									$correct = false;
-							
-								if ( $correct != true ) {
-									if ( ! $quiz->isDisabledAnswerMark() ) {
-										$statisticsData->{$answerIndex} = false;
-									}
-								} else {
-									if ( is_array( $questionData['points'] ) ) {
+								$answerData[$answerIndex] = in_array( $user_answer_formatted, $correctArray );
+								/**
+								 * Filters whether to check the answer of cloze type question.
+								 *
+								 * @param boolean                  $check_answer    Whether to check the answer.
+								 * @param string                   $queston_type    Type of the question.
+								 * @param string                   $answer          The answer given by user for the question.
+								 * @param array                    $correct_answers An array of correct answers for the question.
+								 * @param WpProQuiz_Model_Question $question_model  Question model object.
+								 */
+								$answerData[$answerIndex] =	apply_filters( 'learndash_quiz_check_answer', $answerData[$answerIndex], $questionData['type'], $userResponse[ $answerIndex ], $correctArray, $answerIndex, $questionModel );
+								$statisticsData->{$answerIndex} = $answerData[$answerIndex];
+								
+								if ( $answerData[$answerIndex] === true ) {
+									if ( ( $questionModel->isAnswerPointsActivated() ) && ( is_array( $questionData['points'] ) ) ) {
 										$points += $questionData['points'][ $answerIndex ];
 									} else {
 										$points = $questionData['points'];
 									}
-
-									if ( ! $quiz->isDisabledAnswerMark() ) {
-										$statisticsData->{$answerIndex} = true;
-									}
 								}
+							}
+							
+							// If we have one wrong answer
+							if ( in_array( false, $answerData ) === true ) {
+								$correct = false;
+								
+								// If we are NOT using individual points and there is at least one wrong answer
+								// then we clear the points. 
+								if ( !$questionModel->isAnswerPointsActivated() ) {
+									$points = 0;
+								}
+								
+							} else {
+								// If all the fields are correct then the points stand and we set the correct to true
+								$correct = true;
 							}
 
 							$extra['r'] = $userResponse;
 
 							if ( ! $quiz->isDisabledAnswerMark() && empty( $questionData['disCorrect'] ) ) {
 								$extra['c'] = $questionData['correct'];
-								//$extra['c'] = array();
 							}
-						
-							/*
-							$correct = true;
-					
-							foreach ( $questionData['correct'] as $answerIndex => $correctArray ) {
-								if ( ! isset( $userResponse[ $answerIndex ] ) || ! in_array( stripslashes($userResponse[ $answerIndex ]), $correctArray ) ) {
-									$correct = false;
-									if ( ! $quiz->isDisabledAnswerMark() ) {
-										$statisticsData->{$answerIndex} = false;
-									}
-								} else {
-									if ( is_array( $questionData['points'] ) ) {
-										$points += $questionData['points'][ $answerIndex ];
-									} else {
-										$points = $questionData['points'];
-									}
-
-									if ( ! $quiz->isDisabledAnswerMark() ) {
-										$statisticsData->{$answerIndex} = true;
-									}
-								}
-							}
-
-							$extra['r'] = $userResponse;
-
-							if ( ! $quiz->isDisabledAnswerMark() && empty( $questionData['disCorrect'] ) ) {
-								$extra['c'] = $questionData['correct'];
-								//$extra['c'] = array();
-							}
-							*/
 							break;
 
 						case 'assessment_answer':
@@ -439,6 +568,7 @@ class LD_QuizPro {
 							$essay_data = array_shift( $essay_data );
 
 							switch ( $essay_data->getGradingProgression() ) {
+								case '':
 								case 'not-graded-none':
 									$points = 0;
 									$correct = false;
@@ -476,9 +606,11 @@ class LD_QuizPro {
 							if ( $value->getId() == $question_id ) {
 								if ( $correct || $value->isCorrectSameText() ) {
 									//$extra['AnswerMessage'] = do_shortcode( apply_filters( 'comment_text', $value->getCorrectMsg() ) );
+									/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 									$extra['AnswerMessage'] = do_shortcode( apply_filters( 'the_content', $value->getCorrectMsg() ) );
 								} else {
 									//$extra['AnswerMessage'] = do_shortcode( apply_filters( 'comment_text', $value->getIncorrectMsg() ) );
+									/** This filter is documented in https://developer.wordpress.org/reference/hooks/the_content/ */
 									$extra['AnswerMessage'] = do_shortcode( apply_filters( 'the_content', $value->getIncorrectMsg() ) );
 								}
 
@@ -501,6 +633,13 @@ class LD_QuizPro {
 			}
 		}
 
+		/**
+		 * Fires after a quiz question is answered.
+		 *
+		 * @param array                $results         An array of quiz results data.
+		 * @param WpProQuiz_Model_Quiz $quiz            WpProQuiz_Model_Quiz object.
+		 * @param array                $question_models An array of question model objects.
+		 */
 		do_action( 'ldadvquiz_answered', $results, $quiz, $questionModels);
 		
 		$total_points = 0;
@@ -583,13 +722,13 @@ class LD_QuizPro {
 		if ( ! empty( $_GET['page'] ) && $_GET['page'] == 'ldAdvQuiz' && empty( $_GET['module'] ) && ! empty( $_GET['action'] ) && $_GET['action'] == 'addEdit' ) {
 
 			if ( ! empty( $_GET['post_id'] ) ) {
-				header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . $_GET['post_id'] ) );
+				header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . absint( $_GET['post_id'] ) ) );
 				exit;
 			} else if ( ! empty( $_GET['quizId'] ) ) {
-				$post_id = learndash_get_quiz_id_by_pro_quiz_id( $_GET['quizId'] );
+				$post_id = learndash_get_quiz_id_by_pro_quiz_id( absint( $_GET['quizId'] ) );
 
 				if ( ! empty( $post_id ) ) {
-					header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . $post_id ) );
+					header( 'Location: ' . admin_url( 'post.php?action=edit&post=' . absint( $post_id ) ) );
 				} else {
 					header( 'Location: ' . admin_url( 'edit.php?post_type=sfwd-quiz' ) );
 				}
@@ -645,11 +784,19 @@ class LD_QuizPro {
 		}
 
 		/**
-		 * Filter the description of the quiz
+		 * Filters the description of the quiz.
 		 *
-		 * @param  string $quiz->post_content
+		 * @param string $quiz_description The quiz description.
 		 */
 		$content = apply_filters( 'ldadvquiz_the_content', $quiz->post_content );
+
+		/**
+		 * Added call to do_shortcode to process any shortcodes within the quiz content.
+		 *
+		 * @since 2.6.0
+		 */
+		$content = do_shortcode( $content );
+
 		$content = str_replace( ']]>', ']]&gt;', $content );
 		return "<div class='wpProQuiz_description'>" . $content . '</div>';
 	}
@@ -664,24 +811,6 @@ class LD_QuizPro {
 	 * @param  string $msg Debugging message
 	 */
 	function debug( $msg ) {
-		$original_log_errors = ini_get( 'log_errors' );
-		$original_error_log  = ini_get( 'error_log' );
-		ini_set( 'log_errors', true );
-		ini_set( 'error_log', dirname( __FILE__ ) . DIRECTORY_SEPARATOR . 'debug.log' );
-
-		global $processing_id;
-
-		if ( empty( $processing_id ) ) {
-			$processing_id = time();
-		}
-
-		if ( isset( $_GET['debug'] ) || ! empty( $this->debug ) ) {
-			error_log( "[$processing_id] " . print_r( $msg, true ) );
-		}
-		//Comment This line to stop logging debug messages.
-
-		ini_set( 'log_errors', $original_log_errors );
-		ini_set( 'error_log', $original_error_log );
 	}
 
 
@@ -752,12 +881,29 @@ class LD_QuizPro {
 		}		
 
 		$course_id = 0;
+		$lesson_id = 0;
+		$topic_id = 0;
 		
 		if ( ( isset( $quizdata['course'] ) ) && ( $quizdata['course'] instanceof WP_Post ) ) {
 			$course_post = $quizdata['course'];
 			unset( $quizdata['course'] );
 			$quizdata['course'] = intval($course_post->ID);
 			$course_id = $quizdata['course'];
+		}
+		if ( ( isset( $quizdata['lesson'] ) ) && ( $quizdata['lesson'] instanceof WP_Post ) ) {
+			$lesson_post = $quizdata['lesson'];
+			unset( $quizdata['lesson'] );
+			$quizdata['lesson'] = intval($lesson_post->ID);
+			$lesson_id = $quizdata['lesson'];
+		}
+		if ( ( isset( $quizdata['topic'] ) ) && ( $quizdata['topic'] instanceof WP_Post ) ) {
+			$topic_post = $quizdata['topic'];
+			unset( $quizdata['topic'] );
+			$quizdata['topic'] = intval($topic_post->ID);
+			$topic_id = $quizdata['topic'];
+		}
+
+		if ( ( isset( $quizdata['course'] ) ) && ( ! empty( $quizdata['course'] ) ) ) {
 			$quizdata['steps_completed'] = learndash_course_get_completed_steps($user->ID, $quizdata['course']);
 
 			// Update the Course if this quiz has.
@@ -808,21 +954,38 @@ class LD_QuizPro {
 	 */
 	function wp_pro_quiz_completed( $statistic_ref_id = 0) {
 		
-		$this->debug( $_POST );
-		$this->debug( $_SERVER );
+		//error_log('_POST<pre>'. print_r($_POST, true) .'</pre>');
+		
+		$results = array();
+		$quiz_pro_id  = isset( $_POST['quizId'] ) ? absint( $_POST['quizId'] ) : null;
+		$quiz_post_id = isset( $_POST['quiz'] ) ? absint( $_POST['quiz'] ) : null;
+		$score        = isset( $_POST['results']['comp']['correctQuestions'] ) ? $_POST['results']['comp']['correctQuestions'] : null;
+		$points       = isset( $_POST['results']['comp']['points'] ) ? absint( $_POST['results']['comp']['points'] ) : null;
+		$result       = isset( $_POST['results']['comp']['result'] ) ? $_POST['results']['comp']['result'] : null;
+		$timespent    = isset( $_POST['timespent'] ) ? floatval( $_POST['timespent'] ) : null;
 
-		$quiz_id   = isset( $_POST['quizId'] ) ? intval( $_POST['quizId'] ) : null;
-		$score     = isset( $_POST['results']['comp']['correctQuestions'] ) ? $_POST['results']['comp']['correctQuestions'] : null;
-		$points    = isset( $_POST['results']['comp']['points'] ) ? $_POST['results']['comp']['points'] : null;
-		$result    = isset( $_POST['results']['comp']['result'] ) ? $_POST['results']['comp']['result'] : null;
-		$timespent = isset( $_POST['timespent'] ) ? $_POST['timespent'] : null;
-
-		if ( is_null( $quiz_id ) || is_null( $points ) ) {
-			return;
+		if ( ( is_null( $quiz_post_id ) ) || ( is_null( $quiz_pro_id ) ) || ( is_null( $points ) ) ) {
+			return json_encode( $results );
 		}
 
+		$course_id = ( ( isset( $_POST['course_id'] ) ) && ( intval( $_POST['course_id'] ) > 0 ) ) ? intval( $_POST['course_id'] ) : learndash_get_course_id( $quiz_pro_id );
+		$lesson_id = ( ( isset( $_POST['lesson_id'] ) ) && ( intval( $_POST['lesson_id'] ) > 0 ) ) ? intval( $_POST['lesson_id'] ) : 0;
+		$topic_id  = ( ( isset( $_POST['topic_id'] ) ) && ( intval( $_POST['topic_id'] ) > 0 ) ) ? intval( $_POST['topic_id'] ) : 0;
+		if (is_user_logged_in() )
+			$user_id	= 	get_current_user_id();
+		else
+			$user_id	=	0;
+		
+
+		$quizMapper = new WpProQuiz_Model_QuizMapper();
+		$quiz_pro = $quizMapper->fetch( $quiz_pro_id );
+		if ( ( ! $quiz_pro ) || ( ! is_a( $quiz_pro, 'WpProQuiz_Model_Quiz' ) ) ) {
+			return json_encode( $results );
+		}
+		$quiz_pro->setPostId( $quiz_post_id );
+
 		$questionMapper = new WpProQuiz_Model_QuestionMapper();
-		$questions  = $questionMapper->fetchAll( $quiz_id );
+		$questions  = $questionMapper->fetchAll( $quiz_pro );
 		if ( is_array( $questions ) ) {
 			$questions_count = count( $questions );
 		}
@@ -843,8 +1006,6 @@ class LD_QuizPro {
 				);
 			}
 		}
-
-		$this->debug( $questions );
 
 		if ( empty( $result) ) {
 			$total_points = 0;
@@ -871,79 +1032,53 @@ class LD_QuizPro {
 		}
 
 		$questions_shown_count = count( $_POST['results'] ) - 1;
-		
-		if (is_user_logged_in() )
-			$user_id	= 	get_current_user_id();
-		else
-			$user_id	=	0;
-		
 
 		if ( ( isset( $_POST['quiz_nonce'] ) ) && ( isset( $_POST['quizId'] ) ) && ( isset( $_POST['quizId'] ) ) && ( !empty( $user_id ) ) ) {
-			if ( !wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . intval( $_POST['quiz'] ) . '-'.  intval( $_POST['quizId'] ) .'-' . $user_id ) ) {
+			if ( ! wp_verify_nonce( $_POST['quiz_nonce'], 'sfwd-quiz-nonce-' . absint( $_POST['quiz'] ) . '-'.  absint( $_POST['quizId'] ) .'-' . $user_id ) ) {
 				return;
 			}
 		} else	if ( empty( $_SERVER['HTTP_REFERER'] ) ) {
 			return;
 		}
 
-		$usermeta = get_user_meta( $user_id, '_sfwd-quizzes', true );
-		$usermeta = maybe_unserialize( $usermeta );
+		$user_quiz_meta = get_user_meta( $user_id, '_sfwd-quizzes', true );
+		$user_quiz_meta = maybe_unserialize( $user_quiz_meta );
 
-		if ( ! is_array( $usermeta ) ) {
-			$usermeta = array();
+		if ( ! is_array( $user_quiz_meta ) ) {
+			$user_quiz_meta = array();
 		}
 
-		$ld_quiz_id = @$_REQUEST['quiz']; //$this->get_ld_quiz_id( $quiz_id);
-
-		if ( empty( $ld_quiz_id ) ) {
-			return;
+		$quiz_post_settings = learndash_get_setting( $quiz_post_id );
+		if ( ! is_array( $quiz_post_settings ) ) {
+			$quiz_post_settings = array();
 		}
+		if ( ! isset( $quiz_post_settings['passingpercentage'] ) ) {
+			$quiz_post_settings['passingpercentage'] = 0;
+		}
+		$passingpercentage = absint( $quiz_post_settings['passingpercentage'] );
 
-		$courseid = isset( $_POST['course_id'] ) ? intval( $_POST['course_id'] ) : learndash_get_course_id( $ld_quiz_id );
-		$lessonid = isset( $_POST['lesson_id'] ) ? intval( $_POST['lesson_id'] ) : 0;
-		$topicid  = isset( $_POST['topic_id'] ) ? intval( $_POST['topic_id'] ) : 0;
-
-		$quiz = get_post_meta( $ld_quiz_id, '_sfwd-quiz', true );
-		$passingpercentage = intVal( $quiz['sfwd-quiz_passingpercentage'] );
 		$pass = ( $result >= $passingpercentage) ? 1 : 0;
-		$quiz = get_post( $ld_quiz_id );
-
-		$this->debug(
-			array(
-				'quiz' 				=> 	$ld_quiz_id,
-				'quiz_title' 		=> 	$quiz->post_title,
-				'score' 			=> 	$score,
-				'count' 			=> 	$questions_count,
-				'pass' 				=> 	$pass,
-				'rank' 				=> 	'-',
-				'time' 				=> 	time(),
-				'pro_quizid' 		=> 	$quiz_id,
-				'course'			=>	$courseid,
-				'lesson'			=>	$lessonid,
-				'topic'				=>	$topicid,
-			)
-		);
+		$quiz_post = get_post( $quiz_post_id );
 
 		$quizdata = array(
-			'quiz' 					=> 	$ld_quiz_id,
+			'quiz' 					=> 	$quiz_post_id,
 			'score' 				=> 	$score,
 			'count' 				=> 	$questions_count,
 			'question_show_count'	=>	$questions_shown_count,
 			'pass' 					=> 	$pass,
 			'rank' 					=> 	'-',
 			'time' 					=> 	time(),
-			'pro_quizid' 			=> 	$quiz_id,
-			'course'				=>	$courseid,
-			'lesson'				=>	$lessonid,
-			'topic'					=>	$topicid,
-			'points' 				=> 	$points,
-			'total_points' 			=> 	$total_points,
+			'pro_quizid' 			=> 	$quiz_pro_id,
+			'course'				=>	$course_id,
+			'lesson'				=>	$lesson_id,
+			'topic'					=>	$topic_id,
+			'points' 				=> 	absint( $points ),
+			'total_points' 			=> 	absint( $total_points ),
 			'percentage' 			=> 	$result,
 			'timespent' 			=> 	$timespent,
 			'has_graded'   			=> 	( $has_graded ) ? true : false,
-			'statistic_ref_id' 		=> 	$statistic_ref_id
+			'statistic_ref_id' 		=> 	absint( $statistic_ref_id )
 		);
-		//error_log('quizdata<pre>'. print_r($quizdata, true) .'</pre>');
 		
 		//On the timestamps below we divide against 1000 because they were generated via JavaScript which uses milliseconds. 
 		if ( isset( $_POST['results']['comp']['quizStartTimestamp'] ) )
@@ -956,52 +1091,95 @@ class LD_QuizPro {
 			$quizdata['graded'] = $graded;
 		}
 
-		$this->debug( $quizdata );
+		$user_quiz_meta[] = $quizdata;
 
-		$usermeta[] = $quizdata;
+		$quizdata['quiz'] = $quiz_post;
+		update_user_meta( $user_id, '_sfwd-quizzes', $user_quiz_meta );
 
-		$quizdata['quiz'] = $quiz;
-		
-		if ( ! empty( $courseid ) ) {
-			$quizdata['course'] = get_post( $courseid );
+		if ( ! empty( $course_id ) ) {
+			$quizdata['course'] = get_post( $course_id );
 		} else {
 			$quizdata['course'] = 0;
 		}
 
-		if ( ! empty( $lessonid ) ) {
-			$quizdata['lesson'] = get_post( $lessonid );
+		if ( ! empty( $lesson_id ) ) {
+			$quizdata['lesson'] = get_post( $lesson_id );
 		} else {
 			$quizdata['lesson'] = 0;
 		}
 
-		if ( ! empty( $topicid ) ) {
-			$quizdata['topic'] = get_post( $topicid );
+		if ( ! empty( $topic_id ) ) {
+			$quizdata['topic'] = get_post( $topic_id );
 		} else {
 			$quizdata['topic'] = 0;
 		}
 		
 		$quizdata['questions'] = $questions;
 
-		update_user_meta( $user_id, '_sfwd-quizzes', $usermeta );
+		/**
+		 * Fires after the quiz is submitted
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array   $quiz_data    An array of quiz data.
+		 * @param WP_User $current_user Current user object.
+		 */
+		do_action( 'learndash_quiz_submitted', $quizdata, get_user_by( 'id', $user_id ) ); 
+		
+		/**
+		 * Changed in 2.6.0. If the quiz has essay type questions that are not
+		 * auto-graded we don't send out the 'learndash_quiz_completed' action.
+		 */
+		$send_quiz_completed = true;
+		if ( ( isset( $quizdata['has_graded'] ) ) && ( true === $quizdata['has_graded'] ) ) {
+			if ( ( isset( $quizdata['graded'] ) ) && ( ! empty( $quizdata['graded'] ) ) ) {
+				foreach ( $quizdata['graded'] as $grade_item ) {
+					if ( ( isset( $grade_item['status'] ) ) && ( $grade_item['status'] !== 'graded' ) ) {
+						$send_quiz_completed = false;
+					}
+				}
+			}
+		} 
 
-		if ( ! empty( $courseid ) ) {
-			// Remove use of second argument here as the function exepect this to be a lesson_id and we are for some reason passing the ProQuiz ID.
-			learndash_ajax_mark_complete( $ld_quiz_id /*, $quiz_id */);
+		if ( true === $send_quiz_completed ) {
+			if ( ! empty( $course_id ) ) {
+				learndash_process_mark_complete( $user_id, $quiz_post_id, false, $course_id );
+			}
+
+			/** This action is documented in includes/ld-users.php */
+			do_action( 'learndash_quiz_completed', $quizdata, get_user_by( 'id', $user_id ) ); 
+		} else if ( defined( 'LEARNDASH_QUIZ_ESSAY_SUBMIT_COMPLETED' ) && LEARNDASH_QUIZ_ESSAY_SUBMIT_COMPLETED === true ) {
+			/** This action is documented in includes/ld-users.php */
+			do_action( 'learndash_quiz_completed', $quizdata, get_user_by( 'id', $user_id ) );
 		}
 
-		learndash_process_mark_complete( $user_id, $ld_quiz_id, false, $courseid );
-
-		/**
-		 * Does the action 'learndash_quiz_completed'
-		 *
-		 * @since 2.1.0
-		 *
-		 * @param  array  	$quizdata
-		 * @param  object  $current_user
-		 */
-		global $current_user;
+		$results[ $quiz_pro_id ]['quiz_result_settings'] = array(
+			'showAverageResult'         => $quiz_pro->isShowAverageResult() ? 1 : 0,
+			'showCategoryScore'         => $quiz_pro->isShowCategoryScore() ? 1 : 0,
+			'showRestartQuizButton'     => $quiz_pro->isBtnRestartQuizHidden() ? 0 : 1 ,
+			'showResultPoints'          => $quiz_pro->isHideResultPoints() ? 0 : 1,
+			//'showResultCorrectQuestion' => $quiz_pro->isHideResultCorrectQuestion() ? 0 : 1,
+			'showResultQuizTime'        => $quiz_pro->isHideResultQuizTime() ? 0 : 1,
+			//'showAnswerMessageBox'      => $quiz_pro->isHideAnswerMessageBox() ? 0 : 1,
+			'showViewQuestionButton'    => $quiz_pro->isBtnViewQuestionHidden() ? 0 : 1,
+		);
+		/** This filter is documented in includes/lib/wp-pro-quiz/lib/view/WpProQuiz_View_FrontQuiz.php */
+		$results[ $quiz_pro_id ]['showContinueButton'] = apply_filters( 'show_quiz_continue_buttom_on_fail', false, $quizdata['quiz'] ) ? 1 : 0;
 		
-		do_action( 'learndash_quiz_completed', $quizdata, $current_user ); //Hook for completed quiz
+		/**
+		 * Filters settings of the completed quiz results.
+		 *
+		 * @param array $quiz_result_settings An array of quiz result settings data.
+		 * @param mixed $quiz_data            An array of quiz data.
+		 */
+		$results[ $quiz_pro_id ]['quiz_result_settings'] = apply_filters( 'learndash_quiz_completed_result_settings', $results[ $quiz_pro_id ]['quiz_result_settings'], $quizdata );
+
+		//$results[ $quiz_pro_id ]['quiz_result_settings']['showViewQuestionButton'] = 0;
+		//$results[ $quiz_pro_id ]['quiz_result_settings']['showRestartQuizButton'] = 0;
+		//$results[ $quiz_pro_id ]['quiz_result_settings']['showContinueButton'] = 0;
+
+		echo json_encode( $results );
+		exit();
 	}
 
 
@@ -1016,7 +1194,6 @@ class LD_QuizPro {
 	 */
 	function get_ld_quiz_id( $pro_quizid ) {
 		$quizzes = SFWD_SlickQuiz::get_all_quizzes();
-		//$this->debug( $quizzes);
 
 		foreach ( $quizzes as $quiz ) {
 			$quizmeta = get_post_meta( $quiz->ID, '_sfwd-quiz', true );
@@ -1041,7 +1218,7 @@ class LD_QuizPro {
 		/*
 
 		$transient_key = "learndash_quizzes_list";
-		$quizzes_list = learndash_get_valid_transient( $transient_key );
+		$quizzes_list = LDLMS_Transients::get( $transient_key );
 		if ( $quizzes_list === false ) {
 
 			$quiz    = new WpProQuiz_Model_QuizMapper();
@@ -1052,7 +1229,7 @@ class LD_QuizPro {
 					$quizzes_list[ $q->getId() ] = $q->getId() . ' - ' . $q->getName();
 				}
 			}
-			set_transient( $transient_key, $quizzes_list, MINUTE_IN_SECONDS );
+			LDLMS_Transients::set( $transient_key, $quizzes_list, MINUTE_IN_SECONDS );
 		}
 		return $quizzes_list;
 		*/
@@ -1071,11 +1248,7 @@ class LD_QuizPro {
 		
 		global $wpdb;
 
-		$sql_str = "SELECT id, name FROM ". $wpdb->prefix . "wp_pro_quiz_master ORDER BY id ";
-		//error_log('sql_str['. $sql_str .']');
-		$quiz_items = $wpdb->get_results( $sql_str );
-		//error_log('quiz_items<pre>'. print_r($quiz_items, true) .'</pre>');
-
+		$quiz_items = $wpdb->get_results( $wpdb->prepare( "SELECT id, name FROM " . LDLMS_DB::get_table_name( 'quiz_master' ) . " ORDER BY %s ", 'id' ) );
 		if ( ! empty( $quiz_items ) ) {
 			foreach ( $quiz_items as $q ) {
 				$quizzes_list[ $q->id ] = $q->id . ' - ' . $q->name;
@@ -1101,7 +1274,14 @@ class LD_QuizPro {
 				$pro_quiz_id = $post->ID;
 			} 	
 		} else {
-			$quiz_post_id = learndash_get_quiz_id_by_pro_quiz_id( $pro_quiz_id );
+			if ( is_a( $pro_quiz_id, 'WpProQuiz_Model_Quiz' ) ) {
+				$pro_quiz = $pro_quiz_id;
+				$pro_quiz_id = $pro_quiz->getId();
+				$quiz_post_id = $pro_quiz->getPostId();
+			} else {
+				$quiz_post_id = learndash_get_quiz_id_by_pro_quiz_id( $pro_quiz_id );
+			}
+			
 			if ( !empty( $quiz_post_id ) ) {
 				$quiz_post = get_post( $quiz_post_id );
 				if ( ( $quiz_post instanceof WP_Post ) && ( $quiz_post->post_type == 'sfwd-quiz' ) ) {
@@ -1124,7 +1304,7 @@ class LD_QuizPro {
 					array(
 						'quiz_post_id'	=>	$quiz_post_id,
 						'context' 		=> 	'quiz_certificate_pending_message',
-						'message' 		=> 	__( 'Certificate Pending - Questions still need to be graded, please check your profile for the status.', 'learndash' )
+						'message' 		=> 	esc_html__( 'Certificate Pending - Questions still need to be graded, please check your profile for the status.', 'learndash' )
 					)
 				) . '";';
 			echo '</script>';
@@ -1142,23 +1322,53 @@ class LD_QuizPro {
 	 * @since 2.1.0
 	 *
 	 * @param  string $content HTML
+	 * @param  mixed  $pro_quiz (integer) WPProQuixz ID, (object) WpProQuiz_Model_Quiz
 	 * @return string HTML $content or $content concatenated with the certificate link
 	 */
-	static function certificate_link( $content, $pro_quiz_id = null ) {
-		$quiz_post_id = 0;
+	static function certificate_link( $content, $pro_quiz = null ) {
+		$quiz_post_id = null;
+		$pro_quiz_id = null;
 		
-		if ( is_null( $pro_quiz_id ) ) {
-			global $post;
-			if ( ( $post instanceof WP_Post ) && ( $post->post_type == 'sfwd-quiz' ) ) {
-				$pro_quiz_id = $post->ID;
+		if ( ! is_null( $pro_quiz ) ) {
+			if ( is_a( $pro_quiz, 'WpProQuiz_Model_Quiz') ) {
+				$pro_quiz_id = $pro_quiz->getId();
+				$quiz_post_id = $pro_quiz->getPostId();
+			} else {
+				$pro_quiz_id = absint( $pro_quiz );
+			}
+		}
+
+		if ( empty( $quiz_post_id ) ) {
+			if ( empty( $pro_quiz_id ) ) {
+				//global $post;
+				//if ( ( $post instanceof WP_Post ) && ( $post->post_type == 'sfwd-quiz' ) ) {
+				//	$quiz_post_id = $post->ID;
+				//} 	
+
+				$post_id = get_the_ID();
+				if ( !empty( $post_id ) ) {
+					$quiz_post = get_post( $post_id );
+					if ( ( $quiz_post instanceof WP_Post ) && ( $quiz_post->post_type == 'sfwd-quiz' ) ) {
+						$quiz_post_id = $quiz_post->ID;
+					}
+				}
+			} 
+			
+			if ( empty( $quiz_post_id ) ) {
+				$quiz_post_id = learndash_get_quiz_id_by_pro_quiz_id( $pro_quiz_id );
+				if ( !empty( $quiz_post_id ) ) {
+					$quiz_post = get_post( $quiz_post_id );
+					if ( ( $quiz_post instanceof WP_Post ) && ( $quiz_post->post_type == 'sfwd-quiz' ) ) {
+						$quiz_post_id = $quiz_post->ID;
+					} 
+				}
 			} 	
 		} else {
-			$quiz_post_id = learndash_get_quiz_id_by_pro_quiz_id( $pro_quiz_id );
-			if ( !empty( $quiz_post_id ) ) {
-				$quiz_post = get_post( $quiz_post_id );
-				if ( ( $quiz_post instanceof WP_Post ) && ( $quiz_post->post_type == 'sfwd-quiz' ) ) {
-					$quiz_post_id = $quiz_post->ID;
-				} 
+			$quiz_post = get_post( $quiz_post_id );
+			if ( ( $quiz_post instanceof WP_Post ) && ( $quiz_post->post_type == 'sfwd-quiz' ) ) {
+				$quiz_post_id = $quiz_post->ID;
+			} else {
+				$quiz_post_id = 0;
 			}
 		}
 
@@ -1166,14 +1376,14 @@ class LD_QuizPro {
 			$cd  = learndash_certificate_details( $quiz_post_id );
 			if ( ( !empty( $cd ) ) && ( isset( $cd['certificateLink'] ) ) && ( !empty( $cd['certificateLink'] ) ) ) {
 				$user_id = get_current_user_id();
-				
+				/** This filter is documented in includes/ld-certificates.php */
 				$ret = "<a class='btn-blue' href='" . $cd['certificateLink'] . "' target='_blank'>" . apply_filters('ld_certificate_link_label', 
 				SFWD_LMS::get_template( 
 					'learndash_quiz_messages', 
 					array(
 						'quiz_post_id'	=>	$quiz_post_id,
 						'context' 		=> 	'quiz_certificate_button_label',
-						'message' 		=> 	__( 'PRINT YOUR CERTIFICATE', 'learndash' )
+						'message' 		=> 	esc_html__( 'PRINT YOUR CERTIFICATE', 'learndash' )
 					)
 				), $user_id, $quiz_post_id ) . '</a>';
 				$content .= $ret;
@@ -1207,17 +1417,20 @@ class LD_QuizPro {
 			//To fix issues with plugins using get_current_screen
 
 			$quizId = 0;
-
+			$post_id = 0;
 			if ( ! empty( $_GET['post'] ) ) {
-				$quizId = intval( learndash_get_setting( $_GET['post'], 'quiz_pro', true ) );
+				$post_id = intval( $_GET['post'] );
+				$quizId = intval( learndash_get_setting( $post_id, 'quiz_pro', true ) );
 
-				/**
-				 * Filter whether advance quiz is disabled or not
-				 *
-				 * @param  bool
-				 */
-				if ( apply_filters( 'learndash_disable_advance_quiz', false, get_post( $_GET['post'] ) ) ) {
+				/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
+				if ( apply_filters( 'learndash_disable_advance_quiz', false, $post_id ) ) {
 					return '';
+				}
+			} else {
+				global $post;
+				if ( ( is_a( $post, 'WP_Post' ) ) && ( $post->post_type == 'sfwd-quiz' ) ) {
+					//error_log('post<pre>'. print_r($post, true) .'</pre>');
+					$post_id = $post->ID;
 				}
 			}
 
@@ -1227,7 +1440,8 @@ class LD_QuizPro {
 			$pro_quiz->route( array(
 				'action' => 'addEdit',
 				'quizId' => $quizId,
-				'post_id' => @$_GET['post'] ),
+				'post_id' => $post_id,
+			),
 				$_post
 			);
 			$return = ob_get_clean();
@@ -1269,20 +1483,17 @@ class LD_QuizPro {
 
 		$post = get_post( $post_id );
 
-		/**
-		 * Filter whether advance quiz is disabled or not
-		 *
-		 * @param  bool
-		 */
+		/** This filter is documented in includes/admin/classes-posts-edits/class-learndash-admin-quiz-edit.php */
 		if ( 'sfwd-quiz' != $post->post_type || empty( $_POST['form'] ) || ! empty( $_POST['disable_advance_quiz_save'] ) || apply_filters( 'learndash_disable_advance_quiz', false, $post ) ) {
 			return;
 		}
 
 		$quizId   = intval( learndash_get_setting( $post_id, 'quiz_pro', true ) );
 		$pro_quiz = new WpProQuiz_Controller_Quiz();
-		ob_start();
-		$pro_quiz->route( array( 'action' => 'addEdit', 'quizId' => $quizId, 'post_id' => $post_id) );
-		ob_get_clean();
+		//ob_start();
+		//$pro_quiz->route( array( 'action' => 'addEdit', 'quizId' => $quizId, 'post_id' => $post_id) );
+		//ob_get_clean();
+		$pro_quiz->route( array( 'action' => 'addUpdateQuiz', 'quizId' => $quizId, 'post_id' => $post_id) );
 
 		if ( ! empty( $_POST['templateLoad'] ) && ! empty( $_POST['templateLoadId'] ) ) {
 			$url = admin_url( 'post.php?post=' . $post_id . '&action=edit' ) . '&templateLoad=' . rawurlencode( $_POST['templateLoad'] ) . '&templateLoadId=' . $_POST['templateLoadId'];
@@ -1331,8 +1542,16 @@ class LD_QuizPro {
 
 	static function showModalWindow() {
 		static $show_only_once = false;
-		
-		if ( !$show_only_once ) {
+
+		/**
+		 * Added for LEARNDASH-2754 to prevent loading the inline CSS when inside
+		 * the Gutenberg editor publish/update. Need a better way to handle this.
+		 */
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return false;
+		}
+
+		if ( ! $show_only_once ) {
 			$show_only_once = true;
 			?>
 			<style>
@@ -1379,13 +1598,13 @@ class LD_QuizPro {
 			</style>
 			<div id="wpProQuiz_user_overlay" style="display: none;">
 				<div class="wpProQuiz_modal_window" style="padding: 20px; overflow: scroll;">
-					<input type="button" value="<?php _e('Close'); ?>" class="button-primary" style=" position: fixed; top: 48px; right: 59px; z-index: 160001;" id="wpProQuiz_overlay_close">
+					<input type="button" value="<?php esc_html_e( 'Close', 'learndash' ); ?>" class="button-primary" style=" position: fixed; top: 48px; right: 59px; z-index: 160001;" id="wpProQuiz_overlay_close">
 			
 					<div id="wpProQuiz_user_content" style="margin-top: 20px;"></div>
 			
 					<div id="wpProQuiz_loadUserData" class="wpProQuiz_blueBox" style="background-color: #F8F5A8; display: none; margin: 50px;">
-						<img alt="load" src="data:image/gif;base64,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">
-						<?php _e('Loading', 'wp-pro-quiz'); ?>
+						<img alt="load" src="<?php echo admin_url('/images/wpspin_light.gif'); ?>" />
+						<?php esc_html_e('Loading', 'learndash'); ?>
 					</div>
 				</div>
 				<div class="wpProQuiz_modal_backdrop"></div>
@@ -1415,12 +1634,10 @@ class LD_QuizPro {
 		if ( ( !empty( $wp_pro_quiz_id ) ) && ( !empty( $user_id ) ) ) {
 		
 			global $wpdb;
-			$sql_str = $wpdb->prepare( "SELECT statistic_ref_id FROM ". $wpdb->prefix . "wp_pro_quiz_statistic_ref WHERE quiz_id=%d AND user_id=%d ORDER BY create_time DESC", $wp_pro_quiz_id, $user_id );
-			//error_log('sql_str['. $sql_str .']');
+			$sql_str = $wpdb->prepare( "SELECT statistic_ref_id FROM ". LDLMS_DB::get_table_name( 'quiz_statistic_ref' ) . " WHERE quiz_id=%d AND user_id=%d ORDER BY create_time DESC", $wp_pro_quiz_id, $user_id );
 			$quiz_post_id_statistic_ref_id = $wpdb->get_var( $sql_str );
-			//error_log('quiz_post_id_statistic_ref_id['. $quiz_post_id_statistic_ref_id .']');
 			if ( !empty( $quiz_post_id_statistic_ref_id ) ) {
-				$sql_str = $wpdb->prepare( "SELECT * FROM ". $wpdb->prefix . "wp_pro_quiz_statistic WHERE statistic_ref_id=%d", 
+				$sql_str = $wpdb->prepare( "SELECT * FROM ". LDLMS_DB::get_table_name( 'quiz_statistic' ) . " WHERE statistic_ref_id=%d", 
 					$quiz_post_id_statistic_ref_id );
 				//error_log('sql_str['. $sql_str .']');
 				$quiz_post_id_statistics = $wpdb->get_results( $sql_str );
@@ -1428,7 +1645,7 @@ class LD_QuizPro {
 				if ( !empty( $quiz_post_id_statistics ) ) {
 					$quiz_statistics_data = array();
 					$quiz_statistics_data['data'] = $quiz_post_id_statistics;
-					$quiz_statistics_data['button'] = '<input type="button" name="viewStatistics" value="'. _x( 'View Previous Answers', 'Previous Quiz Button Label', 'wp-pro-quiz' ) .'" class="wpProQuiz_button">';
+					$quiz_statistics_data['button'] = '<input type="button" name="viewStatistics" value="'. esc_html_x( 'View Previous Answers', 'Previous Quiz Button Label', 'learndash' ) .'" class="wpProQuiz_button">';
 					$quiz_content .= '<div id="learndash-quiz-statistics" data="'. htmlspecialchars( json_encode( $quiz_statistics_data ) ) .'">';
 				}
 			}
@@ -1441,3 +1658,96 @@ class LD_QuizPro {
 }
 
 new LD_QuizPro();
+
+/**
+ * Gets the list of quizzes not associated with any course.
+ *
+ * This function will query and return all global.
+ * A GLOBAL Quizzes is:
+ * 1. Quizzes not associated with a Course.
+ *
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.6.0
+ *
+ * @param boolean $bypass_transient Optional. Whether to bypass the transient cache. Default false.
+ *
+ * @return array An array of quiz IDs.
+ */
+function learndash_get_non_course_qizzes( $bypass_transient = false ) {
+	global $wpdb;
+
+	$global_quiz_ids = array();
+
+	$transient_key = 'learndash_global_quiz_ids';
+	if ( ! $bypass_transient ) {
+		$global_quiz_ids_transient = LDLMS_Transients::get( $transient_key );
+	} else {
+		$global_quiz_ids_transient = false;
+	}
+
+	if ( false === $global_quiz_ids_transient ) {
+
+		$global_quiz_ids_query_str = "SELECT posts.ID FROM {$wpdb->posts} as posts 
+			LEFT JOIN {$wpdb->postmeta} as postmeta1 ON posts.ID = postmeta1.post_id AND postmeta1.meta_key LIKE 'ld_course%'
+			LEFT JOIN {$wpdb->postmeta} as postmeta2 ON posts.ID = postmeta2.post_id AND postmeta2.meta_key = 'course_id'
+			WHERE posts.post_type = 'sfwd-quiz' 
+				AND ( postmeta1.post_id IS NULL AND postmeta2.post_id IS NULL )";
+
+		$global_quiz_ids = $wpdb->get_col( $global_quiz_ids_query_str );
+		LDLMS_Transients::set( $transient_key, $global_quiz_ids, MINUTE_IN_SECONDS );
+	} else {
+		$global_quiz_ids = $global_quiz_ids_transient;
+	}
+
+	return $global_quiz_ids;
+}
+
+/**
+ * Gets all the open quizzes.
+ *
+ * This function will query and return all open Quizzes.
+ * An OPEN Quiz is:
+ * 1. Not associated with a Course.
+ * 2. The Quiz setting "Only registered users are allowed to start the quiz" is NOT set.
+ * 
+ * @global wpdb $wpdb WordPress database abstraction object.
+ *
+ * @since 2.6.0
+ *
+ * @param boolean $bypass_transient Optional. Whether to bypass the transient cache. Default false.
+ *
+ * @return array An array of Quiz IDs.
+ */
+function learndash_get_open_quizzes( $bypass_transient = false ) {
+	global $wpdb;
+
+	$open_quiz_ids = array();
+
+	$transient_key = 'learndash_global_quiz_ids';
+	if ( ! $bypass_transient ) {
+		$open_quiz_ids_transient = LDLMS_Transients::get( $transient_key );
+	} else {
+		$open_quiz_ids_transient = false;
+	}
+
+	if ( false === $open_quiz_ids_transient ) {
+
+		$global_quiz_ids = learndash_get_non_course_qizzes();
+		if ( ! empty( $global_quiz_ids ) ) {
+			$open_quiz_ids_query_str = "SELECT posts.ID FROM {$wpdb->posts} as posts 
+				LEFT JOIN {$wpdb->postmeta} as postmeta1 ON posts.ID = postmeta1.post_id AND postmeta1.meta_key = 'quiz_pro_id'
+				LEFT JOIN ". LDLMS_DB::get_table_name( 'quiz_master' ) ." as quiz_master ON postmeta1.meta_value = quiz_master.id 
+				WHERE posts.post_type = 'sfwd-quiz' 
+					AND posts.ID IN (" . implode( ',', $global_quiz_ids) . ")
+					AND quiz_master.start_only_registered_user = 0";
+
+			$open_quiz_ids = $wpdb->get_col( $open_quiz_ids_query_str );
+			LDLMS_Transients::set( $transient_key, $open_quiz_ids, MINUTE_IN_SECONDS );
+		}
+	} else {
+		$open_quiz_ids = $open_quiz_ids_transient;
+	}
+
+	return $open_quiz_ids;
+}

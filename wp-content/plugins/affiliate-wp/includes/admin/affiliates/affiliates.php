@@ -66,6 +66,8 @@ function affwp_affiliates_admin() {
 			 * Fires at the top of the admin affiliates page.
 			 *
 			 * Use this hook to add content to this section of AffiliateWP.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_affiliates_page_top' );
 
@@ -83,6 +85,8 @@ function affwp_affiliates_admin() {
 			 * Fires at the bottom of the admin affiliates page.
 			 *
 			 * Use this hook to add content to this section of AffiliateWP.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_affiliates_page_bottom' );
 			?>

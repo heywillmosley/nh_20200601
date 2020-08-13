@@ -21,6 +21,14 @@ class Affiliate_WP_Visits_DB extends Affiliate_WP_DB {
 	public $cache_group = 'visits';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'visits';
+
+	/**
 	 * Object type to query for.
 	 *
 	 * @since 1.9

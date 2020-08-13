@@ -44,7 +44,7 @@ final class Customer extends Base_Object {
 	protected $affiliate_ids = array();
 
 	/**
-	 * Affiliate user ID.
+	 * Customer user ID.
 	 *
 	 * @since 2.2
 	 * @access public
@@ -53,7 +53,7 @@ final class Customer extends Base_Object {
 	public $user_id = 0;
 
 	/**
-	 * Affiliate first name.
+	 * Customer first name.
 	 *
 	 * @since 2.2
 	 * @access public
@@ -151,6 +151,14 @@ final class Customer extends Base_Object {
 			return $this->get_affiliate_ids();
 		}
 
+		if ( 'user' === $key ) {
+			return $this->get_user();
+		}
+
+		if ( 'meta' === $key ) {
+			return $this->get_meta();
+		}
+
 		return parent::__get( $key );
 	}
 
@@ -162,7 +170,7 @@ final class Customer extends Base_Object {
 	 * @since 2.2
 	 * @access public
 	 *
-	 * @return string Customerr name
+	 * @return string Customer name
 	 */
 	public function get_name() {
 
@@ -184,7 +192,6 @@ final class Customer extends Base_Object {
 
 		return $name;
 	}
-
 
 	/**
 	 * Retrieves the affiliate IDs associated with this customer.
@@ -210,7 +217,48 @@ final class Customer extends Base_Object {
 		global $wpdb;
 		$table_name   = affiliate_wp()->customer_meta->table_name;
 		$affiliate_id = $wpdb->get_var( $wpdb->prepare( "SELECT meta_value FROM {$table_name} WHERE meta_key = 'affiliate_id' AND affwp_customer_id = %d ORDER BY meta_id ASC LIMIT 1;", $this->customer_id ) );
+
+		/**
+		 * Filters the canonical affiliate ID for the current customer.
+		 *
+		 * @since 2.2
+		 *
+		 * @param int             $affiliate_id Affiliate ID.
+		 * @param \AffWP\Customer $customer     Current Customer object.
+		 */
 		return apply_filters( 'affwp_get_canonical_customer_affiliate_id', $affiliate_id, $this );
+	}
+
+	/**
+	 * Builds the lazy-loaded user object with select fields removed for security reasons.
+	 *
+	 * @since 2.4.1
+	 *
+	 * @return \stdClass|false Built user object or false if it doesn't exist.
+	 */
+	public function get_user() {
+		$user = get_user_by( 'id', $this->user_id );
+
+		if ( $user ) {
+			// Exclude user pass, activation key, and email from the response.
+			unset( $user->data->user_pass, $user->data->user_activation_key );
+			return $user->data;
+		}
+
+		return $user;
+	}
+
+	/**
+	 * Retrieves the customer meta.
+	 *
+	 * @since 2.4.1
+	 *
+	 * @param string $meta_key Optional. The meta key to retrieve a value for. Default empty.
+	 * @param bool   $single   Optional. Whether to return a single value. Default false.
+	 * @return mixed Meta value or false if `$meta_key` specified, array of meta otherwise.
+	 */
+	public function get_meta( $meta_key = '', $single = false ) {
+		return affiliate_wp()->customer_meta->get_meta( $this->ID, $meta_key, $single );
 	}
 
 	/**

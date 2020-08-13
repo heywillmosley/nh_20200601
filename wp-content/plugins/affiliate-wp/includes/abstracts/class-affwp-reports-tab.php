@@ -262,6 +262,7 @@ abstract class Tab {
 	 *
 	 * @access public
 	 * @since  1.9
+	 * @since  2.5 Tiles will not be registered if the data returns a WP Error. Added the 'tooltip' argument.
 	 *
 	 * @param int      $tile_id  Tile ID.
 	 * @param array    $args {
@@ -276,6 +277,8 @@ abstract class Tab {
 	 *     @type mixed    $comparison_data  Comparison data to pair with `$data`. Default empty.
 	 *     @type callable $display_callback Display callback to use for the tile. Default is 'default_tile',
 	 *                                      which leverages `$type`.
+	 *     @type string   $tooltip          Translatable tooltip text. A tooltip will not be output if empty.
+	 *                                      Default empty.
 	 * }
 	 */
 	public function register_tile( $tile_id, $args = array() ) {
@@ -285,10 +288,15 @@ abstract class Tab {
 			'type'              => '',
 			'data'              => '',
 			'comparison_data'   => '',
-			'display_callback'  => array( $this, 'default_tile' )
+			'display_callback'  => array( $this, 'default_tile' ),
+			'tooltip'           => '',
 		) );
 
-		$this->registry->add_tile( $this->tab_id, $tile_id, $args );
+		if ( ! is_wp_error( $args['data'] ) ) {
+			$this->registry->add_tile( $this->tab_id, $tile_id, $args );
+		} else {
+			affiliate_wp()->utils->log( $args['data']->get_error_message(), $args['data']->get_error_data() );
+		}
 	}
 
 	/**
@@ -331,12 +339,19 @@ abstract class Tab {
 		foreach ( $this->get_tiles() as $tile_id => $atts ) {
 			$args = array(
 				'meta_box_id'      => "{$this->tab_id}-{$tile_id}",
+				'tooltip'          => $atts['tooltip'],
 				'meta_box_name'    => empty( $atts['label'] ) ? $this->label : $atts['label'],
 				'context'          => $atts['context'],
 				'action'           => "affwp_reports_{$this->tab_id}_meta_boxes",
 				'display_callback' => $atts['display_callback'],
 				'extra_args'       => $atts,
 			);
+
+			$tooltips = Registry::get_tooltips();
+			if ( ! empty( $tooltips ) ) {
+				wp_localize_script( 'affwp-tooltips', 'affwp_tooltips', array( 'tooltips' => $tooltips ) );
+				wp_enqueue_script( 'affwp-tooltips' );
+			}
 
 			new \AffWP\Admin\Meta_Box( $args );
 		}
@@ -377,10 +392,14 @@ abstract class Tab {
 			call_user_func( $tile['display_callback'], $tile );
 		} else {
 
-			if ( empty( $tile['data'] ) ) {
+			// Percentages can display 0%, so they need to be treated differently.
+			if ( 'percentage' === $tile['type'] && is_numeric( $tile['data'] ) ) {
+				echo '<span class="tile-amount tile-value">' . affwp_format_percentage( $tile['data'], 2 ) . '</span>';
+			}
+			else if ( empty( $tile['data'] ) ) {
 				echo '<span class="tile-no-data tile-value">' . __( 'No data for the current date range.', 'affiliate-wp' ) . '</span>';
 			} else {
-				switch( $tile['type'] ) {
+				switch ( $tile['type'] ) {
 					case 'number':
 						echo '<span class="tile-number tile-value">' . affwp_format_amount( $tile['data'], false ) . '</span>';
 						break;

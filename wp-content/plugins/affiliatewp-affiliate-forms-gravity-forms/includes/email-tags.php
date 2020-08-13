@@ -58,7 +58,7 @@ function affwp_afgf_email_tags( $affiliate_id = 0, $referral, $tag ) {
 		// product fields need to be formatted differently
 		// splits gf_field_1 and looks at the number
 		if ( $tag[2] == affwp_afgf_get_field_id( 'product' ) ) {
-			$value = affwp_afgf_get_field_value( $entry_id, 'product' );
+			$value = affwp_afgf_get_field_value( $entry, 'product' );
 		} else {
 			$value = $lead[$tag[2]];
 		}

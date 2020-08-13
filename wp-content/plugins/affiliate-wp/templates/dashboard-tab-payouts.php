@@ -3,7 +3,8 @@
 	<h4><?php _e( 'Referral Payouts', 'affiliate-wp' ); ?></h4>
 
 	<?php
-	$affiliate_id = affwp_get_affiliate_id();
+	$affiliate_id            = affwp_get_affiliate_id();
+	$payouts_service_enabled = (bool) affiliate_wp()->settings->get( 'enable_payouts_service', false );
 
 	$per_page = 30;
 	$page     = affwp_get_current_page_number();
@@ -12,6 +13,7 @@
 	$payouts  = affiliate_wp()->affiliates->payouts->get_payouts(
 		array(
 			'number'       => $per_page,
+			'status'       => array( 'processing', 'paid' ),
 			'offset'       => $per_page * ( $page - 1 ),
 			'affiliate_id' => $affiliate_id,
 		)
@@ -34,7 +36,13 @@
 				<th class="payout-date"><?php _e( 'Date', 'affiliate-wp' ); ?></th>
 				<th class="payout-amount"><?php _e( 'Amount', 'affiliate-wp' ); ?></th>
 				<th class="payout-method"><?php _e( 'Payout Method', 'affiliate-wp' ); ?></th>
+				<?php if ( true === $payouts_service_enabled ): ?>
+					<th class="payout-account"><?php _e( 'Payout Account', 'affiliate-wp' ); ?></th>
+				<?php endif; ?>
 				<th class="payout-status"><?php _e( 'Status', 'affiliate-wp' ); ?></th>
+				<?php if ( true === $payouts_service_enabled ): ?>
+					<th class="payout-account"><?php _e( 'Estimated Arrival Date', 'affiliate-wp' ); ?></th>
+				<?php endif; ?>
 				<?php
 				/**
 				 * Fires right after displaying the last affiliate payouts dashboard table header.
@@ -61,9 +69,24 @@
 						<td data-th="<?php _e( 'Payout Method', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( $payout->payout_method ); ?>
 						</td>
+						<?php if ( true === $payouts_service_enabled ): ?>
+							<td data-th="<?php _e( 'Payout Account', 'affiliate-wp' ); ?>">
+								<?php echo esc_html( $payout->service_account ); ?>
+							</td>
+						<?php endif; ?>
 						<td data-th="<?php _e( 'Status', 'affiliate-wp' ); ?>">
 							<?php echo esc_html( affwp_get_payout_status_label( $payout ) ); ?>
 						</td>
+						<?php if ( true === $payouts_service_enabled ): ?>
+							<td data-th="<?php _e( 'Estimated Arrival Date', 'affiliate-wp' ); ?>">
+								<?php
+									if ( 'paid' !== $payout->status && ! empty( $payout->service_account ) ) {
+										$arrival_date = strtotime( $payout->date . '+ 14 days' );
+										echo affwp_date_i18n( $arrival_date );
+									}
+								?>
+							</td>
+						<?php endif; ?>
 						<?php
 						/**
 						 * Fires right after displaying the last affiliate payouts dashboard table data.
@@ -79,7 +102,7 @@
 			<?php else : ?>
 
 				<tr>
-					<td class="affwp-table-no-data" colspan="4"><?php _e( 'None of your referrals have been paid out yet.', 'affiliate-wp' ); ?></td>
+					<td class="affwp-table-no-data" colspan="6"><?php _e( 'None of your referrals have been paid out yet.', 'affiliate-wp' ); ?></td>
 				</tr>
 
 			<?php endif; ?>

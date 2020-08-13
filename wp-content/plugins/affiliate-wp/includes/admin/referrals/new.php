@@ -7,6 +7,8 @@
 		<?php
 		/**
 		 * Fires at the top of the new-referral admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_referral_top' );
 		?>
@@ -68,6 +70,7 @@
 
 				<td>
 					<input type="text" name="date" id="date" class="affwp-datepicker" autocomplete="off" placeholder="<?php echo esc_attr( affwp_date_i18n( strtotime( 'today' ), 'm/d/y' ) ); ?>"/>
+					<p class="description"><?php _e( 'Select or enter a date for this referral.', 'affiliate-wp' ); ?></p>
 				</td>
 
 			</tr>
@@ -151,6 +154,8 @@
 		<?php
 		/**
 		 * Fires at the bottom of the new-referral admin screen.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_new_referral_bottom' );
 		?>

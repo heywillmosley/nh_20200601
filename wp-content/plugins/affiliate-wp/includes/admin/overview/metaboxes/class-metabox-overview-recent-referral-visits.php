@@ -46,12 +46,12 @@ class Recent_Referral_Visits extends Meta_Box implements Meta_Box\Base {
 	$visits = affiliate_wp()->visits->get_visits(
 		/**
  		 * Filter the get_visits() query.
+		 *
+		 * @since 1.9
  		 *
  		 * @param array The query arguments for get_visits().
  		 *              By default, this query shows the eight
  		 *              most recent referral visits.
- 		 * @since 1.9
- 		 *
  		 */
 		apply_filters( 'affwp_overview_recent_referral_visits',
 			array( 'number' => 8 )

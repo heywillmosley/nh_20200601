@@ -139,7 +139,7 @@ function affwp_dashboard_overview_load_template() {
 		/**
 		 * Fires immediately after summarized earnings are displayed in the dashboard widget.
 		 *
-		 * @ Since 2.3
+		 * @since 2.3
 		 *
 		 * @param array $summary_values An array of calculated summary values currently displayed in the widget.
 		 */

@@ -62,6 +62,8 @@ function affwp_tools_admin() {
 			 *
 			 * The dynamic portion of the hook name, `$active_tab`, refers to the slug of
 			 * the currently active tools tab.
+			 *
+			 * @since 1.0
 			 */
 			do_action( 'affwp_tools_tab_' . $active_tab );
 			?>
@@ -351,6 +353,7 @@ function affwp_export_import_tab() {
 							<input type="text" class="affwp-datepicker" autocomplete="off" name="start_date" placeholder="<?php esc_html_e( 'From - mm/dd/yyyy', 'affiliate-wp' ); ?>"/>
 							<input type="text" class="affwp-datepicker" autocomplete="off" name="end_date" placeholder="<?php esc_html_e( 'To - mm/dd/yyyy', 'affiliate-wp' ); ?>"/>
 							<select name="status" id="status">
+								<option value="processing"><?php esc_html_e( 'Processing', 'affiliate-wp' ); ?></option>
 								<option value="paid"><?php esc_html_e( 'Paid', 'affiliate-wp' ); ?></option>
 								<option value="unpaid"><?php esc_html_e( 'Failed', 'affiliate-wp' ); ?></option>
 							</select>

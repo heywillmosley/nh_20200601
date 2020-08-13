@@ -233,7 +233,7 @@ class Endpoints extends Controller {
 					'type'        => 'string',
 				),
 				'text'        => array(
-					'description' => __( 'Text for the creative.', 'affiliatewp-rest-api' ),
+					'description' => __( 'Text for the creative.', 'affiliate-wp' ),
 					'type'        => 'string',
 				),
 				'image'       => array(

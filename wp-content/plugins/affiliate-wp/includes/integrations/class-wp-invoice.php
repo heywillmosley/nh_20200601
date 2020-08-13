@@ -3,14 +3,20 @@
 class Affiliate_WP_Invoice extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'wp-invoice';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.7.5
 	*/
 	public function init() {
-
-		$this->context = 'wp-invoice';
 
 		add_action( 'wpi_successful_payment', array( $this, 'track_successful_payment' ) );
 		add_action( 'wpi_object_updated', array( $this, 'track_refund' ), 10, 2 );
@@ -61,8 +67,16 @@ class Affiliate_WP_Invoice extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'WPI_Invoice' );
+	}
 }
 
-if ( class_exists( 'WPI_Invoice' ) ) {
 	new Affiliate_WP_Invoice;
-}

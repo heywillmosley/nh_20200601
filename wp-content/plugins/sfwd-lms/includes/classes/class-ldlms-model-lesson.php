@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( !class_exists( 'LDLMS_Model_Lesson' ) ) {
 	class LDLMS_Model_Lesson extends LDLMS_Model_Post {
 
@@ -23,7 +27,7 @@ if ( !class_exists( 'LDLMS_Model_Lesson' ) ) {
 			return sfwd_lms_get_post_options( self::$post_type );
 		}
 		
-		static function load_steps( $query_args = array() ) {
+		function load_steps( $query_args = array() ) {
 			
 			$default_query_args = array(
 				'post_type'		=>	$this->get_post_type(),

@@ -1,6 +1,4 @@
 jQuery(document).ready(function() {
-	console.log('in translations');
-
 	jQuery( '.wrap-ld-translations select.ld-translation-install-locale' ).change(function ( event ) {
 		var locale_url = jQuery( event.target ).val();
 		if ( typeof locale_url !== 'undefined' ) {

@@ -11,6 +11,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 1.0.0
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( ( !class_exists( 'LearnDash_Import_User_Progress' ) ) && ( class_exists( 'LearnDash_Import_Post' ) ) ) {
 	class LearnDash_Import_User_Progress extends LearnDash_Import_Post {
 		private $version			= '1.0';

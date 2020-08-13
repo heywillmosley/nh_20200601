@@ -71,6 +71,8 @@ $have_users_to_delete      = $to_delete_count > $total_invalid_count;
 		/**
 		 * Fires at the top of the delete affiliate admin screen.
 		 *
+		 * @since 1.0
+		 *
 		 * @param int $to_delete Affiliate ID to delete.
 		 */
 		do_action( 'affwp_delete_affiliate_top', $to_delete );
@@ -128,6 +130,8 @@ $have_users_to_delete      = $to_delete_count > $total_invalid_count;
 		<?php
 		/**
 		 * Fires at the bottom of the delete affiliate admin screen.
+		 *
+		 * @since 1.0
 		 *
 		 * @param int $to_delete Affiliate ID to delete.
 		 */

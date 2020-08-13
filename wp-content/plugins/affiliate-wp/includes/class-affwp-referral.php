@@ -275,4 +275,16 @@ final class Referral extends Base_Object {
 
 		return $reference;
 	}
+
+	/**
+	 * Invalidates the sales count cache for the referral's integration context.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool|\WP_Error True on successful removal, false on failure. WP_Error if integration is invalid.
+	 */
+	public function invalidate_sales_counts_cache() {
+		// Invalidate the cache and force sync check to recount records. See self::$integration->needs_synced()
+		return wp_cache_delete( affwp_get_sales_referrals_counts_cache_key( $this->context ), 'affwp_integrations' );
+	}
 }

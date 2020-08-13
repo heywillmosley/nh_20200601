@@ -3,14 +3,20 @@
 class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'ninja-forms';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   1.6
 	 */
 	public function init() {
-
-		$this->context = 'ninja-forms';
 
 		if( version_compare( get_option( 'ninja_forms_version', '0.0.0' ), '3.0', '>=' ) && ! get_option( 'ninja_forms_load_deprecated', FALSE ) ) {
 			add_action( 'nf_affiliatewp_add_referral',  array( $this, 'add_referral' ) );
@@ -303,8 +309,17 @@ class Affiliate_WP_Ninja_Forms extends Affiliate_WP_Base {
 
 		return affwp_sanitize_amount( $purchase_total );
 	}
+
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Ninja_Forms' );
+	}
 }
 
-if ( class_exists( 'Ninja_Forms' ) ) {
 	new Affiliate_WP_Ninja_Forms;
-}

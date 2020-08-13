@@ -4,7 +4,7 @@
  * Plugin URI: http://zendesk.com
  * Description: Zendesk Support for WordPress
  * Author: Zendesk
- * Version: 1.7.3
+ * Version: 1.7.5
  * Author URI: http://www.zendesk.com
  *
  */
@@ -34,7 +34,7 @@ class Zendesk_Support {
   public $settings = array();
   private $zendeskJwt;
 
-  const VERSION = '1.7.3';
+  const VERSION = '1.7.5';
 
 
   /*
@@ -842,7 +842,11 @@ EOJS;
 }
 
 // Register the Zendesk_Support class initialization during WordPress' init action. Globally available through $zendesk_support global.
-add_action( 'init', create_function( '', 'global $zendesk_support; $zendesk_support = new Zendesk_Support();' ) );
+#add_action( 'init', create_function( '', 'global $zendesk_support; $zendesk_support = new Zendesk_Support();' ) ); #WM Patch 20200810
+
+add_action("init", function(){ global $zendesk_support; $zendesk_support = new Zendesk_Support(); });
+
+
 
 
 /*

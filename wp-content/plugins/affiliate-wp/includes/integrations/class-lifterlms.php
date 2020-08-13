@@ -193,7 +193,15 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 				return;
 			}
 
-
+			/**
+			 * Filters the referral description from the LifterLMS product title.
+			 *
+			 * @since 1.8.3
+			 *
+			 * @param string $description  Referral description (as derived from the product title).
+			 * @param object $order        LifterLMS order object.
+			 * @param int    $affiliate_id Affiliate ID
+			 */
 			$description = apply_filters( 'affwp_llms_get_referral_description', $order->product_title, $order, $affiliate_id );
 			$visit_id    = affiliate_wp()->tracking->get_visit_id();
 
@@ -321,6 +329,7 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 				return;
 			}
 
+			/** This filter is documented in includes/integrations/class-lifterlms.php */
 			$description = apply_filters( 'affwp_llms_get_referral_description', $order->get( 'product_title' ), $order, $affiliate_id );
 			$visit_id    = affiliate_wp()->tracking->get_visit_id();
 
@@ -431,8 +440,14 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 			),
 		);
 
+		/**
+		 * Filters the AffiliateWP meta fields to output in the LifterLMS coupon meta box.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param array $fields Meta box fields and their attributes.
+		 */
 		return apply_filters( 'affwp_llms_meta_fields_coupon' , $fields );
-
 	}
 
 
@@ -475,6 +490,8 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 
 		/**
 		 * Fires when processing LifterLMS coupon meta within the LifterLMS integration.
+		 *
+		 * @since 1.8.3
 		 *
 		 * @param int      $post_id The post ID.
 		 * @param stdClass $post    The post object.
@@ -759,6 +776,13 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 
 		);
 
+		/**
+		 * Filters the AffiliateWP meta fields to output in the LifterLMS product meta box.
+		 *
+		 * @since 1.8.3
+		 *
+		 * @param array $fields Meta box fields and their attributes.
+		 */
 		return apply_filters( 'affwp_llms_meta_fields_product', $fields );
 
 	}
@@ -973,8 +997,16 @@ class Affiliate_WP_LifterLMS extends Affiliate_WP_Base {
 		</script>
 	<?php }
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return function_exists( 'LLMS' );
+	}
 }
 
-if ( function_exists( 'LLMS' ) ) {
 	new Affiliate_WP_LifterLMS;
-}

@@ -2,6 +2,14 @@
 
 class Affiliate_WP_PMS extends Affiliate_WP_Base {
 
+	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'pms';
+
     /**
      * Get things started
      *
@@ -9,8 +17,6 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
      * @since  2.0
     */
     public function init() {
-
-        $this->context = 'pms';
 
         // Subscription plan custom referral rate
         add_action( 'pms_view_meta_box_subscription_details_bottom', array( $this, 'add_subscription_view_rate_meta' ) );
@@ -449,9 +455,7 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
             $rate = null;
         }
 
-        /**
-         * This filter is documented in the base class
-         */
+	    /** This filter is documented in includes/integrations/class-base.php */
         $rate = apply_filters( 'affwp_get_product_rate', $rate, $subscription_id, $args, $this->affiliate_id, $this->context );
 
 	    $rate = affwp_sanitize_referral_rate( $rate );
@@ -519,8 +523,16 @@ class Affiliate_WP_PMS extends Affiliate_WP_Base {
 		return $customer;
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Paid_Member_Subscriptions' );
+	}
 }
 
-if ( class_exists( 'Paid_Member_Subscriptions' ) ) {
 	new Affiliate_WP_PMS;
-}

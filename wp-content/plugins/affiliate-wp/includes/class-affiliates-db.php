@@ -29,6 +29,14 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 	public $cache_group = 'affiliates';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'affiliates';
+
+	/**
 	 * Object type to query for.
 	 *
 	 * @access public
@@ -120,14 +128,16 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 	 *
 	 * @access public
 	 * @since  1.0
-	 * @since  1.8 The `$affiliate_id` argument was added. `$orderby` now accepts referral statuses.
-	 *             and 'username'.
+	 * @since  1.8   The `$affiliate_id` argument was added. `$orderby` now accepts referral statuses.
+	 *               and 'username'.
+	 * @since  2.4.3 The `$include` argument was added.
 	 *
 	 * @param array $args {
 	 *     Optional. Arguments for querying affiliates. Default empty array.
 	 *
 	 *     @type int          $number       Number of affiliates to query for. Default 20.
 	 *     @type int          $offset       Number of affiliates to offset the query for. Default 0.
+	 *     @type int|array    $include      Affiliate ID or array of IDs to explicitly include.
 	 *     @type int|array    $exclude      Affiliate ID or array of IDs to explicitly exclude.
 	 *     @type int|array    $user_id      User ID or array of user IDs that correspond to the affiliate user.
 	 *     @type int|array    $affiliate_id Affiliate ID or array of affiliate IDs to retrieve.
@@ -149,6 +159,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 		$defaults = array(
 			'number'       => 20,
 			'offset'       => 0,
+			'include'      => array(),
 			'exclude'      => array(),
 			'user_id'      => 0,
 			'affiliate_id' => 0,
@@ -171,6 +182,18 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 		}
 
 		$where = '';
+
+		if ( ! empty( $args['include'] ) ) {
+			$where .= empty( $where ) ? "WHERE " : "AND ";
+
+			if ( is_array( $args['include'] ) ) {
+				$include = implode( ',', array_map( 'intval', $args['include'] ) );
+			} else {
+				$include = intval( $args['include'] );
+			}
+
+			$where .= "`affiliate_id` IN( {$include} )";
+		}
 
 		if ( ! empty( $args['exclude'] ) ) {
 			$where .= empty( $where ) ? "WHERE " : "AND ";
@@ -234,7 +257,7 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 		$joined_users = false;
 
 		if ( ! empty( $args['search'] ) ) {
-			$search_value = $args['search'];
+			$search_value = trim( $args['search'] );
 
 			if ( is_numeric( $search_value ) ) {
 				$search = "`affiliate_id` IN( {$search_value} )";
@@ -501,6 +524,8 @@ class Affiliate_WP_DB_Affiliates extends Affiliate_WP_DB {
 
 			/**
 			 * Fires immediately after an affiliate has been added to the database.
+			 *
+			 * @since 1.0
 			 *
 			 * @param int   $add  The new affiliate ID.
 			 * @param array $args The arguments passed to the insert method.

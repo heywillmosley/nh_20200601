@@ -105,7 +105,8 @@ add_filter('upload_mimes', function($mimetypes, $user)
     {
         $mimetypes = array_merge($mimetypes, array (
             'exe' => 'application/octet-stream',
-            'dmg' => 'application/octet-stream'
+            'dmg' => 'application/octet-stream',
+            'mov' => 'video/quicktime'
         ));
     }
 
@@ -561,4 +562,312 @@ function cinch_add_revision_support( $args ) {
      $args['supports'][] = 'revisions';
 
      return $args;
+}
+
+// ACF Global Label Builder
+if( function_exists('acf_add_options_page') ) {
+  // Register options page.
+        $option_page = acf_add_options_page(array(
+            'page_title'    => __('Label Builder'),
+            'menu_title'    => __('Label Builder'),
+            'menu_slug'     => 'label-builder',
+            'capability'    => 'edit_posts',
+            'redirect'      => false
+        ));
+}
+
+function ingredients_post_type() {
+ 
+// Set UI labels for Custom Post Type
+    $labels = array(
+        'name'                => _x( 'Ingredients', 'Ingredients', 'twentytwenty' ),
+        'singular_name'       => _x( 'Ingredient', 'Ingredient', 'twentytwenty' ),
+        'menu_name'           => __( 'Ingredients', 'twentytwenty' ),
+        'parent_item_colon'   => __( 'Parent Ingredient', 'twentytwenty' ),
+        'all_items'           => __( 'All Ingredients', 'twentytwenty' ),
+        'view_item'           => __( 'View Ingredient', 'twentytwenty' ),
+        'add_new_item'        => __( 'Add New Ingredient', 'twentytwenty' ),
+        'add_new'             => __( 'Add New', 'twentytwenty' ),
+        'edit_item'           => __( 'Edit Ingredient', 'twentytwenty' ),
+        'update_item'         => __( 'Update Ingredient', 'twentytwenty' ),
+        'search_items'        => __( 'Search Ingredient', 'twentytwenty' ),
+        'not_found'           => __( 'Not Found', 'twentytwenty' ),
+        'not_found_in_trash'  => __( 'Not found in Trash', 'twentytwenty' ),
+    );
+     
+// Set other options for Custom Post Type
+     
+    $args = array(
+        'label'               => __( 'ingredients', 'twentytwenty' ),
+        'description'         => __( 'Ingredients used in our products.', 'twentytwenty' ),
+        'labels'              => $labels,
+        // Features this CPT supports in Post Editor
+        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        // You can associate this CPT with a taxonomy or custom taxonomy. 
+        'taxonomies'          => array( 'ingredients' ),
+        /* A hierarchical CPT is like Pages and can have
+        * Parent and child items. A non-hierarchical CPT
+        * is like Posts.
+        */ 
+        'hierarchical'        => false,
+        'public'              => true,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'show_in_nav_menus'   => true,
+        'show_in_admin_bar'   => true,
+        'menu_position'       => 5,
+        'menu_icon'           => 'dashicons-carrot',
+        'can_export'          => true,
+        'has_archive'         => true,
+        'exclude_from_search' => false,
+        'publicly_queryable'  => true,
+        'capability_type'     => 'post',
+        'show_in_rest' => true,
+ 
+    );
+     
+    // Registering your Custom Post Type
+    register_post_type( 'ingredients', $args );
+ 
+}
+ 
+/* Hook into the 'init' action so that the function
+* Containing our post type registration is not 
+* unnecessarily executed. 
+*/
+ 
+add_action( 'init', 'ingredients_post_type', 0 );
+
+// WM - Back to classic editor, yes
+add_filter('use_block_editor_for_post', '__return_false', 10);
+
+
+// Display Clinic Build and Email Admin and User Results
+add_shortcode('hwm_clinic_builder', 'hwm_clinic_builder'); // 20200625 WM depreciated add_shortcode('hwm_sv2_build', 'hwm_sv2_build');
+
+
+function hwm_clinic_builder( $atts ) {
+
+  // set up default parameters
+    extract( shortcode_atts( array(
+
+     'show_price' => TRUE,
+     'sidebar' => FALSE
+
+    ), $atts) );
+
+    // Convert True False String to Boolean
+    switch( $show_price ) {
+      case 'TRUE': $show_price = TRUE; break;
+      default: $show_price = FALSE; break;
+    }
+
+    $user = wp_get_current_user();
+    $clinic = hwm_gf_last_user_entry( 20 ); // Get the entry
+    $is_mailed = $clinic[11];
+    $prospect_msg = hwm_clinic_body ( $clinic, $show_price); // Prospect Message / Render
+    $admin_emails = "lwoolley@thenewhuman.com, iswitzer@thenewhuman.com, wmosley@thenewhuman.com";
+    $admin_msg = $user->display_name . " created a Bionetic Clinic Build. Here are the built-out details we sent to the client: (including price)"; // Pre
+    $admin_msg .= hwm_clinic_body ( $clinic, TRUE );
+
+    // Mail stuff out
+    if( $is_mailed == "no" ) {
+
+      hwm_clinic_mail( $admin_emails, "SV2 Clinic Admin Email", $admin_msg ); // Admin Email
+      hwm_clinic_mail( $user->user_email, "SV2 Clinic Prospect Email", $prospect_msg ); // Prospect Email
+    }    
+
+  return $prospect_msg; // render out to page
+}
+
+// Displays sections
+function hwm_clinic_section_builder( $field_meta, $section_name, $show_price = FALSE ) {
+
+  // if field set to none option, then set to empty
+  if( !is_array( $field_meta ) ) {
+    if ( strpos( $field_meta, 'None' ) !== false )
+      unset( $field_meta );
+  }
+
+  if( isset( $field_meta ) ) {
+
+    // Header
+    $render = "<tr class='section-head'>";
+    $render .= "<td>";
+    $render .= "<h3>$section_name</h3>";
+    $render .= "</td>";
+    $render .= "</tr>";
+
+    // if field with options
+    if( is_array( $field_meta ) ) {
+
+      // Field Options
+      foreach ( $field_meta as $f ) {
+
+        $field = explode('|', $f );
+        $field_type = $field[0];
+        $field_price = '$' . number_format($field[1]);
+
+        $render .= "<tr>";
+        $render .= "<td>$field_type</td>";
+        if( $show_price )
+          $render .= "<td>$field_price</td>";
+
+        $render .= "</tr>";
+
+      } // end foreach field
+
+    } else { // single field
+
+      $field = explode('|', $field_meta );
+      $field_type = $field[0];
+      $field_price = '$' . number_format($field[1]);
+      $render .= "<tr>";
+      $render .= "<td>$field_type</td>";
+      if( $show_price )
+        $render .= "<td>$field_price</td>";
+      $render .= "</tr>";
+    }
+  } // end if field_array
+
+  return $render;
+
+} // end function
+
+function hwm_clinic_body ( $clinic, $show_price = FALSE ) {
+
+  $id = $clinic['id'];
+  $sv2_combo_base_name = $clinic['3.1'];
+  $sv2_combo_base_price = $clinic['3.2'];
+  $lasers = hwm_get_array_parts_with( $clinic, '7', '.' );
+  $slt = hwm_get_array_parts_with( $clinic, '4', '.' ); // Sound Light Therapy
+  $footbath = $clinic[6];
+  $add_seats = hwm_get_array_parts_with( $clinic, '9', '.' );
+  $starter_kit = $clinic[8];
+  $clinic_total = '$' . number_format( $clinic[5] );
+  $pubDate =  new DateTime( $clinic['date_created'] );
+  $pubDate = $pubDate->format('D, d M Y');
+   
+  // Breakdown
+  $render .= hwm_bb_module( 254112 ); // SV2 Clinic Builder Pre Email Text
+  $render .= "<div class='table-responsive mt-4 hwm-clinic-build'>";
+  $render .= "<h3>My Dream Clinic</h3>";
+  $render .= "<table class='table'>";
+  $render .= "<tr class='section-head'>";
+  $render .= "<td>";
+  $render .= "<strong>$sv2_combo_base_name</strong>";
+  $render .= hwm_bb_module( 254100 ); // SV2 Base Info
+  $render .= "</td>";
+  if( $show_price )
+    $render .= "<td>$sv2_combo_base_price</td>";
+  $render .= "</tr>";
+  $render .= hwm_clinic_section_builder( $lasers, 'Lasers', $show_price );
+  $render .= hwm_clinic_section_builder( $slt, 'Sound Light Therapy', $show_price );
+  $render .= hwm_clinic_section_builder( $footbath, 'Footbath', $show_price );
+  $render .= hwm_clinic_section_builder( $add_seats, 'Certified SV2 Insight & Botanical Training Program for Additional Personnel', $show_price );
+  $render .= hwm_clinic_section_builder( $starter_kit, 'Starter Kit', $show_price );
+
+  if( $show_price ) {
+
+    $render .= "<tr class='section-head'>";
+    $render .= "<td><strong>Total</strong></td>";
+    $render .= "<td><strong>$clinic_total</strong></td>";
+    $render .= "</tr>";
+  }
+  $render .= "</table>";
+  $render .= "</div>"; // end responsive table
+  $render .= "<hr/>";
+  $render .= hwm_bb_module( 254117 ); // SV2 Clinic Builder Pre Email Text
+
+  return $render;
+}
+
+function hwm_clinic_mail( $to, $subject, $body ) {
+
+    $headers = array('Content-Type: text/html; charset=UTF-8');
+
+    // Send clinic consultation to client
+    wp_mail( $to, $subject, $body, $headers );
+
+    // Change mailed to yes in gravity form entry
+    GFAPI::update_entry_field( $id, 11, 'yes' );
+}
+
+// Returns a field's contents
+function hwm_gf_field ( $form_id, $field_id ) {
+    
+    $field = GFAPI::get_field( $form_id, $field_id );
+    return $field->content;
+}
+
+// Display array prints pretty
+function hwm_print($array, $return = FALSE ) {
+
+    $render = "<pre>";
+    $render .= print_r( $array, TRUE );
+    $render .= "</pre>";
+
+    if( !$return )
+      echo $render;
+    else
+      return $render;
+}
+
+// Pulls any Beaver Builder Module in to PHP!
+function hwm_bb_module( $id ) {
+
+  ob_start();
+  FLBuilder::render_query( array(
+    'post_type' => 'fl-builder-template',
+    'p'         => $id
+) );
+  return ob_get_clean();
+}
+
+// Show last gravity form entry from current user (or user with id)
+function hwm_gf_last_user_entry ( $form_id, $user_id = 'Current', $count = 1 ) {
+
+  // Set to current user
+  if( $user_id == 'Current' )
+    $user = wp_get_current_user();
+
+  // Show "unlimited results", capped at 100
+  if( $count == '-1' )
+    $count = 100;
+
+  // Entry parameters
+  $search_criteria['status'] = 'active';
+  $search_criteria['field_filters'][] = array( 'key' => 'created_by', 'value' => $user->ID );
+  $paging = array( 'offset' => 0, 'page_size' => $count );
+  $sorting = NULL;
+
+  // Get entries
+  $entries = GFAPI::get_entries( $form_id, $search_criteria, $sorting, $paging );
+
+  // If 1, return just that entry vs array entries
+  if(count( $entries ) == 1 ) {
+    foreach( $entries as $entry )
+      return $entry;
+  } else
+  return $entries;
+}
+
+function hwm_get_array_parts_with ( $array, $start_with, $seperator ) {
+
+  foreach( $array as $key => $value ) {
+
+    // Set explode key
+      $exp_key = explode($seperator, $key);
+
+      // if key matches what we're looking for
+      if( $exp_key[0] == $start_with ) {
+
+        // Add to array if value isn't empty
+        if( !empty( $value) )
+            $result[] = $value;
+      }
+  }
+
+  if( isset( $result ) )
+      return $result;
 }

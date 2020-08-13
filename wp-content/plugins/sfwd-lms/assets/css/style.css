@@ -17,7 +17,8 @@ min-width:30%;
 background-color: Red; color: white; padding: 10px 5px;
 }
 .cert_shortcode_parm_list{
-margin: 20px 50px;
+margin: 20px 30px;
+list-style: initial;
 }
 
 .column-sno {width: 50px;}
@@ -91,46 +92,46 @@ margin: 20px 50px;
 }
 
 .list_arrow.expand {
-    background: url("../../templates/images/gray_arrow_expand.png") no-repeat scroll 0 50% transparent;
+	background: url("../images/gray_arrow_expand.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 .active .list_arrow.expand {
-    background: url("../../templates/images/green_arrow_expand.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/green_arrow_expand.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 .active .list_arrow.collapse {
-    background: url("../../templates/images/green_arrow_collapse.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/green_arrow_collapse.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 
 .list_arrow.collapse {
-    background: url("../../templates/images/gray_arrow_collapse.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/gray_arrow_collapse.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 .list_arrow.collapse.lesson_completed {
-    background: url("../../templates/images/green_arrow_collapse.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/green_arrow_collapse.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 
 .lesson_incomplete.list_arrow.collapse {
-    background: url("../../templates/images/gray_arrow_collapse.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/gray_arrow_collapse.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 
 .list_arrow.expand.lesson_completed {
-    background: url("../../templates/images/green_arrow_expand.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/images/green_arrow_expand.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 
 .lesson_incomplete.list_arrow.expand {
-    background: url("../../templates/images/gray_arrow_expand.png") no-repeat scroll 0 50% transparent;
+    background: url("../images/gray_arrow_expand.png") no-repeat scroll 0 50% transparent;
 	padding: 5px;
 }
 .rtl .active .list_arrow.collapse, .rtl .list_arrow.collapse.lesson_completed {
-	background-image: url("../../templates/images/green_arrow_collapse_rtl.png");
+	background-image: url("../images/green_arrow_collapse_rtl.png");
 }
 .rtl .list_arrow.collapse, .rtl .lesson_incomplete.list_arrow.collapse {
-    background-image: url("../../templates/images/gray_arrow_collapse_rtl.png");	
+    background-image: url("../images/gray_arrow_collapse_rtl.png");	
 }
 .learndash_navigation_lesson_topics_list  .list_arrow.expand {
 	background-position: 50% 10px;
@@ -139,7 +140,7 @@ margin: 20px 50px;
 	background-position: 50% 7px;
 }
 .learndash_navigation_lesson_topics_list .topic-notcompleted  span{
- background: url("../../templates/images/notcompleted_t_navigation.png") no-repeat scroll 0 8px transparent;
+ background: url("../images/notcompleted_t_navigation.png") no-repeat scroll 0 8px transparent;
     display: inline-block;
   	min-height: 25px;
     line-height: 25px;
@@ -251,10 +252,20 @@ body.post-type-sfwd-lessons .column-taxonomy-ld_lesson_tag,
 body.post-type-sfwd-topic .column-categories,
 body.post-type-sfwd-topic .column-tags,
 body.post-type-sfwd-topic .column-taxonomy-ld_topic_category, 
-body.post-type-sfwd-topic .column-taxonomy-ld_topic_tag {
-	width: 10%;
-}
+body.post-type-sfwd-topic .column-taxonomy-ld_topic_tag,
 
+body.post-type-sfwd-quiz .column-categories,
+body.post-type-sfwd-quiz .column-tags,
+body.post-type-sfwd-quiz .column-taxonomy-ld_quiz_category, 
+body.post-type-sfwd-quiz .column-taxonomy-ld_quiz_tag,
+
+body.post-type-groups .column-categories,
+body.post-type-groups .column-tags,
+body.post-type-groups .column-taxonomy-ld_group_category, 
+body.post-type-groups .column-taxonomy-ld_group_tag,
+body.post-type-groups .column-groups_courses_users {
+	width: 8%;
+}
 
 /* CSS style for the post type editor showing the drip date. Replaces date picker */
 .sfwd .ld_date_selector select {
@@ -276,4 +287,25 @@ body.post-type-sfwd-topic .column-taxonomy-ld_topic_tag {
 
 .ld-error {
 	color: red;
+}
+
+.ld-success {
+	color: green;
+}
+
+
+form#learndash-settings-page-form .date-time-text {
+    display: inline-block;
+	min-width: 13em;
+}
+
+form#learndash-settings-page-form .quizzes_time_formats fieldset label {
+	margin: .25em 0 .5em !important;
+	display: inline-block;
+	line-height: 1.4em;
+}
+
+form#learndash-settings-page-form .quizzes_time_formats fieldset input[type="text"] {
+	height: 20px;
+	width: 150px;
 }

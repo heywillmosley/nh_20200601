@@ -74,6 +74,7 @@ function affiliate_wp_uninstall_tables() {
 		'affiliate_wp_payouts',
 		'affiliate_wp_referrals',
 		'affiliate_wp_rest_consumers',
+		'affiliate_wp_sales',
 		'affiliate_wp_visits'
 	);
 

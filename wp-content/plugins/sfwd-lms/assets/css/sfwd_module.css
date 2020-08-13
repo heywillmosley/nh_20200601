@@ -16,9 +16,16 @@
 	float: left;
 	width: 100%;
 	max-width: 300px;
+	/* 10up-added */
+	align-items: center;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
 }
 .sfwd_help_text_link img {
-	width: 40px;
+	/*width: 40px;*/
+	width: 30px;
+	height: 30px;
 	float: left;
 }
 .sfwd_label {
@@ -27,22 +34,28 @@
 	line-height: 19px;
 	width: 60%;
 	float: right;
-	margin: 11px 19% 10px 0;
+	/*margin: 11px 19% 10px 0;*/
+	margin: 0;
+	flex:1;
 }
+/*
 .sfwd input[type="text"], .sfwd input[type="number"] {
 	color: #515151;
 	height: 35px;
 	font-size: 14px;
 }
-
+*/
+/*
 .sfwd input[type="text"] {
 	width: 100%;
 }
-
+*/
+/*
 .sfwd input[type="number"] {
 	min-width: 100px;
 }
-
+*/
+/*
 .sfwd textarea {
 	color: #515151;
 	padding: 10px 0px 0px 10px;
@@ -51,6 +64,8 @@
 	line-height: 25px;
 	width: 100%;
 }
+*/
+
 .sfwd_help_text_div {
 	text-align:left;
 	width:100%;
@@ -63,6 +78,8 @@
 	color: #797979;
 	line-height: 15px;
 	font-style: italic;
+	font-weight: lighter;
+	margin-right: 30px;
 }
 .sfwd_head_tagline {
 	color: #5F5F5F;
@@ -178,9 +195,10 @@
 	width: 38%;
 	min-width: 210px;
 	max-width: 300px;
-	
+
 	text-align:right;
 	vertical-align:top;
+	color: #5F5F5F !important;
 }
 
 .sfwd_metabox_text h2 {
@@ -196,11 +214,13 @@
 	background-color: #EEE;
 	margin: 5px 0 5px 0 !important;
 }
+/*
 .sfwd input[type="button"] {
 	border-radius: 5px;
 	padding: 10px;
 	font-size: 15px;
 }
+*/
 .sfwd_settings_left {
 	float: left;
 	padding: 0px;
@@ -212,9 +232,9 @@
 	float: right;
 }
 
-#wpbody-content {
+/* #wpbody-content {
 	min-width: 600px;
-}
+} */
 .sfwd_options {
 	width: 100%;
 	margin: 18px 0px 10px 0px;
@@ -274,7 +294,7 @@
 	padding: 5px 0px;
 	margin: 0px 477px 15px 0px !important;
 }
-.sfwd_input input[type="checkbox"], 
+.sfwd_input input[type="checkbox"],
 .sfwd_input input[type="radio"] {
 	vertical-align: text-bottom;
 }
@@ -299,20 +319,22 @@
 }
 */
 
-
+/*
 .sfwd_options .sfwd_input_type_checkbox .sfwd_option_input {
 	margin: 10px 0 0 0;
 }
-
+*/
+/*
 .sfwd_options .sfwd_input_type_textarea .sfwd_option_input {
 	margin: 0 0 10px 0;
 }
-
+*/
+/*
 .sfwd_options .sfwd_input_type_select .sfwd_option_input select {
 	height: 35px;
 	line-height: 35px;
 }
-
+*/
 /*
 .sfwd_options .sfwd_input_type_select .sfwd_option_input select option {
 	height: 35px;
@@ -412,16 +434,24 @@ table.learndash-group-users-select td.td_learndash_group_users_search select {
 	min-width: 100%;
 	height: 150px;
 }
+
 /* Hide the 'Add New' button on the Assignment and Submitted Essays list tables */
-body.post-type-sfwd-assignment a.page-title-action,
-body.post-type-sfwd-essays a.page-title-action,
-body.post-type-sfwd-transactions a.page-title-action {
+body.post-type-sfwd-assignment .ld-global-header .global-new-entity-button,
+body.post-type-sfwd-essays .ld-global-header .global-new-entity-button,
+body.post-type-sfwd-transactions .ld-global-header .global-new-entity-button {
 	display:none;
 }
 
 
 /* Styles for the Support tab table output */
+/*
+#learndash-settings-support h2 {
+	clear: both;
+}
+
+#learndash-settings-support .learndash-support-settings-desc,
 #learndash-settings-support table.learndash-support-settings {
+	clear: both;
 	width: 80%;
 }
 
@@ -447,7 +477,7 @@ body.post-type-sfwd-transactions a.page-title-action {
 #learndash-settings-support table.learndash-support-settings .learndash-support-settings-right {
 	width: 65%;
 }
-
+*/
 
 table#learndash-data-reports,
 table#learndash-data-upgrades {
@@ -461,16 +491,16 @@ table#learndash-data-upgrades {
 
 .learndash-data-reports-status .progress-meter,
 .learndash-data-upgrades-status .progress-meter {
-	width:100%; 
-	height: 20px; 
+	width:100%;
+	height: 20px;
 	border: 1px solid black;
 }
 
 .learndash-data-reports-status .progress-meter .progress-meter-image,
 .learndash-data-upgrades-status .progress-meter .progress-meter-image {
-	background-color: green; 
-	float: left; height: 16px; 
-	width: 0; 
+	background-color: green;
+	float: left; height: 16px;
+	width: 0;
 	margin: 2px 0;
 }
 
@@ -506,6 +536,10 @@ table.learndash-support-settings tbody th {
 
 .sfwd_input p.ld-clear {
 	height: 0;
-	clear:left; 
+	clear:left;
 	padding:0;
+}
+
+.edit-post-header__settings .components-popover__content a:hover {
+	color: #007cba;
 }

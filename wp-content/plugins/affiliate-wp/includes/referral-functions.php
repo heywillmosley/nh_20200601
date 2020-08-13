@@ -105,7 +105,7 @@ function affwp_get_referral_statuses() {
 /**
  * Sets a referral's status.
  *
- * @since
+ * @since 1.0
  *
  * @param int|AffWP\Referral $referral   Referral ID or object.
  * @param string             $new_status Optional. New referral status to set. Default empty.
@@ -160,6 +160,8 @@ function affwp_set_referral_status( $referral, $new_status = '' ) {
 				/**
 				 * Fires when a referral is marked as accepted.
 				 *
+				 * @since 1.0
+				 *
 				 * @param int             $affiliate_id Referral affiliate ID.
 				 * @param \AffWP\Referral $referral     The referral object.
 				 */
@@ -172,7 +174,7 @@ function affwp_set_referral_status( $referral, $new_status = '' ) {
 		 *
 		 * Will not fire if the new status matches the old one, or if `$new_status` is empty.
 		 *
-		 * @since
+		 * @since 1.0
 		 *
 		 * @param int    $referral_id Referral ID.
 		 * @param string $new_status  New referral status.
@@ -250,17 +252,18 @@ function affwp_add_referral( $data = array() ) {
 
 	$args = array(
 		'affiliate_id' => absint( $data['affiliate_id'] ),
-		'amount'       => ! empty( $data['amount'] )      ? sanitize_text_field( $data['amount'] )      : '',
-		'description'  => ! empty( $data['description'] ) ? sanitize_text_field( $data['description'] ) : '',
-		'reference'    => ! empty( $data['reference'] )   ? sanitize_text_field( $data['reference'] )   : '',
-		'parent_id'    => ! empty( $data['parent_id'] )   ? absint( $data['parent_id'] )                : '',
-		'currency'     => ! empty( $data['currency'] )    ? sanitize_text_field( $data['currency'] )    : '',
-		'campaign'     => ! empty( $data['campaign'] )    ? sanitize_text_field( $data['campaign'] )    : '',
-		'context'      => ! empty( $data['context'] )     ? sanitize_text_field( $data['context'] )     : '',
-		'custom'       => ! empty( $data['custom'] )      ? $data['custom']                             : '',
-		'date'         => ! empty( $data['date'] )        ? $data['date']                               : '',
-		'type'         => ! empty( $data['type'] )        ? $data['type']                               : '',
-		'products'     => ! empty( $data['products'] )    ? $data['products']                           : '',
+		'amount'       => ! empty( $data['amount'] )      ? sanitize_text_field( $data['amount'] )        : '',
+		'description'  => ! empty( $data['description'] ) ? sanitize_text_field( $data['description'] )   : '',
+		'order_total'  => ! empty( $data['order_total'] ) ? affwp_sanitize_amount( $data['order_total'] ) : '',
+		'reference'    => ! empty( $data['reference'] )   ? sanitize_text_field( $data['reference'] )     : '',
+		'parent_id'    => ! empty( $data['parent_id'] )   ? absint( $data['parent_id'] )                  : '',
+		'currency'     => ! empty( $data['currency'] )    ? sanitize_text_field( $data['currency'] )      : '',
+		'campaign'     => ! empty( $data['campaign'] )    ? sanitize_text_field( $data['campaign'] )      : '',
+		'context'      => ! empty( $data['context'] )     ? sanitize_text_field( $data['context'] )       : '',
+		'custom'       => ! empty( $data['custom'] )      ? $data['custom']                               : '',
+		'date'         => ! empty( $data['date'] )        ? $data['date']                                 : '',
+		'type'         => ! empty( $data['type'] )        ? $data['type']                                 : '',
+		'products'     => ! empty( $data['products'] )    ? $data['products']                             : '',
 		'status'       => 'pending',
 	);
 
@@ -320,7 +323,7 @@ function affwp_delete_referral( $referral ) {
 		/**
 		 * Fires immediately after a referral has been deleted.
 		 *
-		 * @since
+		 * @since 1.0
 		 *
 		 * @param int $referral_id Referral ID.
 		 */

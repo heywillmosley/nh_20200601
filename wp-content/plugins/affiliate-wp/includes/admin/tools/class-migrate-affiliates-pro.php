@@ -1,5 +1,9 @@
 <?php
 
+if ( ! class_exists( 'Affiliate_WP_Migrate_Base' ) ) {
+	require_once AFFILIATEWP_PLUGIN_DIR . 'includes/admin/tools/class-migrate-base.php';
+}
+
 class Affiliate_WP_Migrate_Affiliates_Pro extends Affiliate_WP_Migrate_Base {
 
 	private $direct_affiliates;

@@ -16,9 +16,11 @@ function affiliate_wp_install() {
 	$affiliate_wp_install->customers      = new Affiliate_WP_Customers_DB;
 	$affiliate_wp_install->customer_meta  = new Affiliate_WP_Customer_Meta_DB;
 	$affiliate_wp_install->referrals      = new Affiliate_WP_Referrals_DB;
+	$affiliate_wp_install->referral_meta  = new Affiliate_WP_Referral_Meta_DB;
 	$affiliate_wp_install->visits         = new Affiliate_WP_Visits_DB;
 	$affiliate_wp_install->campaigns      = new Affiliate_WP_Campaigns_DB;
 	$affiliate_wp_install->creatives      = new Affiliate_WP_Creatives_DB;
+	$affiliate_wp_install->sales          = new Affiliate_WP_Sales_DB;
 	$affiliate_wp_install->settings       = new Affiliate_WP_Settings;
 	$affiliate_wp_install->rewrites       = new Affiliate_WP_Rewrites;
 	$affiliate_wp_install->REST           = new Affiliate_WP_REST;
@@ -28,9 +30,11 @@ function affiliate_wp_install() {
 	$affiliate_wp_install->customers->create_table();
 	$affiliate_wp_install->customer_meta->create_table();
 	$affiliate_wp_install->referrals->create_table();
+	$affiliate_wp_install->referral_meta->create_table();
 	$affiliate_wp_install->visits->create_table();
 	$affiliate_wp_install->campaigns->create_view();
 	$affiliate_wp_install->creatives->create_table();
+	$affiliate_wp_install->sales->create_table();
 	$affiliate_wp_install->affiliates->payouts->create_table();
 	$affiliate_wp_install->REST->consumers->create_table();
 
@@ -84,7 +88,8 @@ function affiliate_wp_install() {
 
 	$completed_upgrades = array(
 		'upgrade_v20_recount_unpaid_earnings',
-		'upgrade_v22_create_customer_records'
+		'upgrade_v22_create_customer_records',
+		'upgrade_v245_create_customer_affiliate_relationship_records'
 	);
 
 	// Set past upgrade routines complete for all sites.

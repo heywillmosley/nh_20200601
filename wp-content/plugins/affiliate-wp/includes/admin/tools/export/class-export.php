@@ -47,6 +47,8 @@ class Affiliate_WP_Export {
 		/**
 		 * Filters the capability needed to perform an export.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string $capability Capability needed to perform an export.
 		 */
 		return (bool) current_user_can( apply_filters( 'affwp_export_capability', $this->capability ) );
@@ -103,6 +105,8 @@ class Affiliate_WP_Export {
 		 * This dynamic filter is appended with the export type string, for example:
 		 *
 		 *     `affwp_export_csv_cols_affiliates`
+		 *
+		 * @since 1.0
 		 *
 		 * @param $cols The export columns available.
 		 */
@@ -167,6 +171,8 @@ class Affiliate_WP_Export {
 		 *
 		 * The data set will differ depending on which exporter is currently in use.
 		 *
+		 * @since 2.0
+		 *
 		 * @param array $data Export data.
 		 */
 		$data = apply_filters( 'affwp_export_get_data', $data );
@@ -175,6 +181,8 @@ class Affiliate_WP_Export {
 		 * Filters the export data for a given export type.
 		 *
 		 * The dynamic portion of the hook name, `$this->export_type`, refers to the export type.
+		 *
+		 * @since 2.0
 		 *
 		 * @param array $data Export data.
 		 */

@@ -90,14 +90,11 @@ function affwp_afgf_get_email_tag_field_ids() {
  *
  * @since 1.0
  */
-function affwp_afgf_get_field_value( $entry_id = '', $field_type = '' ) {
+function affwp_afgf_get_field_value( $entry = array(), $field_type = '' ) {
 
-	if ( ! ( $entry_id || $field_type ) ) {
+	if ( empty ( $entry || $field_type ) ) {
 		return;
 	}
-
-	$form  = GFAPI::get_form( affwp_afgf_get_registration_form_id() );
-	$entry = GFAPI::get_entry( $entry_id );
 
 	switch ( $field_type ) {
 
@@ -151,12 +148,9 @@ function affwp_afgf_get_field_id( $field_type = '' ) {
 	// get form fields
 	$fields = $form['fields'];
 
-	$product_array = array();
-
 	if ( $fields ) {
 
 		foreach ( $fields as $field ) {
-
 
 			if ( isset( $field['type'] ) && $field_type == $field['type'] ) {
 

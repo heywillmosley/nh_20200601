@@ -53,20 +53,337 @@ abstract class Affiliate_WP_Base {
 	public $email;
 
 	/**
+	 * A list of supported AffiliateWP features
+	 *
+	 * @access protected
+	 * @since  2.5
+	 *
+	 * @var array
+	 */
+	protected $supported_features = array();
+
+	/**
+	 * Active integrations.
+	 *
+	 * @access private
+	 * @since  2.5
+	 * @var    array List of integrations that have been activated.
+	 * @static
+	 */
+	private static $active_integrations = array();
+
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * Integration sub-classes must extend this method.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	public function plugin_is_active() {
+		_doing_it_wrong( __METHOD__, 'This method should run a boolean check against the existence of a vital integration class or function to determine if the integration is active.', '2.5' );
+
+		// Prior to 2.5, if the integration class was running, it was because it was active.
+		return true;
+	}
+
+	/**
 	 * Constructor
 	 *
 	 * @access  public
 	 * @since   1.0
+	 *
 	 */
 	public function __construct() {
-		// Keep $debug initialization for back-compat.
-		$this->debug = affiliate_wp()->settings->get( 'debug_mode', false );
-
 		$this->affiliate_id = affiliate_wp()->tracking->get_affiliate_id();
-		$this->init();
 
+		// Set debug mode, if this is a test.
+		if ( $this->is_test() ) {
+			// Keep $debug initialization for back-compat.
+			$this->debug = affiliate_wp()->settings->get( 'debug_mode', false );
+		}
 	}
 
+	/**
+	 * Retrieves the registry attributes for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @return array|WP_Error Array of registry attributes, or a WP_Error if the item is not registered.
+	 */
+	public function get_registry_attributes() {
+		$attributes = affiliate_wp()->integrations->get_attributes( $this->context );
+
+		if ( false === $attributes ) {
+			return new \WP_Error(
+				'item_not_registered',
+				'This integration is not registered to the integration registry.',
+				array( 'context' => $this->context )
+			);
+		} else {
+			return $attributes;
+		}
+	}
+
+	/**
+	 * Retrieves the value of a single registry attribute.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string $attribute The registry attribute to retrieve.
+	 * @return mixed|WP_Error The registry attribute value, or a WP error if something went wrong.
+	 */
+	public function get_registry_attribute( $attribute ) {
+		$attributes = $this->get_registry_attributes();
+
+		// Bail early if the attributes returned an error.
+		if ( is_wp_error( $attributes ) ) {
+			return $attributes;
+		}
+
+		$attribute = (string) $attribute;
+
+		if ( isset( $attributes[ $attribute ] ) ) {
+			$result = $attributes[ $attribute ];
+		} else {
+			$result = new \WP_Error(
+				'attribute_does_not_exist',
+				'The specified attribute does not exist in this context',
+				array( 'attributes' => $attributes )
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Attempts to retrieve the name from the registry. Falls back to the context if the name could not be found.
+	 *
+	 * @since 2.5
+	 *
+	 * @return string The name of the current integration, or the context if the name could not be found.
+	 */
+	public function get_name() {
+		$name = $this->get_registry_attribute( 'name' );
+
+		return is_wp_error( $name ) ? $this->context : $name;
+	}
+
+	/**
+	 * Activates the integration, if it has not already been activated.
+	 *
+	 * @since 2.5
+	 * @return true|\WP_Error True if the integration was activated. WP_Error otherwise.
+	 */
+	public function activate() {
+
+		// Bail early if the plugin is not active
+		if ( ! $this->plugin_is_active() ) {
+			return new \WP_Error(
+				'plugin_is_not_active',
+				'The plugin for this integration is not active.',
+				array( 'context', $this->context )
+			);
+		}
+
+		// Bail early if the plugin has already been enabled.
+		if ( $this->is_active() ) {
+			return new \WP_Error(
+				'integration_already_enabled',
+				'This integration is already enabled',
+				array( 'context' => $this->context )
+			);
+		}
+
+		// If this integration has not been activated, set it up.
+		$this->init();
+		self::$active_integrations[] = $this->context;
+
+		return true;
+	}
+
+	/**
+	 * Determines if the current integration sales data is out of sync.
+	 *
+	 * @since 2.5
+	 * @return bool|WP_Error True if a sync needs to run, false if not. WP_Error if the integration does not support sales reporting.
+	 */
+	public function needs_synced() {
+		$totals = $this->get_sales_referrals_counts();
+
+		// Bubble the WP Error up the chain.
+		if ( is_wp_error( $totals ) ) {
+			return $totals;
+		}
+
+		return $totals['sales'] !== $totals['referrals'];
+	}
+
+	/**
+	 * Retrieves the total sales and referrals counts for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param bool $force      Optional. Set to true to force-refresh the cache. Default false.
+	 * @return array|\WP_Error Array with sales and referral counts, or a WP_Error if integration does not support sales
+	 *                         reporting.
+	 */
+	public function get_sales_referrals_counts( $force = false ) {
+
+		// Bail early if this integration does not support sales reporting.
+		if ( ! $this->supports_feature( 'sales_reporting' ) ) {
+			return new \WP_Error(
+				'get_sales_referrals_invalid_integration',
+				'This integration does not support sales reporting.',
+				$this->context
+			);
+		}
+
+		// If the cache is forced to refresh, don't bother getting the cache.
+		if ( true !== $force ) {
+			$result = wp_cache_get( affwp_get_sales_referrals_counts_cache_key( $this->context ), 'affwp_integrations' );
+		} else {
+			$result = array();
+		}
+
+		// If the cache is not set, of if force is true, get the counts and set it.
+		if ( true === $force || ! is_array( $result ) || ! isset( $result['sales'] ) || ! isset( $result['referrals'] ) ) {
+			$sales_count    = affiliate_wp()->referrals->sales->count( array( 'context' => $this->context ) );
+			$referral_count = affiliate_wp()->referrals->count( array( 'context' => $this->context, 'type' => 'sale' ) );
+			$result         = array( 'sales' => $sales_count, 'referrals' => $referral_count );
+
+			/**
+			 * Filters how often the sales/referrals counts cache should expire.
+			 *
+			 * @since 2.5
+			 *
+			 * @param int    $expires Time, in seconds in which the sales referrals counts should expire. Defaults to 1 day, in seconds.
+			 * @param string $context The current integration context.
+			 */
+			$expires = apply_filters( "affwp_sales_referrals_counts_cache_expire", DAY_IN_SECONDS, $this->context );
+
+			// Cache the total counts.
+			wp_cache_set(
+				affwp_get_sales_referrals_counts_cache_key( $this->context ),
+				$result,
+				'affwp_integrations',
+				$expires
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Checks to see if the specified feature is supported by this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string $feature The feature to check
+	 * @return bool True if the feature is supported, false otherwise.
+	 */
+	public function supports_feature( $feature ) {
+		return in_array( $feature, $this->get_registry_attribute( 'supports' ) );
+	}
+
+	/**
+	 * Checks to see if the current integration is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool true if the integration is active, false otherwise.
+	 */
+	public function is_active() {
+		return in_array( $this->context, self::$active_integrations );
+	}
+
+	/**
+	 * Gets the total order count for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date {
+	 *     Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 *     @type string $start Start date to retrieve orders for.
+	 *     @type string $end   End date to retrieve orders for.
+	 * }
+	 * @return \WP_Error|int WP_Error object by default. Potential integer if sub-classes extend the method.
+	 */
+	public function get_total_order_count( $date = '' ) {
+		$integration_name = $this->get_name();
+
+		return new \WP_Error( "The integration $integration_name does not support order tracking." );
+	}
+
+	/**
+	 * Gets the total sales for this integration.
+	 *
+	 * @since 2.5
+	 *
+	 * @param string|array $date  {
+	 *                            Optional. Date string or start/end range to retrieve orders for. Default empty.
+	 *
+	 * @type string        $start Start date to retrieve orders for.
+	 * @type string        $end   End date to retrieve orders for.
+	 * }
+	 * @return \WP_Error|int WP_Error object by default. Potential integer if sub-classes extend the method.
+	 */
+	public function get_total_sales( $date = '' ) {
+		$integration_name = $this->get_name();
+
+		return new \WP_Error( "The integration $integration_name does not support sales tracking." );
+	}
+
+	/**
+	 * Prepares a date range to be accepted by the current integration.
+	 * Most integrations accept a date range in a specific format. Often this format differs from AffiliateWP.
+	 * This method provides a way to convert an AffiliateWP date range into the integration date range.
+	 *
+	 * @since 2.5
+	 *
+	 * @param array|string $date_range The AffiliateWP date range, or an empty value.
+	 * @return array The date range, formatted for the current integration.
+	 */
+	public function prepare_date_range( $date_range ) {
+		$start_date = false;
+		$end_date   = false;
+
+		// If the date range is empty, set the defaults
+		if ( ! empty( $date_range ) ) {
+
+			// If this is an array, set the start and end dates individually.
+			if ( is_array( $date_range ) ) {
+
+				if ( isset( $date_range['start'] ) ) {
+					$start_date = $date_range['start'];
+				}
+				if ( isset( $date_range['end'] ) ) {
+					$end_date = $date_range['end'];
+				}
+
+				// Otherwise, set both start and end dates to the date range value.
+			} else {
+				$start_date = $end_date = (string) $date_range;
+			}
+
+			$start_date = date( 'Y-m-d H:i:s', strtotime( $start_date ) );
+			$end_date   = date( 'Y-m-d H:i:s', strtotime( $end_date ) );
+
+		}
+
+		// Integrations treat default date ranges differently.
+		// These two checks forces the date range to default to all-time values if no date was set.
+		if ( false === $start_date ) {
+			$start_date = date( 'Y-m-d H:i:s', 0 );
+		}
+		if ( false === $end_date ) {
+			$end_date = current_time( 'mysql' );
+		}
+
+		return array( 'start' => $start_date, 'end' => $end_date );
+	}
 	/**
 	 * Gets things started
 	 *
@@ -109,6 +426,14 @@ abstract class Affiliate_WP_Base {
 		// get affiliate ID
 		$this->affiliate_id = isset( $data['affiliate_id'] ) ? $data['affiliate_id'] : $this->get_affiliate_id( $reference, $this->context );
 
+		/**
+		 * Filters whether to allow referrals to be created for the current integration.
+		 *
+		 * @since 1.0
+		 *
+		 * @param bool $allow Whether to allow referrals to be created.
+		 * @param array $args Many of the arguments for generating the referral.
+		 */
 		if ( ! (bool) apply_filters( 'affwp_integration_create_referral', true, array( 'affiliate_id' => $this->affiliate_id, 'amount' => $amount, 'reference' => $reference, 'description' => $description, 'products' => $products, 'data' => $data ) ) ) {
 
 			affiliate_wp()->utils->log( 'Referral not created because integration is disabled via filter' );
@@ -140,6 +465,11 @@ abstract class Affiliate_WP_Base {
 		$is_coupon_referral = isset( $data['is_coupon_referral'] ) && false !== $data['is_coupon_referral'];
 		$visit_id           = false === $is_coupon_referral ? affiliate_wp()->tracking->get_visit_id() : false;
 
+		// Allow overriding of ID through custom data.
+		$visit_id = isset( $data['visit_id'] )
+			? intval( $data['visit_id'] )
+			: $visit_id;
+
 		if ( false !== $visit_id && ! affwp_validate_visit_id( $visit_id ) ) {
 			affiliate_wp()->utils->log( sprintf( 'Referral not created due to invalid visit ID value, %d.', $visit_id ) );
 
@@ -153,6 +483,7 @@ abstract class Affiliate_WP_Base {
 			'campaign'     => affiliate_wp()->tracking->get_campaign(),
 			'affiliate_id' => $this->affiliate_id,
 			'visit_id'     => $visit_id,
+			'order_total'  => $this->get_order_total( $reference ),
 			'products'     => ! empty( $products ) ? maybe_serialize( $products ) : '',
 			'custom'       => ! empty( $data ) ? maybe_serialize( $data ) : '',
 			'type'         => $this->referral_type,
@@ -166,6 +497,20 @@ abstract class Affiliate_WP_Base {
 
 		affiliate_wp()->utils->log( 'Arguments being sent to DB:', $args );
 
+		/**
+		 * Filters the arguments used to insert a pending referral.
+		 *
+		 * @since 1.0
+		 *
+		 * @param array  $args         Arguments sent to referrals->add() to insert a pending referral.
+		 * @param float  $amount       Calculated referral amount.
+		 * @param string $reference    Referral reference (usually the order or entry number).
+		 * @param string $description  Referral description.
+		 * @param int    $affiliate_id Affiliate ID.
+		 * @param int    $visit_id     Visit ID.
+		 * @param array  $data         Data originally sent to insert the referral.
+		 * @param string $context      Context for creating the referral (typically the integration slug).
+		 */
 		$args = apply_filters( 'affwp_insert_pending_referral', $args, $amount, $reference, $description, $this->affiliate_id, $visit_id, $data, $this->context );
 
 		if( ! empty( $args['customer'] ) && empty( $args['customer']['affiliate_id'] ) ) {
@@ -185,7 +530,7 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
-	 * Completes a referal. Used when orders are marked as completed
+	 * Completes a referral. Used when orders are marked as completed
 	 *
 	 * @access  public
 	 * @since   1.0
@@ -230,6 +575,13 @@ abstract class Affiliate_WP_Base {
 			return false;
 		}
 
+		/**
+		 * Filters whether to allows referrals to be auto-completed.
+		 *
+		 * @since 1.0
+		 *
+		 * @param bool $allow Whether to allow referrals to be auto-completed.
+		 */
 		if ( ! apply_filters( 'affwp_auto_complete_referral', true ) ) {
 
 			affiliate_wp()->utils->log( 'Referral not marked as complete because of affwp_auto_complete_referral filter' );
@@ -241,6 +593,8 @@ abstract class Affiliate_WP_Base {
 
 			/**
 			 * Fires when completing a referral.
+			 *
+			 * @since 1.0
 			 *
 			 * @param int             $referral_id The referral ID.
 			 * @param \AffWP\Referral $referral    The referral object.
@@ -326,13 +680,23 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
-	 * Retrieves the ID of the referring affiliate
+	 * Retrieves the ID of the referring affiliate.
 	 *
-	 * @access  public
-	 * @since   1.0
-	 * @return  int
+	 * @since 1.0
+	 *
+	 * @param int $reference Optional. The referral reference. Default 0.
+	 * @return int Affiliate ID for the referral.
 	 */
 	public function get_affiliate_id( $reference = 0 ) {
+		/**
+		 * Filters the ID of the referring affiliate.
+		 *
+		 * @since 1.0
+		 *
+		 * @param int    $affiliate_id Affiliate ID.
+		 * @param string $reference    Referral reference (typically the order or entry number).
+		 * @param string $context      Referral context (typically the integration slug).
+		 */
 		return absint( apply_filters( 'affwp_get_referring_affiliate_id', $this->affiliate_id, $reference, $this->context ) );
 	}
 
@@ -376,6 +740,15 @@ abstract class Affiliate_WP_Base {
 		// True if the email is valid and matches affiliate user email or payment email, otherwise false
 		$is_affiliate_email = ( is_email( $email ) && ( $user_email === $email || $payment_email === $email ) );
 
+		/**
+		 * Filters whether the passed email belongs the affiliate.
+		 *
+		 * @since 1.6
+		 *
+		 * @param bool   $is_affiliate_email Whether the email is the affiliate email.
+		 * @param string $email              Email address.
+		 * @param int    $affiliate_id       Affiliate ID.
+		 */
 		return (bool) apply_filters( 'affwp_is_customer_email_affiliate_email', $is_affiliate_email, $email, $affiliate_id );
 
 	}
@@ -510,6 +883,18 @@ abstract class Affiliate_WP_Base {
 	}
 
 	/**
+	 * Retrieves the order total from the order.
+	 *
+	 * @access public
+	 * @since 2.5
+	 *
+	 * @return float The order total for the current integration.
+	 */
+	public function get_order_total( $order = 0 ) {
+		return 0;
+	}
+
+	/**
 	 * Retrieves the customer details for an order
 	 *
 	 * @since 2.2
@@ -550,11 +935,26 @@ abstract class Affiliate_WP_Base {
 	 * Writes a log message.
 	 *
 	 * @since 1.8
+	 *
+	 * @param string      $message Message to write to the debug log.
+	 * @param array|mixed $data    Optional. Array of data or other output to send to the log.
+	 *                             Default empty array.
 	 */
-	public function log( $message = '' ) {
+	public function log( $message, $data = array() ) {
 
-		affiliate_wp()->utils->log( $message );
+		affiliate_wp()->utils->log( $message, $data );
 
+	}
+
+	/**
+	 * Determines whether a unit test is running.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the phpunit test suite is running, otherwise false.
+	 */
+	public function is_test() {
+		return defined( 'WP_TESTS_DOMAIN' );
 	}
 
 }

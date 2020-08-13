@@ -22,10 +22,12 @@ function affwp_tools_system_info_report() {
 	$return .= 'Home URL:                 ' . home_url() . "\n";
 	$return .= 'Multisite:                ' . ( is_multisite() ? 'Yes' : 'No' ) . "\n";
 
+	$locale = get_locale();
+
 	// WordPress configuration
 	$return .= "\n" . '-- WordPress Configuration' . "\n\n";
 	$return .= 'Version:                  ' . get_bloginfo( 'version' ) . "\n";
-	$return .= 'Language:                 ' . ( defined( 'WPLANG' ) && WPLANG ? WPLANG : 'en_US' ) . "\n";
+	$return .= 'Language:                 ' . ( empty( $locale ) ? 'en_US' : $locale ) . "\n";
 	$return .= 'Permalink Structure:      ' . ( get_option( 'permalink_structure' ) ? get_option( 'permalink_structure' ) : 'Default' ) . "\n";
 	$return .= 'Active Theme:             ' . $theme . "\n";
 	$return .= 'Show On Front:            ' . get_option( 'show_on_front' ) . "\n";
@@ -39,9 +41,12 @@ function affwp_tools_system_info_report() {
 		$return .= 'Page For Posts:           ' . ( $blog_page_id != 0 ? get_the_title( $blog_page_id ) . ' (#' . $blog_page_id . ')' : 'Unset' ) . "\n";
 	}
 
+	$wp_debug_log = @ini_get( 'error_log' );
+
 	$return .= 'ABSPATH:                  ' . ABSPATH . "\n";
 	$return .= 'Table Prefix:             ' . 'Length: ' . strlen( $wpdb->prefix ) . '   Status: ' . ( strlen( $wpdb->prefix ) > 16 ? 'ERROR: Too long' : 'Acceptable' ) . "\n";
 	$return .= 'WP_DEBUG:                 ' . ( defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' : 'Disabled' : 'Not set' ) . "\n";
+	$return .= 'WP_DEBUG Log Filesize:    ' . ( ! empty( $wp_debug_log ) ? size_format( filesize( $wp_debug_log ), 2 ) . "\n" : "N/A\n" );
 	$return .= 'Memory Limit:             ' . WP_MEMORY_LIMIT . "\n";
 	$return .= 'Registered Post Statuses: ' . implode( ', ', get_post_stati() ) . "\n";
 
@@ -50,6 +55,7 @@ function affwp_tools_system_info_report() {
 	//
 
 	$settings = affiliate_wp()->settings;
+	$upgrades = affwp_get_completed_upgrades();
 
 	// General settings.
 	$return .= "\n" . '-- AffiliateWP Configuration' . "\n\n";
@@ -58,7 +64,12 @@ function affwp_tools_system_info_report() {
 	$return .= 'Currency:                         ' . ( $settings->get( 'currency' ) ? $settings->get( 'currency' ) . "\n" : "Default\n" );
 	$return .= 'Currency Position:                ' . ( $settings->get( 'currency_position' ) ? $settings->get( 'currency_position' ) . "\n" : "Default\n" );
 	$return .= 'Cookie Expiration:                ' . ( $settings->get( 'cookie_exp' ) ? $settings->get( 'cookie_exp' ) . " day(s)\n" : "Default\n" );
+
+	// Environment.
+	$return .= "\n" . '-- AffiliateWP Environment' . "\n\n";
 	$return .= 'Debug Mode:                       ' . ( $settings->get( 'debug_mode', false ) ? "True" . "\n" : "False\n" );
+	$return .= 'Debug Log Filesize:               ' . ( affiliate_wp()->utils->logs->get_log_size( true ) . "\n" );
+	$return .= 'Completed Upgrade Routines:       ' . ( empty( $upgrades ) ? "None\n" : implode( ', ', $upgrades ) . "\n" );
 
 	// Pages.
 	$return .= "\n" . '-- AffiliateWP Page Configuration' . "\n\n";
@@ -90,13 +101,37 @@ function affwp_tools_system_info_report() {
 	$return .= 'Customers:                        ' . affwp_format_amount( affiliate_wp()->customers->count(), false ) . "\n";
 	$return .= 'Payouts:                          ' . affwp_format_amount( affiliate_wp()->affiliates->payouts->count(), false ) . "\n";
 	$return .= 'Referrals:                        ' . affwp_format_amount( affiliate_wp()->referrals->count(), false ) . "\n";
+	$return .= 'Sales:                            ' . affwp_format_amount( affiliate_wp()->referrals->sales->count(), false ) . "\n";
 	$return .= 'REST Consumers:                   ' . affwp_format_amount( affiliate_wp()->REST->consumers->count(), false ) . "\n";
 	$return .= 'Visits:                           ' . affwp_format_amount( affiliate_wp()->visits->count(), false ) . "\n";
 
 	// Integrations
 	$return .= "\n" . '-- AffiliateWP Integrations' . "\n\n";
-	foreach ( $settings->get( 'integrations', array() ) as $integration ) {
-		$return .= $integration . "\n";
+
+	$integrations = affiliate_wp()->integrations->query( array( 'fields' => 'ids' ) );
+
+	foreach ( $integrations as $id ) {
+
+		$integration = affiliate_wp()->integrations->get( $id );
+
+		if ( ! is_wp_error( $integration ) ) {
+
+			$needs_synced = $integration->needs_synced();
+			if ( is_wp_error( $needs_synced ) ) {
+				$sync_status = "Plugin Enabled, Sync Not Supported";
+			} else {
+				$sync_status = $integration->needs_synced() ? 'Plugin Enabled, Needs Synced' : 'Enabled, Synced';
+			}
+
+		} else {
+			$sync_status = "Sync Status Unknown";
+		}
+
+		$name = $integration->get_name();
+
+		// Align text with other fields dynamically, based on the length of the integration name.
+		$spaces = str_repeat( ' ', 33 - strlen( $name ) );
+		$return .= $name . ":" . $spaces . $sync_status . "\n";
 	}
 
 	// Misc Settings
@@ -183,6 +218,7 @@ function affwp_tools_system_info_report() {
 	$return .= 'PHP Version:              ' . PHP_VERSION . "\n";
 	$return .= 'MySQL Version:            ' . $wpdb->db_version() . "\n";
 	$return .= 'Webserver Info:           ' . $_SERVER['SERVER_SOFTWARE'] . "\n";
+	$return .= 'SSL Configured:           ' . ( is_ssl() ? 'Yes' : 'No' ) . "\n";
 
 	// PHP configuration
 	$return .= "\n" . '-- PHP Configuration' . "\n\n";

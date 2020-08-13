@@ -43,6 +43,8 @@ function affwp_affiliates_screen_options() {
 	/**
 	 * Fires in the affiliates screen options area.
 	 *
+	 * @since 1.7
+	 *
 	 * @param string $screen The current screen.
 	 */
 	do_action( 'affwp_affiliates_screen_options', $screen );

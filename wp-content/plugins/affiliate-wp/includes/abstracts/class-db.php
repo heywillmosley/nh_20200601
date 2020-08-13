@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Affiliate_WP_DB base class.
  *
@@ -27,10 +28,27 @@ abstract class Affiliate_WP_DB {
 	/**
 	 * Primary key (unique field) for the database table.
 	 *
-	 * @since public
-	 * @var   string
+	 * @access public
+	 * @var    string
 	 */
 	public $primary_key;
+
+	/**
+	 * Cache group value.
+	 *
+	 * @access public
+	 * @since  2.5
+	 * @var    string
+	 */
+	public $cache_group;
+
+	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = '';
 
 	/**
 	 * Object type to query for.
@@ -48,7 +66,7 @@ abstract class Affiliate_WP_DB {
 	 *
 	 * @access public
 	 */
-	public function __construct() {}
+	public function __construct() { }
 
 	/**
 	 * Retrieves the list of columns for the database table.
@@ -73,6 +91,17 @@ abstract class Affiliate_WP_DB {
 	 */
 	public function get_sum_columns() {
 		return array();
+	}
+
+	/**
+	 * Retrieves all of the possible columns, including sum columns.
+	 *
+	 * @since 2.5
+	 *
+	 * @return array List of valid columns, including sum columns.
+	 */
+	public function get_all_columns() {
+		return array_merge( $this->get_columns(), $this->get_sum_columns() );
 	}
 
 	/**
@@ -182,33 +211,40 @@ abstract class Affiliate_WP_DB {
 
 		if ( true === $clauses['count'] ) {
 
+			$key = $this->table_name . '.' . $this->primary_key;
+
 			$results = $wpdb->get_var(
-				"SELECT COUNT({$this->primary_key}) FROM {$this->table_name} {$clauses['join']} {$clauses['where']};"
+				"SELECT COUNT(${key}) FROM {$this->table_name} {$clauses['join']} {$clauses['where']};"
 			);
 
 			$results = absint( $results );
 
 		} else {
 
-			$fields = $clauses['fields'];
+			$fields   = $clauses['fields'];
 			$group_by = isset( $clauses['groupby'] ) ? $clauses['groupby'] : '';
 
 			// Run the query.
-			$results = $wpdb->get_results(
-				$wpdb->prepare(
-					"SELECT {$fields} FROM {$this->table_name} {$clauses['join']} {$clauses['where']} {$group_by} ORDER BY {$clauses['orderby']} {$clauses['order']} LIMIT %d, %d;",
-					absint( $args['offset'] ),
-					absint( $args['number'] )
-				)
+
+			$query = $wpdb->prepare(
+				"SELECT {$fields} FROM {$this->table_name} {$clauses['join']} {$clauses['where']} {$group_by} ORDER BY {$clauses['orderby']} {$clauses['order']} LIMIT %d, %d;",
+				absint( $args['offset'] ),
+				absint( $args['number'] )
 			);
+
+			$results = $wpdb->get_results( $query );
 
 			/*
 			 * If the query is for a single field, pluck the field into an array.
 			 *
-			 * Note that only the single field was selected in the query, but get_results()
-			 * returns an array of objects, thus the pluck.
+			 * Note that if only the single field was selected in the query, get_results()
+			 * will return an array of objects regardless, thus the pluck.
 			 */
-			if ( '*' !== $fields && false === strpos( $fields, ',' ) ) {
+			if ( '*' !== $fields && false === strpos( $fields, ',' ) && 0 !== strpos( $fields, 'SUM' ) ) {
+				if ( false !== strpos( $fields, '.' ) ) {
+					$fields = explode( '.', $fields );
+					$fields = array_pop( $fields );
+				}
 				$results = wp_list_pluck( $results, $fields );
 			}
 
@@ -227,13 +263,17 @@ abstract class Affiliate_WP_DB {
 	 *
 	 * Please note: inserting a record flushes the cache.
 	 *
-	 * @access public
+	 * @since 1.9
+	 * @since 2.5 Added an optional `$insert_id` parameter for use with tables lacking auto-incremented IDs.
 	 *
-	 * @param  array  $data Column data. See get_column_defaults().
-	 * @param  string $type Optional. Data type context, e.g. 'affiliate', 'creative', etc. Default empty.
-	 * @return int          ID for the newly inserted record.
+	 * @param array    $data      Column data. See get_column_defaults().
+	 * @param string   $type      Optional. Data type context, e.g. 'affiliate', 'creative', etc. Default empty.
+	 * @param int|null $insert_id Optional. Object ID to use in lieu of an auto-incremented ID handled by WordPress.
+	 *                            Used for scenarios such as with sales records, which don't use an auto-incremented ID.
+	 *                            Default null (the value of `$wpdb->insert_id`.
+	 * @return int ID for the newly inserted record.
 	 */
-	public function insert( $data, $type = '' ) {
+	public function insert( $data, $type = '', $insert_id = null ) {
 		global $wpdb;
 
 		$errors = new \WP_Error();
@@ -269,6 +309,8 @@ abstract class Affiliate_WP_DB {
 			 *
 			 * The dynamic portion of the hook name, `$type`, refers to the object type.
 			 *
+			 * @since 1.0
+			 *
 			 * @param array $data Array of object data.
 			 */
 			do_action( 'affwp_pre_insert_' . $type, $data );
@@ -293,17 +335,23 @@ abstract class Affiliate_WP_DB {
 
 			if ( ! $inserted ) {
 
-				$errors->add( 'wp_failed_to_insert', sprintf( 'WordPress failed to insert the %s record.', $type ) );
+				$errors->add( 'wp_failed_to_insert', sprintf( 'WordPress failed to insert the %s record.', $type ), $data );
 
 			} else {
 
-				$object = $this->get_core_object( $wpdb->insert_id, $this->query_object_type );
+				if ( null === $insert_id ) {
+					$insert_id = $wpdb->insert_id;
+				}
+
+				$object = $this->get_core_object( $insert_id, $this->query_object_type );
 
 				// Prime the item cache, and invalidate related query caches.
 				affwp_clean_item_cache( $object );
 
 				/**
 				 * Fires immediately after an item has been created in the database.
+				 *
+				 * @since 1.0
 				 *
 				 * @param int   $object_id Object ID.
 				 * @param array $data      Array of object data.
@@ -387,6 +435,8 @@ abstract class Affiliate_WP_DB {
 		/**
 		 * Fires immediately after an item has been successfully updated.
 		 *
+		 * @since 1.0
+		 *
 		 * @param array $data   Array of item data.
 		 * @param int   $row_id Current item ID.
 		 */
@@ -419,6 +469,8 @@ abstract class Affiliate_WP_DB {
 		/**
 		 * Fires immediately before an item deletion has been attempted.
 		 *
+		 * @since 1.0
+		 *
 		 * @param string     $object Core object type.
 		 * @param int|string $row_id Row ID.
 		 */
@@ -433,6 +485,8 @@ abstract class Affiliate_WP_DB {
 		 *
 		 * In the case of deletion, this must fire prior
 		 * to the cache being invalidated below.
+		 *
+		 * @since 1.0
 		 *
 		 * @param string     $object Core object type.
 		 * @param int|string $row_id Row ID.
@@ -523,7 +577,7 @@ abstract class Affiliate_WP_DB {
 	 * Filters invalid sum columns from the provided array.
 	 *
 	 * @access public
-	 * @since 2.3
+	 * @since  2.3
 	 *
 	 * @param array $sum_columns The sum columns provided in the query to filter out.
 	 * @return array List of valid filtered sum columns valid for the query.
@@ -557,7 +611,7 @@ abstract class Affiliate_WP_DB {
 	public function prepare_group_by( $group_by ) {
 		$result = '';
 		if ( is_string( $group_by ) && array_key_exists( $group_by, $this->get_columns() ) ) {
-			$result = "GROUP BY `{$group_by}`";
+			$result = "GROUP BY {$group_by}";
 		}
 
 		return $result;
@@ -601,7 +655,7 @@ abstract class Affiliate_WP_DB {
 
 				$start = esc_sql( gmdate( 'Y-m-d H:i:s', strtotime( $date['start'] ) - $gmt_offset ) );
 
-				$where .= "`{$field}` >= '{$start}' ";
+				$where .= "{$field} >= '{$start}' ";
 			}
 
 			if ( ! empty( $date['end'] ) ) {
@@ -614,7 +668,7 @@ abstract class Affiliate_WP_DB {
 
 				$end = esc_sql( gmdate( 'Y-m-d H:i:s', strtotime( $date['end'] ) - $gmt_offset ) );
 
-				$where .= "`{$field}` <= '{$end}' ";
+				$where .= "{$field} <= '{$end}' ";
 			}
 
 		} else {

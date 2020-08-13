@@ -2,7 +2,7 @@
 	<th scope="row" class="titledesc">
 		<?php _e( 'Box Sizes', 'woocommerce-shipping-usps' ); ?>
 
-		<img class="help_tip" data-tip="<?php _e( 'Items will be packed into these boxes based on item dimensions and volume. Outer dimensions will be passed to USPS, whereas inner dimensions will be used for packing. Items not fitting into boxes will be packed individually.', 'woocommerce-shipping-usps' ); ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" />
+		<img class="help_tip" data-tip="<?php echo wc_sanitize_tooltip( __( 'Items will be packed into these boxes based on item dimensions and volume. Outer dimensions will be passed to USPS, whereas inner dimensions will be used for packing. Items not fitting into boxes will be packed individually.', 'woocommerce-shipping-usps' ) ); ?>" src="<?php echo WC()->plugin_url(); ?>/assets/images/help.png" height="16" width="16" />
 	</th>
 	<td class="forminp">
 		<style type="text/css">
@@ -26,7 +26,15 @@
 				width: 16px;
 				padding: 0;
 				cursor: move;
-				background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVQYV2O8f//+fwY8gJGgAny6QXKETRgEVgAAXxAVsa5Xr3QAAAAASUVORK5CYII=) no-repeat center;					}
+				background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAHUlEQVQYV2O8f//+fwY8gJGgAny6QXKETRgEVgAAXxAVsa5Xr3QAAAAASUVORK5CYII=) no-repeat center;
+			}
+			.usps_services .sub_services {
+				font-size: 0.92em;
+			}
+			.usps_services .sub_services li {
+				min-height: 30px;
+				line-height: 28px;
+			}
 		</style>
 		<table class="usps_boxes widefat">
 			<thead>
@@ -87,12 +95,12 @@
 					if ( jQuery(this).is(':checked') ) {
 						jQuery('#woocommerce_usps_mediamail_restriction').closest('tr').show();
 						jQuery('#service_options, #packing_options').show();
-						jQuery('#woocommerce_usps_packing_method, #woocommerce_usps_shippingrates, #woocommerce_usps_origin').closest('tr').show();
+						jQuery('#woocommerce_usps_packing_method, #woocommerce_usps_shippingrates').closest('tr').show();
 						jQuery('#woocommerce_usps_packing_method').change();
 					} else {
 						jQuery('#woocommerce_usps_mediamail_restriction').closest('tr').hide();
 						jQuery('#service_options, #packing_options').hide();
-						jQuery('#woocommerce_usps_packing_method, #woocommerce_usps_shippingrates, #woocommerce_usps_origin').closest('tr').hide();
+						jQuery('#woocommerce_usps_packing_method, #woocommerce_usps_shippingrates').closest('tr').hide();
 					}
 				}).change();
 
@@ -197,6 +205,14 @@
 						jQuery('input.order', el).val( parseInt( jQuery(el).index('.usps_services tr') ) );
 					});
 				};
+
+				jQuery( '#woocommerce_usps_shippingrates' ).change( function() {
+					if ( 'ALL' === jQuery( this ).val() ) {
+						jQuery( '.sub_services li.commercial' ).hide();
+					} else {
+						jQuery( '.sub_services li.commercial' ).show();
+					}
+				} ).change();
 
 			});
 

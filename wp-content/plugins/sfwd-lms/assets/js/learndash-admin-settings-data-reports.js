@@ -2,6 +2,7 @@ jQuery(document).ready(function(){
 	jQuery('table#learndash-data-reports button').click(function(e) {
 		e.preventDefault();
 
+		var form_nonce  = jQuery('input#learndash-data-reports-nonce').val();
 		var parent_tr 	= jQuery(this).parents('tr')
 		var data_nonce 	= jQuery(this).attr('data-nonce');
 		var data_slug 	= jQuery(this).attr('data-slug');
@@ -17,6 +18,7 @@ jQuery(document).ready(function(){
 		
 		var post_data = {
 			'action': 'learndash-data-reports',
+			'nonce': form_nonce,
 			'data': {
 				'init': 1,
 				'nonce': data_nonce,

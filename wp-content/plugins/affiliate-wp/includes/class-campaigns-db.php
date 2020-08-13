@@ -15,6 +15,14 @@ class Affiliate_WP_Campaigns_DB extends Affiliate_WP_DB {
 	public $cache_group = 'campaigns';
 
 	/**
+	 * Database group value.
+	 *
+	 * @since 2.5
+	 * @var string
+	 */
+	public $db_group = 'campaigns';
+
+	/**
 	 * Setup our table name, primary key, and version
 	 *
 	 * This is a read-only VIEW of the visits table
@@ -280,7 +288,7 @@ class Affiliate_WP_Campaigns_DB extends Affiliate_WP_DB {
 	 *
 	 * @since  1.7
 	 */
-	public function insert( $data, $type = '' ) {
+	public function insert( $data, $type = '', $insert_id = null ) {
 		_doing_it_wrong( 'insert', 'The AffiliateWP Campaigns table is a read-only VIEW. Data cannot be inserted.', '1.7' );
 	}
 

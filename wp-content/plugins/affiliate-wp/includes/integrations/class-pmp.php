@@ -20,9 +20,15 @@ class Affiliate_WP_PMP extends Affiliate_WP_Base {
 	 */
 	public $level_referrals_settings = array();
 
-	public function init() {
+	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'pmp';
 
-		$this->context = 'pmp';
+	public function init() {
 
 		add_action( 'pmpro_added_order', array( $this, 'add_pending_referral' ), 10 );
 		add_action( 'pmpro_updated_order', array( $this, 'mark_referral_complete' ), 10 );
@@ -418,8 +424,16 @@ class Affiliate_WP_PMP extends Affiliate_WP_Base {
 		update_option( "_affwp_pmp_product_settings_{$level_id}", $settings );
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'MemberOrder' );
+	}
 }
 
-if ( class_exists( 'MemberOrder' ) ) {
 	new Affiliate_WP_PMP;
-}

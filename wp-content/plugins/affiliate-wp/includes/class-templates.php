@@ -23,12 +23,20 @@ class Affiliate_WP_Templates {
 	}
 
 	/**
-	 * Returns the URL to the theme's AffiliateWP templates directory
+	 * Retrieves the URL to the theme's AffiliateWP templates directory
 	 *
 	 * @since 1.0
-	 * @return string
+	 *
+	 * @return string Theme template directory name.
 	 */
 	public function get_theme_template_dir_name() {
+		/**
+		 * Filters the theme template directory name.
+		 *
+		 * @since 1.0
+		 *
+		 * @param string $directory Theme template directory name.
+		 */
 		return apply_filters( 'affwp_theme_template_dir_name', 'affiliatewp' );
 	}
 
@@ -156,6 +164,13 @@ class Affiliate_WP_Templates {
 			100 => $this->get_templates_dir()
 		);
 
+		/**
+		 * Filters the list of paths to check for AffiliateWP templates.
+		 *
+		 * @since 1.0
+		 *
+		 * @param array $file_paths Template file paths.
+		 */
 		$file_paths = apply_filters( 'affwp_template_paths', $file_paths );
 
 		// sort the file paths based on priority

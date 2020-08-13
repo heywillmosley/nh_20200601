@@ -466,7 +466,7 @@ class Zendesk_Wordpress_Admin_Settings {
     }
 
     // If the Web Widget has just been switched on, hide the Feedback Tab
-    if ( $settings['webwidget_display'] != 'none' && $zendesk_support->settings['webwidget_display'] == 'none' ) {
+    if ( isset($settings['webwidget_display']) && $settings['webwidget_display'] != 'none' && $zendesk_support->settings['webwidget_display'] == 'none' ) {
       $settings['dropbox_display'] = 'none';
     }
 

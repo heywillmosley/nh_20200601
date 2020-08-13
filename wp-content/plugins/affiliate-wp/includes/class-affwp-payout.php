@@ -68,6 +68,42 @@ final class Payout extends \AffWP\Base_Object {
 	public $payout_method;
 
 	/**
+	 * Payout account.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    string
+	 */
+	public $service_account;
+
+	/**
+	 * Payouts Service payout ID.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    int
+	 */
+	public $service_id;
+
+	/**
+	 * Payouts Service invoice link.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    string
+	 */
+	public $service_invoice_link;
+
+	/**
+	 * Payout description.
+	 *
+	 * @access public
+	 * @since  2.4
+	 * @var    string
+	 */
+	public $description;
+
+	/**
 	 * Payout status.
 	 *
 	 * @access public
@@ -141,7 +177,7 @@ final class Payout extends \AffWP\Base_Object {
 	 * @return mixed Sanitized field value.
 	 */
 	public static function sanitize_field( $field, $value ) {
-		if ( in_array( $field, array( 'payout_id', 'affiliate_id', 'ID', 'owner' ) ) ) {
+		if ( in_array( $field, array( 'payout_id', 'affiliate_id', 'ID', 'owner', 'service_id' ) ) ) {
 			$value = (int) $value;
 		}
 

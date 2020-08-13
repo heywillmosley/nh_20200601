@@ -38,6 +38,7 @@ class Affiliate_WP_Shortcodes {
 		 * Filters the display of the registration form
 		 *
 		 * @since 2.0
+		 *
 		 * @param bool $show Whether to show the registration form. Default true.
 		 */
 		$show_registration = apply_filters( 'affwp_affiliate_area_show_registration', true );
@@ -46,6 +47,7 @@ class Affiliate_WP_Shortcodes {
 		 * Filters the display of the login form
 		 *
 		 * @since 2.0
+		 *
 		 * @param bool $show Whether to show the login form. Default true.
 		 */
 		$show_login = apply_filters( 'affwp_affiliate_area_show_login', true );

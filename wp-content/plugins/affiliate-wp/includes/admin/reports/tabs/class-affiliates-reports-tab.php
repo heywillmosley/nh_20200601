@@ -53,7 +53,7 @@ class Tab extends Reports\Tab {
 	public function top_earning_affiliates_tile() {
 		$referral_earnings = affiliate_wp()->referrals->get_referrals( array(
 			'groupby'    => 'affiliate_id',
-			'fields'     => array( 'affiliate_id', 'amount_sum' ),
+			'fields'     => array( 'affiliate_id' ),
 			'status'     => 'paid',
 			'date'       => $this->date_query,
 			'sum_fields' => array( 'amount' ),

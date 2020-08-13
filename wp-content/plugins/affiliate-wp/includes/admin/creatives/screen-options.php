@@ -33,6 +33,8 @@ function affwp_creatives_screen_options() {
 	/**
 	 * Fires within the screen options shown on the creatives screen.
 	 *
+	 * @since 1.7
+	 *
 	 * @param string $screen The current screen.
 	 */
 	do_action( 'affwp_creatives_screen_options', $screen );

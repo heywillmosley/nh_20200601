@@ -56,10 +56,17 @@ class WC_Boxpack_Box {
 	/**
 	 * __construct function.
 	 *
-	 * @access public
+	 * @since 1.0.2 add `$max_weight` and `$type` optional params
+	 *
+	 * @param $length float Length.
+	 * @param $width float Width.
+	 * @param $height float Height.
+	 * @param $weight float Weight.
+	 * @param $max_weight float Maximum weight the package can be.
+	 * @param $type string Package Type.
 	 * @return void
 	 */
-	public function __construct( $length, $width, $height, $weight = 0 ) {
+	public function __construct( $length, $width, $height, $weight = 0.0, $max_weight = 0.0, $type = 'box' ) {
 		$dimensions = array( $length, $width, $height );
 
 		sort( $dimensions );
@@ -68,13 +75,18 @@ class WC_Boxpack_Box {
 		$this->outer_width  = $this->width  = floatval( $dimensions[1] );
 		$this->outer_height = $this->height = floatval( $dimensions[0] );
 		$this->weight       = floatval( $weight );
+		$this->max_weight   = $max_weight;
+
+		if ( in_array( $type, $this->valid_types ) ) {
+			$this->type = $type;
+		}
 	}
 
 	/**
 	 * set_id function.
 	 *
 	 * @access public
-	 * @param mixed $weight
+	 * @param mixed $id
 	 * @return void
 	 */
 	public function set_id( $id ) {
@@ -159,12 +171,12 @@ class WC_Boxpack_Box {
 	public function can_fit( $item ) {
 		switch ( $this->type ) {
 			// Tubes are designed for long thin items so see if the item meets that criteria here.
-			case 'tube' :
+			case 'tube':
 				$can_fit = ( $this->get_length() >= $item->get_length() && $this->get_width() >= $item->get_width() && $this->get_height() >= $item->get_height() && $item->get_volume() <= $this->get_volume() ) ? true : false;
 				$can_fit = $can_fit && $item->get_length() >= ( ( $item->get_width() + $this->get_height() ) * 2 );
-			break;
+				break;
 			// Packets are flexible
-			case 'packet' :
+			case 'packet':
 				$can_fit = ( $this->get_packed_length() >= $item->get_length() && $this->get_packed_width() >= $item->get_width() && $item->get_volume() <= $this->get_volume() ) ? true : false;
 
 				if ( $can_fit && $item->get_height() > $this->get_packed_height() ) {
@@ -174,11 +186,11 @@ class WC_Boxpack_Box {
 
 					$can_fit = ( $this->maybe_packed_height < $this->maybe_packed_width && $this->maybe_packed_length >= $item->get_length() && $this->maybe_packed_width >= $item->get_width() ) ? true : false;
 				}
-			break;
+				break;
 			// Boxes are easy
-			default :
+			default:
 				$can_fit = ( $this->get_length() >= $item->get_length() && $this->get_width() >= $item->get_width() && $this->get_height() >= $item->get_height() && $item->get_volume() <= $this->get_volume() ) ? true : false;
-			break;
+				break;
 		}
 
 		return $can_fit;

@@ -3,14 +3,20 @@
 class Affiliate_WP_WPForms extends Affiliate_WP_Base {
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'wpforms';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   2.0
 	*/
 	public function init() {
-
-		$this->context = 'wpforms';
 
 		add_action( 'wpforms_process_complete', array( $this, 'add_pending_referral' ), 10, 4 );
 		add_action( 'wpforms_paypal_standard_process_complete', array( $this, 'mark_referral_complete' ), 10, 4 );
@@ -39,7 +45,7 @@ class Affiliate_WP_WPForms extends Affiliate_WP_Base {
 			'settings',
 			'affwp_allow_referrals',
 			$instance->form_data,
-			__( 'Allow referrals', 'wpforms' )
+			__( 'Allow referrals', 'affiliate-wp' )
 		);
 
 		wpforms_panel_field(
@@ -47,7 +53,7 @@ class Affiliate_WP_WPForms extends Affiliate_WP_Base {
 			'settings',
 			'affwp_referral_type',
 			$instance->form_data,
-			__( 'Referral type', 'wpforms' ),
+			__( 'Referral type', 'affiliate-wp' ),
 			array(
 				'options' => $options
 			)
@@ -185,8 +191,16 @@ class Affiliate_WP_WPForms extends Affiliate_WP_Base {
 
 	}
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return function_exists( 'wpforms' );
+	}
 }
 
-if ( function_exists( 'wpforms' ) ) {
 	new Affiliate_WP_WPForms;
-}

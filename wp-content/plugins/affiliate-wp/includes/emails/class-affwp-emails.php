@@ -134,6 +134,14 @@ class Affiliate_WP_Emails {
 			$this->from_name = affiliate_wp()->settings->get( 'from_name', get_bloginfo( 'name' ) );
 		}
 
+		/**
+		 * Filters the From name for sending emails.
+		 *
+		 * @since 1.6
+		 *
+		 * @param string               $name Email From name.
+		 * @param \Affiliate_WP_Emails $this Email class instance.
+		 */
 		return apply_filters( 'affwp_email_from_name', wp_specialchars_decode( $this->from_name ), $this );
 	}
 
@@ -149,6 +157,14 @@ class Affiliate_WP_Emails {
 			$this->from_address = affiliate_wp()->settings->get( 'from_email', get_option( 'admin_email' ) );
 		}
 
+		/**
+		 * Filters the From email for sending emails.
+		 *
+		 * @since 1.6
+		 *
+		 * @param string               $from_address Email address to send from.
+		 * @param \Affiliate_WP_Emails $this         Email class instance.
+		 */
 		return apply_filters( 'affwp_email_from_address', $this->from_address, $this );
 	}
 
@@ -183,15 +199,24 @@ class Affiliate_WP_Emails {
 			$this->headers .= "Content-Type: {$this->get_content_type()}; charset=utf-8\r\n";
 		}
 
+		/**
+		 * Filters the headers sent when sending emails.
+		 *
+		 * @since 1.6
+		 *
+		 * @param array                $headers Array of constructed headers.
+		 * @param \Affiliate_WP_Emails $this    Email class instance.
+		 */
 		return apply_filters( 'affwp_email_headers', $this->headers, $this );
 	}
 
 
 	/**
-	 * Retrieve email templates
+	 * Retrieves email templates.
 	 *
 	 * @since 1.6
-	 * @return array The email templates
+	 *
+	 * @return array The email templates.
 	 */
 	public function get_templates() {
 		$templates    = array(
@@ -199,6 +224,14 @@ class Affiliate_WP_Emails {
 			'none'	  => __( 'No template, plain text only', 'affiliate-wp' )
 		);
 
+		/**
+		 * Filters the list of email templates.
+		 *
+		 * @since 1.6
+		 *
+		 * @param array $templates Key/value pairs of templates where the key is the slug
+		 *                         and the value is the translatable label.
+		 */
 		return apply_filters( 'affwp_email_templates', $templates );
 	}
 
@@ -214,6 +247,13 @@ class Affiliate_WP_Emails {
 			$this->template = affiliate_wp()->settings->get( 'email_template', 'default' );
 		}
 
+		/**
+		 * Filters the template for the current email.
+		 *
+		 * @since 1.6
+		 *
+		 * @param string $template Current template slug.
+		 */
 		return apply_filters( 'affwp_email_template', $this->template );
 	}
 
@@ -225,6 +265,13 @@ class Affiliate_WP_Emails {
 	 * @return string The header text
 	 */
 	public function get_heading() {
+		/**
+		 * Filters the header text for the current email.
+		 *
+		 * @since 1.6
+		 *
+		 * @param string $heading Header text.
+		 */
 		return apply_filters( 'affwp_email_heading', $this->heading );
 	}
 
@@ -239,6 +286,14 @@ class Affiliate_WP_Emails {
 	public function build_email( $message ) {
 
 		if ( false === $this->html ) {
+			/**
+			 * Filters the message contents of the current email.
+			 *
+			 * @since 1.6
+			 *
+			 * @param string               $message Email message contents.
+			 * @param \Affiliate_WP_Emails $this    Email class instance.
+			 */
 			return apply_filters( 'affwp_email_message', wp_strip_all_tags( $message ), $this );
 		}
 
@@ -275,6 +330,7 @@ class Affiliate_WP_Emails {
 		$body	 = ob_get_clean();
 		$message = str_replace( '{email}', $message, $body );
 
+		/** This filter is documented in includes/emails/class-affwp-emails.php */
 		return apply_filters( 'affwp_email_message', $message, $this );
 	}
 
@@ -314,6 +370,14 @@ class Affiliate_WP_Emails {
 
 		$message = $this->text_to_html( $message );
 
+		/**
+		 * Filters the attachments for the current email (if any).
+		 *
+		 * @since 1.6
+		 *
+		 * @param array                $attachments Attachments for the email (if any).
+		 * @param \Affiliate_WP_Emails $this        Email class instance.
+		 */
 		$attachments = apply_filters( 'affwp_email_attachments', $attachments, $this );
 
 		$sent = wp_mail( $to, $subject, $message, $this->get_headers(), $attachments );
@@ -496,6 +560,20 @@ class Affiliate_WP_Emails {
 			),
 		);
 
+		/**
+		 * Filters the supported email tags and their attributes.
+		 *
+		 * @since 1.6
+		 *
+		 * @param array $email_tags {
+		 *     Email tags and their attributes
+		 *
+		 *     @type string   $tag         Email tag slug.
+		 *     @type string   $description Translatable description for what the email tag represents.
+		 *     @type callable $function    Callback function for rendering the email tag.
+		 * }
+		 * @param \Affiliate_WP_Emails $this Email class instance.
+		 */
 		return apply_filters( 'affwp_email_tags', $email_tags, $this );
 
 	}
@@ -549,6 +627,13 @@ class Affiliate_WP_Emails {
 			$disabled = true;
 		}
 
+		/**
+		 * Filters whether to disable all emails.
+		 *
+		 * @since 1.7
+		 *
+		 * @param bool $disabled Whether to disable emails
+		 */
 		return (bool) apply_filters( 'affwp_disable_all_emails', $disabled );
 
 	}

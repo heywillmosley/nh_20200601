@@ -17,6 +17,8 @@ $payment_email    = $affiliate->payment_email;
 		/**
 		 * Fires at the top of the review-affiliate admin screen, just inside of the form element.
 		 *
+		 * @since 1.0
+		 *
 		 * @param \AffWP\Affiliate $affiliate Affiliate object.
 		 */
 		do_action( 'affwp_review_affiliate_top', $affiliate );
@@ -119,6 +121,8 @@ $payment_email    = $affiliate->payment_email;
 			/**
 			 * Fires at the end of the review-affiliate admin screen, prior to the closing table element tag.
 			 *
+			 * @since 1.0
+			 *
 			 * @param \AffWP\Affiliate $affiliate Affiliate object.
 			 */
 			do_action( 'affwp_review_affiliate_end', $affiliate );
@@ -129,6 +133,8 @@ $payment_email    = $affiliate->payment_email;
 		<?php
 		/**
 		 * Fires at the bottom of the review-affiliate admin screen, just prior to the submit button.
+		 *
+		 * @since 1.0
 		 *
 		 * @param \AffWP\Affiliate $affiliate Affiliate object.
 		 */

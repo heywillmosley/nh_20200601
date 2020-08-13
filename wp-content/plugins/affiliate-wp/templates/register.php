@@ -48,6 +48,8 @@ if ( is_user_logged_in() ) {
 	<?php
 	/**
 	 * Fires at the top of the affiliate registration templates' form (inside the form element).
+	 *
+	 * @since 1.0
 	 */
 	do_action( 'affwp_affiliate_register_form_top' );
 	?>
@@ -58,6 +60,8 @@ if ( is_user_logged_in() ) {
 		<?php
 		/**
 		 * Fires just before the affiliate registration templates' form fields.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_register_fields_before' );
 		?>
@@ -109,6 +113,8 @@ if ( is_user_logged_in() ) {
 		<?php
 		/**
 		 * Fires just before the terms of service field within the affiliate registration form template.
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_register_fields_before_tos' );
 		?>
@@ -136,6 +142,8 @@ if ( is_user_logged_in() ) {
 		<?php
 		/**
 		 * Fires inside of the affiliate registration form template (inside the form element, prior to the submit button).
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_register_fields_before_submit' );
 		?>
@@ -151,6 +159,8 @@ if ( is_user_logged_in() ) {
 		<?php
 		/**
 		 * Fires inside of the affiliate registration form template (inside the form element, after the submit button).
+		 *
+		 * @since 1.0
 		 */
 		do_action( 'affwp_register_fields_after' );
 		?>
@@ -159,6 +169,8 @@ if ( is_user_logged_in() ) {
 	<?php
 	/**
 	 * Fires at the bottom of the affiliate registration form template (inside the form element).
+	 *
+	 * @since 1.0
 	 */
 	do_action( 'affwp_affiliate_register_form_bottom' );
 	?>

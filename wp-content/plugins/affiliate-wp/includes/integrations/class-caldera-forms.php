@@ -11,14 +11,20 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	public $form;
 
 	/**
+	 * The context for referrals. This refers to the integration that is being used.
+	 *
+	 * @access  public
+	 * @since   1.2
+	 */
+	public $context = 'caldera-forms';
+
+	/**
 	 * Get things started
 	 *
 	 * @access  public
 	 * @since   2.0
 	*/
 	public function init() {
-
-		$this->context = 'caldera-forms';
 
 		add_action( 'caldera_forms_submit_complete', array( $this, 'submit_complete' ), 10, 3 );
 
@@ -307,8 +313,16 @@ class Affiliate_WP_Caldera_Forms extends Affiliate_WP_Base {
 	}
 
 
+	/**
+	 * Runs the check necessary to confirm this plugin is active.
+	 *
+	 * @since 2.5
+	 *
+	 * @return bool True if the plugin is active, false otherwise.
+	 */
+	function plugin_is_active() {
+		return class_exists( 'Caldera_Forms' );
+	}
 }
 
-if ( class_exists( 'Caldera_Forms' ) ) {
 	new Affiliate_WP_Caldera_Forms;
-}

@@ -70,12 +70,11 @@ class Highest_Converting_URLs extends Meta_Box implements Meta_Box\Base {
 						arsort( $urls );
 
 						/**
-						 * Filters the number of highest converting urls to display
+						 * Filters the number of highest converting urls to display.
 						 *
 						 * @since 2.1.12
 						 *
-						 * @param integer $count The number of highest converting urls to display
-						 *
+						 * @param integer $count The number of highest converting urls to display.
 						 */
 						$count = (int) apply_filters( 'affwp_overview_highest_converting_urls_count', 5 );
 

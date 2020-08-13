@@ -56,15 +56,18 @@ function affwp_settings_admin() {
  */
 function affwp_get_settings_tabs() {
 
-	$tabs                 = array();
-	$tabs['general']      = __( 'General', 'affiliate-wp' );
-	$tabs['integrations'] = __( 'Integrations', 'affiliate-wp' );
-	$tabs['opt_in_forms'] = __( 'Opt-In Form', 'affiliate-wp' );
-	$tabs['emails']       = __( 'Emails', 'affiliate-wp' );
-	$tabs['misc']         = __( 'Misc', 'affiliate-wp' );
+	$tabs                    = array();
+	$tabs['general']         = __( 'General', 'affiliate-wp' );
+	$tabs['integrations']    = __( 'Integrations', 'affiliate-wp' );
+	$tabs['opt_in_forms']    = __( 'Opt-In Form', 'affiliate-wp' );
+	$tabs['emails']          = __( 'Emails', 'affiliate-wp' );
+	$tabs['misc']            = __( 'Misc', 'affiliate-wp' );
+	$tabs['payouts_service'] = __( 'Payouts Service', 'affiliate-wp' );
 
 	/**
 	 * Filters the list of settings tabs.
+	 *
+	 * @since 1.0
 	 *
 	 * @param array $tabs Settings tabs.
 	 */
