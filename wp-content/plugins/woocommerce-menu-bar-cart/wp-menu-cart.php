@@ -3,18 +3,18 @@
  * Plugin Name: WooCommerce Menu Cart
  * Plugin URI: www.wpovernight.com/plugins
  * Description: Extension for your e-commerce plugin (WooCommerce, WP-Ecommerce, Easy Digital Downloads, Eshop or Jigoshop) that places a cart icon with number of items and total cost in the menu bar. Activate the plugin, set your options and you're ready to go! Will automatically conform to your theme styles.
- * Version: 2.8.1
+ * Version: 2.9.4.1
  * Author: Jeremiah Prummer, Ewout Fernhout
  * Author URI: www.wpovernight.com/
  * License: GPL2
  * Text Domain: wp-menu-cart
  * WC requires at least: 2.0.0
- * WC tested up to: 4.1.0
+ * WC tested up to: 4.4.0
  */
 
 class WpMenuCart {	 
 
-	protected $plugin_version = '2.8.1';
+	protected $plugin_version = '2.9.4.1';
 	public static $plugin_slug;
 	public static $plugin_basename;
 
@@ -464,12 +464,15 @@ class WpMenuCart {
 		}
 
 		$classes = 'menu-item wpmenucartli wpmenucart-display-'.$this->options['items_alignment'];
-		
-		if ($this->get_common_li_classes($items) != '')
-			$classes .= ' ' . $this->get_common_li_classes($items);
 
-		$active_plugins = apply_filters( 'active_plugins', get_option( 'active_plugins' ) );
-			
+		if ($this->get_common_li_classes($items) != '') {
+			$classes .= ' ' . $this->get_common_li_classes($items);
+		}
+
+		if ( function_exists( 'is_checkout' ) && function_exists( 'is_cart' ) && ( is_checkout() || is_cart() ) && empty($this->options['show_on_cart_checkout_page']) ) {
+			$classes .= ' hidden-wpmenucart';
+		}
+
 		// Filter for <li> item classes
 		/* Usage (in the themes functions.php):
 		add_filter('wpmenucart_menu_item_classes', 'add_wpmenucart_item_class', 1, 1);

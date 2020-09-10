@@ -24,7 +24,7 @@
 
 namespace WC_Braintree;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.2.0
  */
-class Apple_Pay extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay {
+class Apple_Pay extends Framework\SV_WC_Payment_Gateway_Apple_Pay {
 
 
 	/**

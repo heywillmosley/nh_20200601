@@ -24,7 +24,7 @@
 
 namespace WC_Braintree\PayPal\Buttons;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -34,6 +34,19 @@ defined( 'ABSPATH' ) or exit;
  * @since 2.3.0
  */
 class Cart extends Abstract_Button {
+
+
+	/**
+	 * Gets the JS handler class name.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	protected function get_js_handler_class_name() {
+
+		return 'WC_Braintree_PayPal_Cart_Handler';
+	}
 
 
 	/**
@@ -53,10 +66,11 @@ class Cart extends Abstract_Button {
 	 * Adds any actions and filters needed for the button.
 	 *
 	 * @since 2.3.0
+	 * @since 2.4.0 renamed add_hooks() to add_button_hooks()
 	 */
-	protected function add_hooks() {
+	protected function add_button_hooks() {
 
-		parent::add_hooks();
+		parent::add_button_hooks();
 
 		// add the PayPal button below "Proceed to Checkout"
 		add_action( 'woocommerce_proceed_to_checkout', [ $this, 'render' ], 50 );
@@ -72,7 +86,7 @@ class Cart extends Abstract_Button {
 	 */
 	protected function is_wc_api_request_valid() {
 
-		return (bool) wp_verify_nonce( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_cart_set_payment_method' );
+		return (bool) wp_verify_nonce( Framework\SV_WC_Helper::get_posted_value( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_cart_set_payment_method' );
 	}
 
 
@@ -118,26 +132,15 @@ class Cart extends Abstract_Button {
 
 
 	/**
-	 * Gets the JS handler class name.
+	 * Gets the ID of this script handler.
 	 *
-	 * @since 2.3.0
-	 *
-	 * @return string
-	 */
-	protected function get_js_handler_name() {
-		return 'WC_Braintree_PayPal_Cart_Handler';
-	}
-
-
-	/**
-	 * Gets the JS handler object name.
-	 *
-	 * @since 2.3.0
+	 * @since 2.4.0
 	 *
 	 * @return string
 	 */
-	protected function get_js_handler_object_name() {
-		return 'wc_braintree_paypal_cart_handler';
+	public function get_id() {
+
+		return $this->get_gateway()->get_id() . '_cart';
 	}
 
 

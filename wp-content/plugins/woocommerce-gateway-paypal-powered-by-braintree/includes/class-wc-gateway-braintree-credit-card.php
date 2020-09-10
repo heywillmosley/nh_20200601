@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -176,11 +176,13 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 	/**
 	 * Initializes the payment form handler.
 	 *
-	 * @since 2.2.1
+	 * @since 2.4.0
+	 *
+	 * @return \WC_Braintree_Hosted_Fields_Payment_Form
 	 */
-	public function init_payment_form_handler() {
+	protected function init_payment_form_instance() {
 
-		$this->payment_form_handler = new \WC_Braintree_Hosted_Fields_Payment_Form( $this );
+		return new \WC_Braintree_Hosted_Fields_Payment_Form( $this );
 	}
 
 
@@ -244,14 +246,14 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 
 		// Braintree declares 3D Secure support for AMEX, Maestro, MasterCard, and Visa
 		$card_types = $default_card_types = array(
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX       => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ),
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO    => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO ),
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD ),
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA       => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA ),
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX       => Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ),
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO    => Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO ),
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD => Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD ),
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA       => Framework\SV_WC_Payment_Gateway_Helper::payment_type_to_name( Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA ),
 		);
 
 		// exclude American Express by default, since that requires additional merchant configuration, but still let people enabled it
-		unset( $default_card_types[ WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ] );
+		unset( $default_card_types[ Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ] );
 
 		$fields = array(
 			'threed_secure_title' => array(
@@ -417,12 +419,12 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 
 		// ensure the card type is normalized to FW format
 		if ( empty( $order->payment->card_type ) ) {
-			$order->payment->card_type = WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-card-type' ) );
+			$order->payment->card_type = Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-card-type' ) );
 		}
 
 		// add information for 3DS transactions, note that server-side verification
 		// has already been checked in validate_fields() and passed
-		if ( $this->is_3d_secure_enabled() && WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-3d-secure-enabled' ) && ( ! $order->payment->card_type || $this->card_type_supports_3d_secure( $order->payment->card_type ) ) ) {
+		if ( $this->is_3d_secure_enabled() && Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-3d-secure-enabled' ) && ( ! $order->payment->card_type || $this->card_type_supports_3d_secure( $order->payment->card_type ) ) ) {
 
 			// indicate if 3DS should be required for every transaction -- note
 			// this will result in a gateway rejection for *every* transaction
@@ -432,7 +434,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 			// when using a saved payment method for a transaction that has been
 			// 3DS verified, indicate the nonce should be used instead, which
 			// passes the 3DS verification details to Braintree
-			if ( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-3d-secure-verified' ) && ! empty( $order->payment->token ) && ! empty( $order->payment->nonce ) ) {
+			if ( Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-3d-secure-verified' ) && ! empty( $order->payment->token ) && ! empty( $order->payment->nonce ) ) {
 				$order->payment->use_3ds_nonce = true;
 			}
 		}
@@ -452,7 +454,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 	 * @param WC_Order $order the order object
 	 * @param \WC_Braintree_API_Credit_Card_Transaction_Response $response optional credit card transaction response
 	 * @return \WC_Braintree_API_Credit_Card_Transaction_Response
-	 * @throws WC_Braintree_Framework\SV_WC_Plugin_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	protected function do_credit_card_transaction( $order, $response = null ) {
 
@@ -463,7 +465,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 			if ( $response->transaction_approved() ) {
 				$order->payment->account_number = $response->get_masked_number();
 				$order->payment->last_four      = $response->get_last_four();
-				$order->payment->card_type      = WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $response->get_masked_number() );
+				$order->payment->card_type      = Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $response->get_masked_number() );
 				$order->payment->exp_month      = $response->get_exp_month();
 				$order->payment->exp_year       = $response->get_exp_year();
 			}
@@ -509,10 +511,10 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 	 * @since 2.2.0
 	 *
 	 * @param \WC_Order $order order object
-	 * @param WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response $response
+	 * @param Framework\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response $response
 	 * @return \WC_Order
 	 */
-	public function get_order_for_apple_pay( \WC_Order $order, WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response $response ) {
+	public function get_order_for_apple_pay( \WC_Order $order, Framework\SV_WC_Payment_Gateway_Apple_Pay_Payment_Response $response ) {
 
 		$order = parent::get_order_for_apple_pay( $order, $response );
 
@@ -644,7 +646,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 	 */
 	public function adjust_fraud_script_tag( $url ) {
 
-		if ( WC_Braintree_Framework\SV_WC_Helper::str_exists( $url, 'braintree-data.js' ) ) {
+		if ( Framework\SV_WC_Helper::str_exists( $url, 'braintree-data.js' ) ) {
 
 			$url = "{$url}' async='true";
 		}
@@ -745,7 +747,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 
 					$this->threed_secure_available = $response->is_3d_secure_enabled();
 
-				} catch ( WC_Braintree_Framework\SV_WC_API_Exception $exception ) {
+				} catch ( Framework\SV_WC_API_Exception $exception ) {
 
 					// there was a problem with the API, so nothing we can do but log the issues
 					$this->add_debug_message( "Could not determine the merchant's 3D Secure configuration. {$exception->getMessage()}" );
@@ -845,7 +847,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 	 */
 	public function card_type_supports_3d_secure( $card_type ) {
 
-		return in_array( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( $card_type ), $this->get_3d_secure_card_types(), true );
+		return in_array( Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( $card_type ), $this->get_3d_secure_card_types(), true );
 	}
 
 
@@ -883,7 +885,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 
 			$nonce = $result->get_nonce();
 
-		} catch ( WC_Braintree_Framework\SV_WC_Plugin_Exception $e ) {
+		} catch ( Framework\SV_WC_Plugin_Exception $e ) {
 
 			$this->add_debug_message( $e->getMessage(), 'error' );
 		}
@@ -908,20 +910,20 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 
 		// no additional validation if 3D Secure was disabled
 		// we check both the gateway method (filtered) and if the client-side JS validated 3D Secure (hidden input)
-		if ( ! $is_valid || ! $this->is_3d_secure_enabled() || ! WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-3d-secure-enabled' ) ) {
+		if ( ! $is_valid || ! $this->is_3d_secure_enabled() || ! Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-3d-secure-enabled' ) ) {
 			return $is_valid;
 		}
 
-		$card_type = WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-card-type' );
+		$card_type = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-card-type' );
 
 		// nonce must always be present for validation
-		if ( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc_braintree_credit_card_payment_nonce' ) && ( ! $card_type || $this->card_type_supports_3d_secure( $card_type ) ) ) {
+		if ( Framework\SV_WC_Helper::get_posted_value( 'wc_braintree_credit_card_payment_nonce' ) && ( ! $card_type || $this->card_type_supports_3d_secure( $card_type ) ) ) {
 
 			$error = false;
 
 			try {
 
-				$payment_method = $this->get_api()->get_payment_method_from_nonce( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc_braintree_credit_card_payment_nonce' ) );
+				$payment_method = $this->get_api()->get_payment_method_from_nonce( Framework\SV_WC_Helper::get_posted_value( 'wc_braintree_credit_card_payment_nonce' ) );
 
 				if ( $payment_method->has_3d_secure_info() ) {
 
@@ -951,7 +953,7 @@ class WC_Gateway_Braintree_Credit_Card extends WC_Gateway_Braintree {
 					}
 				}
 
-			} catch ( WC_Braintree_Framework\SV_WC_Plugin_Exception $e ) {
+			} catch ( Framework\SV_WC_Plugin_Exception $e ) {
 
 				$this->add_debug_message( $e->getMessage(), 'error' );
 

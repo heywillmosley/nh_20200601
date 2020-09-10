@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -156,7 +156,7 @@ class WC_Braintree_API_Transaction_Request extends WC_Braintree_API_Request {
 			'options'           => $this->get_options( $settlement_type ),
 			'channel'           => $this->get_channel(),
 			'deviceData'        => empty( $this->get_order()->payment->device_data ) ? null : $this->get_order()->payment->device_data,
-			'taxAmount'         => WC_Braintree_Framework\SV_WC_Helper::number_format( $this->get_order()->get_total_tax() ),
+			'taxAmount'         => Framework\SV_WC_Helper::number_format( $this->get_order()->get_total_tax() ),
 			'taxExempt'         => $this->get_order()->get_user_id() > 0 && is_callable( array( WC()->customer, 'is_vat_exempt' ) ) ? WC()->customer->is_vat_exempt() : false,
 		);
 
@@ -206,7 +206,7 @@ class WC_Braintree_API_Transaction_Request extends WC_Braintree_API_Request {
 				'firstName' => $this->get_order_prop( 'billing_first_name' ),
 				'lastName'  => $this->get_order_prop( 'billing_last_name' ),
 				'company'   => $this->get_order_prop( 'billing_company' ),
-				'phone'     => WC_Braintree_Framework\SV_WC_Helper::str_truncate( preg_replace( '/[^\d\-().]/', '', $this->get_order_prop( 'billing_phone' ) ), 14, '' ),
+				'phone'     => Framework\SV_WC_Helper::str_truncate( preg_replace( '/[^\d\-().]/', '', $this->get_order_prop( 'billing_phone' ) ), 14, '' ),
 				'email'     => $this->get_order_prop( 'billing_email' ),
 			);
 		}

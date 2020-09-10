@@ -23,7 +23,7 @@
  */
 
 use WC_Braintree\PayPal\Buttons;
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -127,6 +127,10 @@ class WC_Gateway_Braintree_PayPal extends WC_Gateway_Braintree {
 			return;
 		}
 
+		if ( is_admin() && ! is_ajax() ) {
+			return;
+		}
+
 		if ( $this->product_page_buy_now_enabled() ) {
 			$this->button_handlers['product'] = new Buttons\Product( $this );
 		}
@@ -197,11 +201,13 @@ class WC_Gateway_Braintree_PayPal extends WC_Gateway_Braintree {
 	/**
 	 * Initializes the payment form handler.
 	 *
-	 * @since 2.2.1
+	 * @since 2.4.0
+	 *
+	 * @return \WC_Braintree_PayPal_Payment_Form
 	 */
-	public function init_payment_form_handler() {
+	protected function init_payment_form_instance() {
 
-		$this->payment_form_handler = new \WC_Braintree_PayPal_Payment_Form( $this );
+		return new \WC_Braintree_PayPal_Payment_Form( $this );
 	}
 
 
@@ -607,6 +613,21 @@ class WC_Gateway_Braintree_PayPal extends WC_Gateway_Braintree {
 		if ( $this->debug_log() && $response->get_debug_id() ) {
 			$this->update_order_meta( $order, 'debug_id', $response->get_debug_id() );
 		}
+	}
+
+
+	/**
+	 * Builds the Pre-Orders integration class instance.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return \WC_Braintree\Integrations\Pre_Orders
+	 */
+	protected function build_pre_orders_integration() {
+
+		require_once( $this->get_plugin()->get_plugin_path() . '/includes/integrations/Pre_Orders.php' );
+
+		return new WC_Braintree\Integrations\Pre_Orders( $this );
 	}
 
 

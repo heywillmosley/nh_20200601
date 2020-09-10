@@ -10,7 +10,7 @@
  *
  * Plugin Name:  User Switching
  * Description:  Instant switching between user accounts in WordPress
- * Version:      1.5.4
+ * Version:      1.5.5
  * Plugin URI:   https://johnblackbourn.com/wordpress-plugin-user-switching/
  * Author:       John Blackbourn & contributors
  * Author URI:   https://github.com/johnbillion/user-switching/graphs/contributors
@@ -546,6 +546,17 @@ class user_switching {
 	 */
 	public function action_wp_footer() {
 		if ( is_admin_bar_showing() || did_action( 'wp_meta' ) ) {
+			return;
+		}
+
+		/**
+		 * Allows the 'Switch back to {user}' link in the WordPress footer to be disabled.
+		 *
+		 * @since 1.5.5
+		 *
+		 * @param bool $show_in_footer Whether to show the 'Switch back to {user}' link in footer.
+		 */
+		if ( ! apply_filters( 'user_switching_in_footer', true ) ) {
 			return;
 		}
 

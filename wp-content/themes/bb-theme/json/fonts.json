@@ -504,6 +504,11 @@
   "fallback": "sans-serif"
  }
 }, {
+ "Balsamiq Sans": {
+  "variants": ["regular", "italic", "700", "700italic"],
+  "fallback": "sans-serif"
+ }
+}, {
  "Balthazar": {
   "variants": ["regular"],
   "fallback": "serif"
@@ -1211,6 +1216,11 @@
 }, {
  "Cutive Mono": {
   "variants": ["regular"],
+  "fallback": "monospace"
+ }
+}, {
+ "DM Mono": {
+  "variants": ["300", "300italic", "regular", "italic", "500", "500italic"],
   "fallback": "monospace"
  }
 }, {
@@ -4815,7 +4825,7 @@
  }
 }, {
  "Vollkorn": {
-  "variants": ["regular", "italic", "600", "600italic", "700", "700italic", "900", "900italic"],
+  "variants": ["regular", "500", "600", "700", "800", "900", "italic", "500italic", "600italic", "700italic", "800italic", "900italic"],
   "fallback": "serif"
  }
 }, {

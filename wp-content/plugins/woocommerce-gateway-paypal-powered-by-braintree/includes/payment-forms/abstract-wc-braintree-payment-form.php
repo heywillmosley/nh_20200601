@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -31,7 +31,59 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 3.0.0
  */
-abstract class WC_Braintree_Payment_Form extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Payment_Form {
+abstract class WC_Braintree_Payment_Form extends Framework\SV_WC_Payment_Gateway_Payment_Form {
+
+
+	/**
+	 * Sets up the class.
+	 *
+	 * Overridden here to avoid calling get_tokens() on construct.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @param Framework\SV_WC_Payment_Gateway|Framework\SV_WC_Payment_Gateway_Direct $gateway gateway for form
+	 */
+	public function __construct( $gateway ) {
+
+		$this->gateway = $gateway;
+
+		// hook up rendering
+		$this->add_hooks();
+	}
+
+
+	/**
+	 * Adds hooks for rendering the payment form.
+	 *
+	 * Overridden here to move the location of the payment form JS enqueue
+	 *
+	 * @since 2.4.0
+	 */
+	protected function add_hooks() {
+
+		parent::add_hooks();
+
+		$gateway_id = $this->get_gateway()->get_id();
+
+		remove_action( "wc_{$gateway_id}_payment_form_end",   [ $this, 'render_js' ], 5 );
+		add_action( 'wp_footer', [ $this, 'render_js' ], 5 );
+	}
+
+
+	/**
+	 * Renders the payment form
+	 *
+	 * Overridden here to attempt to load tokens before render rather than on form construct.
+	 *
+	 * @since 2.4.0
+	 */
+	public function render() {
+
+		// maybe load tokens
+		$this->get_tokens();
+
+		parent::render();
+	}
 
 
 	/**
@@ -112,19 +164,7 @@ abstract class WC_Braintree_Payment_Form extends WC_Braintree_Framework\SV_WC_Pa
 			return;
 		}
 
-		// defaults for both gateways
-		$params = array_merge( array(
-			'id'                 => $this->get_gateway()->get_id(),
-			'id_dasherized'      => $this->get_gateway()->get_id_dasherized(),
-			'name'               => $this->get_gateway()->get_method_title(),
-			'debug'              => $this->get_gateway()->debug_log(),
-			'type'               => str_replace( '-', '_', $this->get_gateway()->get_payment_type() ),
-			'client_token_nonce' => wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_get_client_token' ),
-		), $this->get_payment_form_handler_js_params() );
-
-		$handler_class = $this->get_gateway()->is_credit_card_gateway() ? 'WC_Braintree_Credit_Card_Payment_Form_Handler' : 'WC_Braintree_PayPal_Payment_Form_Handler';
-
-		wc_enqueue_js( sprintf( 'window.wc_%1$s_handler = new %2$s( %3$s );', esc_js( $this->get_gateway()->get_id() ), $handler_class, json_encode( $params ) ) );
+		parent::render_js();
 	}
 
 
@@ -145,6 +185,28 @@ abstract class WC_Braintree_Payment_Form extends WC_Braintree_Framework\SV_WC_Pa
 			return WC()->cart->total;
 		}
 
+	}
+
+
+	/**
+	 * Gets the JS handler arguments.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return array
+	 */
+	protected function get_js_handler_args() {
+
+		$args = array_merge( [
+			'id'                 => $this->get_gateway()->get_id(),
+			'id_dasherized'      => $this->get_gateway()->get_id_dasherized(),
+			'name'               => $this->get_gateway()->get_method_title(),
+			'debug'              => $this->get_gateway()->debug_log(),
+			'type'               => str_replace( '-', '_', $this->get_gateway()->get_payment_type() ),
+			'client_token_nonce' => wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_get_client_token' ),
+		], $this->get_payment_form_handler_js_params() );
+
+		return $args;
 	}
 
 

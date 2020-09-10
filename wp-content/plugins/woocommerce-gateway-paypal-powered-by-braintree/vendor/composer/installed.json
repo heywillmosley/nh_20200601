@@ -47,5 +47,32 @@
             }
         ],
         "description": "Braintree PHP Client Library"
+    },
+    {
+        "name": "skyverge/wc-plugin-framework",
+        "version": "5.7.1",
+        "version_normalized": "5.7.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/skyverge/wc-plugin-framework.git",
+            "reference": "a9d6777e95377ce47c9d4d0f84f677c1c795d569"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/skyverge/wc-plugin-framework/zipball/a9d6777e95377ce47c9d4d0f84f677c1c795d569",
+            "reference": "a9d6777e95377ce47c9d4d0f84f677c1c795d569",
+            "shasum": ""
+        },
+        "require-dev": {
+            "lucatume/wp-browser": "^2.1"
+        },
+        "time": "2020-05-19T00:09:11+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "description": "The official SkyVerge WooCommerce plugin framework",
+        "support": {
+            "source": "https://github.com/skyverge/wc-plugin-framework/tree/5.7.1",
+            "issues": "https://github.com/skyverge/wc-plugin-framework/issues"
+        }
     }
 ]

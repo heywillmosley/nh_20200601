@@ -1,0 +1,396 @@
+== Changelog ==
+
+= 3.5.2 =
+Release Date: August 31st, 2020
+
+* [Added] Sorting support for Customer column on the order overview page
+* [Added] Bulk Editing for Shipping Class
+* [Fixed] Bulk Editing for Product Type did not work
+* [Fixed] Export for User Orders column
+* [Improved] Setting a flat price of '0' for Sales prices, removes the sales price
+* [Improved] Show the current site currency symbol for the price editing modal
+* [Dependency] Requires Admin Columns Pro 5.3
+
+= 3.5.1 =
+Release Date: July 21st, 2020
+
+* [Added] New columns for Order overview: Product Tags, Is Customer
+* [Added] New column for Product Variation overview: Product Taxonomy
+* [Improved] Disabled Quick Add for Product overview
+* [Improved] Better display for Purchased (orders) column
+* [Improved] The SKU and Stock column for product variations are now sortable.
+
+= 3.5 =
+Release Date: June 9th, 2020
+
+* [Added] Added a new smart filter that can filter users that bought a specific product
+* [Added] Added a new smart filter that can filter orders by product category
+* [Improved] Performance improvements when sorting products by "Type", "Variation", "Customers", "Visibility", "Backorders Allowed", "Dimensions"
+* [Improved] Performance improvements when sorting orders by "Date Created" and "Date Modified"
+* [Improved] Performance improvements when sorting users by "Products" and "Orders"
+* [Improved] You can now hide default WooCommerce filters, such as "Registered Customer", "Product Category" and "Stock status"
+* [Improved] You can now set the number of visible products for the "Products column on the orders table
+* [Fixed] The function `get_edit_post_link` will correctly link variation products to their parent product
+* [Fixed] Sorting orders by "Customer Since" did not sort descending
+* [Fixed] We renamed all `Numeric` classes to `Number` to comply with the reserved keywords for PHP 7
+* [Dependency] Requires Admin Columns Pro 5.2
+
+= 3.4.2 =
+Release Date: April 17th, 2020
+
+* [Added] WYSIWYG editing support for Product short description
+* [Added] New Menu Order column for Product Variations that represents the order inside the product
+* [Added] Search on Product count for the Purchased column (Orders)
+* [Added] Search on Product for the Product Details column (Orders)
+* [Added] Export the product count for Product Details column (Orders)
+* [Improved] It's now possible to search on an order that doesn't have a specific product (has not)
+* [Fixed] Null error during an export on Product Sales column
+* [Fixed] Product date value was empty when exporting
+
+= 3.4.1 =
+Release Date: March 30th, 2020
+
+* [Improved] Add Quantity to Order Items column (subscriptions)
+* [Dependency] Requires Admin Columns Pro 5.1
+
+= 3.4 =
+Release Date: February 26th, 2020
+
+* [Added] WooCommerce Subscriptions support
+* [Added] New Date search operators: more/les than x days ago, is within x days
+* [Added] Hook to disable ACP product variation overview `acp/wc/show_product_variations`
+
+= 3.3.8 =
+Release Date: November 12th, 2019
+
+* [Fixed] SQL error for Product Sales column
+* [Fixed] Null Object fatal error on Last Order column
+* [Added] Export models for Product Variation columns
+
+= 3.3.7 =
+Release Date: October 16th, 2019
+
+* [Improved] Coupon Used column now checks for WC 3.7 support
+* [Improved] Keep zeroes when entering prices in Inline Editing
+* [Improved] use wc_get_order() instead of instantiate the WC_Order directly
+* [Improved] use the 'codepress-admin-columns' text-domain for Variation Post Type
+
+= 3.3.6 =
+Release Date: August 27th, 2019
+
+* [Added] Smart Filtering for user country
+* [Improved] Code fixes and improvements
+* [Improved] Updated deprecated methods
+* [Dependency] Requires Admin Columns Pro 4.7.1
+
+= 3.3.5 =
+Release Date: August 20th, 2019
+
+* [Updated] Tested with WooCommerce 3.7
+
+= 3.3.4 =
+Release Date: August 5th, 2019
+
+* [Added] Product Column: Low On Stock
+* [Added] Product Variation Column: Shipping Class
+* [Added] Smart Filtering support for Number of Orders column (Users)
+* [Improved] Display of Variable Product Sales price
+* [Improved] Product Type display and improved editing
+* [Fixed] Smart Filtering support for Product Variation Stock column (works on manage stock on variation level only)
+* [Fixed] Possible Null Exception on Order Date
+
+= 3.3.3 =
+Release Date: May 10th, 2019
+
+* [Improved] New editing interface for Price and Stock column for bulk and inline edit
+* [Improved] Better export value for Product Variation Title
+* [Improved] Sale column will display the sale price and has an improved icon for a scheduled sale
+* [Fixed] Attribute (term) for products was not storing properly when it was the first assigned term
+
+= 3.3.2 =
+Release Date: March 26th, 2019
+
+* [Important] Made compatible with Admin Columns 4.5.6
+* [Added] Product Type Editing
+* [Fixed] Product Attribute Editing
+
+= 3.3.1 =
+Release Date: February 13th, 2019
+
+* [Improved] Smart Filtering for SKU on Variation overview
+* [Improved] Smart Filtering for Products on Variation overview
+* [Improved] Catalog visibility filtering improved with drop down
+
+= 3.3 =
+Release Date: January 24th, 2019
+
+* [Added] Bulk Edit
+* [Added] Editing and Smart Filtering support for Product Category Image column
+* [Added] Order Note column
+
+= 3.2 =
+Release Date: October 31st, 2018
+
+* [New] Added Smart Filtering. You can now smart filter your products and orders.
+
+= 3.1.3 =
+Release Date: September 10th, 2018
+
+* [Fixed] Stock Status editable fixed (now uses the stock editing model)
+* [Fixed] Hide prefix meta data for Order Product Details column
+
+= 3.1.2 =
+Release Date: June 29th, 2018
+
+* [Fixed] Export for Product Dimensions fixed
+
+= 3.1.1 =
+Release Date: June 27th, 2018
+
+* [Improved] Do not load integration if WooCommerce v2 is active
+
+= 3.1 =
+Release Date: June 25th, 2018
+
+* [Improved] Filtering on product categories on the order overview, now also includes hidden products
+* [Improved] Click on order row to open edit screen now also works when the WC Order column is not available
+* [Improved] Removed duplicate entries when filtering on Product type columns on Order overview page
+* [Improved] Dropped WooCommerce v2.* support
+* [Improved] Dropped PHP 5.2 support
+* [Fixed] Sales column now works with the correct DB prefix
+
+= 3.0.7 =
+Release Date: May 15th, 2018
+
+* [Added] Order column: Product Categories
+* [Improved] Placeholder added for User Address column
+
+= 3.0.6 =
+Release Date: April 23rd, 2018
+
+* [Fixed] Filtering on Order - Product SKU works again
+* [Improved] Filtering for Order - Product column improved. Choose if variable product must be included or not
+
+= 3.0.5 =
+Release Date: April 4th, 2018
+
+* [Fixed] Export for Total Sales column fixed
+
+= 3.0.4 =
+Release Date: April 4th, 2018
+
+* [Added] User column: Address
+* [Added] New display property for Order - User column: Total Sales / Life Time Value
+* [Improved] Better variation support for Order Product column
+* [Improved] Column width for order screen now works as expected
+
+= 3.0.3 =
+Release Date: March 13th, 2018
+
+* [Added] Filtering re-added for Customer - Roles column
+* [Added] Export model for Order Date column
+* [Added] Order column: Reintroduced the old Status icon column (WooCommerce < 3.3)
+* [Added] Product column: Sales (shows the total sales for a specific product)
+* [Added] Coupon column: Limit (shows the coupon or user limit for a coupon)
+* [Improved] Coupon Usage / Limit column now sorts on Usage instead of limit which makes more sense
+* [Fixed] Customer Column was not working as expected for some display options
+* [Fixed] Clicking the inline edit pencil after just activating inline edit prevents from triggering the WC row click event
+* [Dependency] Requires Admin Columns Pro 4.2.4
+
+3.0.2 =
+Release Date: February 1st, 2018
+
+* [Added] Added additional post columns ( date, author, actions, slug, status )
+* [Notice] Only compatible with ACP 4.2.3
+* [Added] Convert default columns from 3.2.6 to default columns 3.3.x
+
+= 3.0.1 =
+Release Date: January 29th, 2018
+
+* [Fixed] Disable Variations support until WooCommerce 3.3
+
+= 3.0 =
+Release Date: January 26th, 2018
+
+* [Added] Product column: Average Order Interval
+* [Added] Product column: Average Rating
+* [Added] Product column: Coupons
+* [Added] Product column: Download
+* [Added] Product column: Customers who bought this product
+* [Added] Product column: Grouped Products
+* [Added] Product column: Menu Order
+* [Added] Product column: Parent Group
+* [Added] Product column: Purchase Note
+* [Added] Product column: Reviews
+* [Added] Product column: PriceSale
+* [Added] Product column: Short Description
+* [Added] Product column: Sold Individually
+* [Added] Order column: Billing Address
+* [Added] Order column: Currency
+* [Added] Order column: Customer Note with icon or text
+* [Added] Order column: Customer IP, shows the IP Address or IP Country code
+* [Added] Order column: Downloads
+* [Added] Order column: Totals
+* [Added] User column: Customer Since
+* [Added] User column: Ratings
+* [Added] User column: Reviews
+* [Added] User column: Products bought by this customer
+* [Added] User column: First Order
+* [Added] User column: Last Order
+* [Added] Coupon column: Product Categories
+* [Added] Coupon column: Exclude Product Categories
+* [Added] Comments column: Rating
+* [Added] Comments column: Product Review
+* [Improved] Product Type now also shows 'Downloadable' and 'Virtual' type
+* [Improved] Renamed Product 'Number of orders' column to 'Orders'
+* [Improved] Renamed Product 'Total order amount' column to 'Total Revenue'
+* [Improved] Renamed Product 'Visibility' column to 'Catalog visibility'
+* [Improved] Renamed User 'Total Sales' column to 'Lifetime Value'
+
+
+= 2.2.1 =
+Release Date: December 12th, 2017
+
+* [Improved] Improved export for some WooCommerce columns
+
+= 2.2 =
+Release Date: November 22nd, 2017
+
+* [Added] Added Exporting
+* [Added] WooCommerce Email Restrictions Column added
+* [Fixed] Filtering for Product Visibility Column
+* [Improved] Don't show the attribute label for single WooCommerce attribute columns
+* [Improved] Enabled select2 on the WooCommerce Orders page
+
+
+= 2.1.5 =
+Release Date: October 2nd, 2017
+
+* [Added] New improved column for Description
+* [Fixed] Deprecated error in Product Details column (Order overview)
+* [Improved] Made Ajax columns compatible with latest fix in Core
+
+= 2.1.4 =
+Release Date: July 26th, 2017
+
+* [Added] Subtotal column for orders added
+* [Fixed] Removed the parent column for WooCommerce v3
+* [Improved] Check for main query for specific filter functions
+* [Improved] Meta changes
+* [Improved] Changed access to from private to protected in Variations column to make extending more useful
+
+= 2.1.3 =
+Release Date: May 23rd, 2017
+
+* [Fixed] WooCommerce featured product column editing, sorting and filtering improved
+
+= 2.1.2 =
+Release Date: May 3rd, 2017
+
+* [Fixed] Sorting for coupon type
+
+= 2.1.1 =
+Release Date: April 26th, 2017
+
+* [Fixed] Fixed compatibility with select2 (version 4) js library
+
+= 2.1 =
+Release Date: April 26th, 2017
+
+* [Important] Made compatible with WooCommerce 3
+* [Important] Made compatible with Admin Columns 4.0.3
+* [Added] Reintroduced an improved WooCommerce purchased column
+* [Fixed] Product Custom Field column on Order overview now works as expected
+* [Improved] Product variation column now uses Ajax to get the variations (performance improvement)
+
+= 2.0 =
+Release Date: April 4th, 2017
+
+* [Important] Only compatible with Admin Columns Pro 4.0
+* [Added] New column for Orders: Customer Role
+* [Added] New column for Coupons: Maximum amount
+* [Improved] Values for WooCommerce Taxonomy and Category columns can now be cleared
+* [Refactor] Autoloader added
+* [Refactor] Moved all WooCommerce methods from Admin Columns Pro to the WooCommerce addon
+* [Refactor] This addon now requires Admin Column Pro 4 or greater to function
+* [Refactor] WooCommerce addon now contains their own xEditable templates
+* [Refactor] Each WooCommerce column now has it's own class for sorting, editing and filtering.
+
+= 1.4 =
+Release Date: March 16th, 2016
+
+* [Added] Added Tax Status column for products with support for filtering
+* [Added] Added Tax Class column for products with support for filtering
+* [Added] Added Shipping method column for orders with support for filtering
+* [Added] Added filtering support for "Reviews enabled" column
+* [Added] Added filtering support for "Shipping method" column
+* [Added] Added Product detail column for orders
+* [Fixed] Changed groupnames for upcoming plugin release
+* [Fixed] Default WooCommerce columns are not clonable
+* [Fixed] Discount columns fixed
+* [Updated] Changed status icons with dashicons
+
+= 1.3.2 =
+Release Date: January 21th, 2016
+
+* [Added] Broken support for WooCommerce < 2.3
+* [Fixed] Minimized the number of strings that needs translating
+* [Improved] Script loading is improved
+
+= 1.3.1 =
+Release Date: November 26th, 2015
+
+* [Added] Added a Product column for Order screen which can display Title, ID, SKU or Thumbnails
+* [Added] Added an Attributes column for product screen which can display any attribute
+* [Fixed] Replaced deprecated method get_product with wc_get_product
+
+= 1.3 =
+Release Date: October 13th, 2015
+
+* [Added] Variation column: displays variations properties such as price and stock
+* [Added] Order column for Users: displays order ID's with edit link. On hover it shows price, date and item count
+* [Added] Total Sales column for Users: displays the total sales per user per currency
+* [Added] Subscription Expiration Date column for Users which can be sorted
+* [Fixed] Translations will be loaded from pro version
+
+= 1.2 =
+Release Date: May 4th, 2015
+
+* [Added] Added product column: shipping class (editable, sortable, filterable )
+* [Added] Added product column: visibility (editable, sortable, filterable )
+* [Added] Added product column: featured (editable, sortable, filterable )
+* [Added] Products, Coupons and Order will be in it's own menu group inside the admin columns menu
+* [Added] Fixed error when using Weight column
+* [Added] Added languages folder and po file
+
+= 1.1 =
+Release Date: March 2nd, 2015
+
+* [Added] Added product upsells column, displaying all upsells for a product (editable)
+* [Added] Added product cross sells column, displaying all cross sells for a product (editable)
+* [Added] Added coupon amount column, displaying the amount or percentage of discount for a column (editable, sortable)
+* [Added] Added column for displaying whether a coupon is applide before or after tax (editable, sortable, filterable)
+* [Added] Added coupon include products column, displaying to which products the coupon can be applied (editable)
+* [Added] Added coupon exclude products column, displaying to which products the coupon cannot be applied (editable)
+* [Added] Added coupon free shipping column, displaying whether a coupon provides free shipping (editable, sortable, filterable)
+* [Added] Added coupon minimum amount column, displaying the minimum order amount necessary for a coupon to be applied (editable)
+* [Added] Coupon description column: added editability and sortability
+* [Added] Coupon type column: added editability and sortability
+* [Added] Coupon usage column: added editability
+* [Added] Order status column: added editability
+* [Removed] Removed column "Order cart discount", use "order discount".
+* [Update] Handle default WooCommerce columns without changing the column name
+* [Update] Implement SKU as default column
+* [Update] Add base for tooltips for stock status column
+* [Update] Changed product group to 'Default' and 'WooCommerce Custom'
+* [Update] Make product name column editable
+
+= 1.0.1 =
+Release Date: Januari 6th, 2015
+
+* [Added] Added order column: Product Thumbnails
+
+= 1.0 =
+Release Date: July 9th, 2014
+
+* Initial release

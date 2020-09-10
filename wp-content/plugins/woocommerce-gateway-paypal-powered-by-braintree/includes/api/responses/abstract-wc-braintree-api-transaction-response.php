@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 3.0.0
  */
-abstract class WC_Braintree_API_Transaction_Response extends WC_Braintree_API_Response implements WC_Braintree_Framework\SV_WC_Payment_Gateway_API_response, WC_Braintree_Framework\SV_WC_Payment_Gateway_API_Authorization_Response, WC_Braintree_Framework\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response, WC_Braintree_Framework\SV_WC_Payment_Gateway_API_Customer_Response {
+abstract class WC_Braintree_API_Transaction_Response extends WC_Braintree_API_Response implements Framework\SV_WC_Payment_Gateway_API_response, Framework\SV_WC_Payment_Gateway_API_Authorization_Response, Framework\SV_WC_Payment_Gateway_API_Create_Payment_Token_Response, Framework\SV_WC_Payment_Gateway_API_Customer_Response {
 
 
 	/** Braintree's CSC match value */

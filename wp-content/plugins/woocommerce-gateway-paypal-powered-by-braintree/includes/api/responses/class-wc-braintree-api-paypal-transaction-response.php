@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -63,7 +63,7 @@ class WC_Braintree_API_PayPal_Transaction_Response extends WC_Braintree_API_Tran
 	public function get_payment_token() {
 
 		if ( empty( $this->response->transaction->paypalDetails->token ) ) {
-			throw new WC_Braintree_Framework\SV_WC_Payment_Gateway_Exception( __( 'Required PayPal token is missing or empty!', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
+			throw new Framework\SV_WC_Payment_Gateway_Exception( __( 'Required PayPal token is missing or empty!', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
 		}
 
 		$data = array(

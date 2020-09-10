@@ -23,7 +23,7 @@
  */
 
 use WC_Braintree\PayPal\Buttons\Abstract_Button;
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -31,8 +31,23 @@ defined( 'ABSPATH' ) or exit;
  * Braintree PayPal Payment Form
  *
  * @since 3.0.0
+ *
+ * @method \WC_Gateway_Braintree_PayPal get_gateway()
  */
 class WC_Braintree_PayPal_Payment_Form extends WC_Braintree_Payment_Form {
+
+
+	/**
+	 * Gets the JS handler class name.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	protected function get_js_handler_class_name() {
+
+		return 'WC_Braintree_PayPal_Payment_Form_Handler';
+	}
 
 
 	/**
@@ -217,7 +232,7 @@ class WC_Braintree_PayPal_Payment_Form extends WC_Braintree_Payment_Form {
 		?>
 
 		<div id="wc_braintree_paypal_container"></div>
-		<input type="hidden" name="wc_braintree_paypal_amount" value="<?php echo esc_attr( WC_Braintree_Framework\SV_WC_Helper::number_format( $order_total, 2 ) ); ?>" />
+		<input type="hidden" name="wc_braintree_paypal_amount" value="<?php echo esc_attr( Framework\SV_WC_Helper::number_format( $order_total, 2 ) ); ?>" />
 		<input type="hidden" name="wc_braintree_paypal_currency" value="<?php echo esc_attr( get_woocommerce_currency() ); ?>" />
 		<input type="hidden" name="wc_braintree_paypal_locale" value="<?php echo esc_attr( $this->get_gateway()->get_safe_locale() ); ?>" />
 

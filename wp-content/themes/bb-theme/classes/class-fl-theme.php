@@ -452,9 +452,12 @@ final class FLTheme {
 
 		self::add_font( $settings['fl-body-font-family'], apply_filters( 'fl_body_font_family', array( 300, 400, 700 ) ) );
 		self::add_font( $settings['fl-heading-font-family'], $settings['fl-heading-font-weight'] );
-		self::add_font( $settings['fl-title-font-family'], $settings['fl-title-font-weight'] );
 		self::add_font( $settings['fl-nav-font-family'], $settings['fl-nav-font-weight'] );
 		self::add_font( $settings['fl-button-font-family'], $settings['fl-button-font-weight'] );
+
+		if ( '' !== $settings['fl-heading-style'] ) {
+			self::add_font( $settings['fl-title-font-family'], $settings['fl-title-font-weight'] );
+		}
 
 		if ( 'text' === $settings['fl-logo-type'] ) {
 			self::add_font( $settings['fl-logo-font-family'], $settings['fl-logo-font-weight'] );
@@ -895,7 +898,7 @@ final class FLTheme {
 
 		echo '<ul class="fl-page-' . $args['theme_location'] . '-nav nav navbar-nav menu">';
 		echo '<li>';
-		echo '<a href="' . $url . '">' . $text . '</a>';
+		echo '<a class="no-menu" href="' . $url . '">' . $text . '</a>';
 		echo '</li>';
 		echo '</ul>';
 	}

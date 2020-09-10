@@ -998,29 +998,41 @@ input[type=text].fl-search-input {
 
 .fl-page {
 	.fl-module-woocommerce a.button,
+	.fl-module-woocommerce button.button.alt,
 	.fl-post-module-woo-button a.button {
 		.fl-woo-button-inactive-styles();
 	}
 
 	.fl-module-woocommerce a.button:hover,
+	.fl-module-woocommerce button.button.alt:hover,
 	.fl-post-module-woo-button a.button:hover {
 		.fl-woo-button-hover-styles();
+	}
+
+	.fl-module-woocommerce button.button:disabled, 
+	.fl-module-woocommerce button.button:disabled[disabled],
+	.fl-module-woocommerce button.alt.disabled {
+		padding: 6px 12px;
 	}
 }
 
 .woocommerce-page {
 	ul.products li.product a.button,
 	.woocommerce-message a.button,
+	.woocommerce-message a.button.wc-forward,
+	.woocommerce a.button.wc-forward,
 	button.button,
 	button.button.alt,
 	a.button,
 	a.button.alt,
-	.woocommerce button[type=submit] {
+	.woocommerce button[type=submit],
+	button[type=submit].alt.disabled {
 		.fl-woo-button-inactive-styles();
 	}
 
 	button.button:disabled, 
-	button.button:disabled[disabled] {
+	button.button:disabled[disabled],
+	button.alt.disabled {
 		padding: 6px 12px;
 	}
 
@@ -1030,7 +1042,8 @@ input[type=text].fl-search-input {
 	button.button.alt:hover,
 	a.button.alt:hover,
 	a.button:hover,
-	.woocommerce button[type=submit]:hover {
+	.woocommerce button[type=submit]:hover,
+	button[type=submit].alt.disabled:hover {
 		.fl-woo-button-hover-styles();
 	}
 }
@@ -1668,5 +1681,12 @@ img.mfp-img {
 				width: @content-width;
 			}
 		}
+	}
+}
+
+body.fl-framework-base-4,
+body.fl-framework-bootstrap-4 {
+	nav a.no-menu {
+		display:block;
 	}
 }

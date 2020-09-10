@@ -24,7 +24,7 @@
 
 namespace WC_Braintree\Apple_Pay;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,13 +33,26 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.2.0
  */
-class Frontend extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend {
+class Frontend extends Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend {
+
+
+	/**
+	 * Gets the JS handler class name.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	protected function get_js_handler_class_name() {
+
+		return 'WC_Braintree_Apple_Pay_Handler';
+	}
 
 
 	/**
 	 * Enqueues the scripts.
 	 *
-	 * @see WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend::enqueue_scripts()
+	 * @see Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend::enqueue_scripts()
 	 *
 	 * @since 2.2.0
 	 */
@@ -57,34 +70,17 @@ class Frontend extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Fr
 
 
 	/**
-	 * Gets the JS handler name.
-	 *
-	 * Braintree requires its own JS handler that extends the FW implementation.
-	 *
-	 * @see WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend::get_js_handler_name()
-	 *
-	 * @since 2.2.0
-	 *
-	 * @return string
-	 */
-	protected function get_js_handler_name() {
-
-		return 'WC_Braintree_Apple_Pay_Handler';
-	}
-
-
-	/**
 	 * Gets the parameters to be passed to the JS handler.
 	 *
-	 * @see WC_Braintree_Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend::get_js_handler_params()
+	 * @see Framework\SV_WC_Payment_Gateway_Apple_Pay_Frontend::get_js_handler_args()
 	 *
-	 * @since 2.2.0
+	 * @since 2.4.0
 	 *
 	 * @return array
 	 */
-	protected function get_js_handler_params() {
+	protected function get_js_handler_args() {
 
-		$params = parent::get_js_handler_params();
+		$params = parent::get_js_handler_args();
 
 		$params['store_name']         = get_bloginfo( 'name' );
 		$params['client_token_nonce'] = wp_create_nonce( 'wc_' . $this->get_gateway()->get_id() . '_get_client_token' );

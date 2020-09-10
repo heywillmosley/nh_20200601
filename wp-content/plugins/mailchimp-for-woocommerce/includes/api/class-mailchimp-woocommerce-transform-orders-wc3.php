@@ -216,7 +216,8 @@ class MailChimp_WooCommerce_Transform_Orders
             $order->addItem($item);
         }
 
-        return $order;
+        // let the store owner alter this if they need to use on-hold orders
+        return apply_filters('mailchimp_filter_ecommerce_order', $order, $woo);
     }
 
     /**
@@ -251,7 +252,12 @@ class MailChimp_WooCommerce_Transform_Orders
 
         $customer->setOptInStatus($subscribed_on_order);
 
-        $doi = mailchimp_list_has_double_optin();
+        try {
+            $doi = mailchimp_list_has_double_optin();
+        } catch (\Exception $e) {
+            $doi = false;
+        }
+
         $status_if_new = $doi ? false : $subscribed_on_order;
 
         $customer->setOptInStatus($status_if_new);

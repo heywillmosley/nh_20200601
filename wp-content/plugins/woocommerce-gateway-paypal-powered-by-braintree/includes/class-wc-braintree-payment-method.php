@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -34,7 +34,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 3.0.0
  */
-class WC_Braintree_Payment_Method extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Payment_Token {
+class WC_Braintree_Payment_Method extends Framework\SV_WC_Payment_Gateway_Payment_Token {
 
 
 	/** credit card payment method type */

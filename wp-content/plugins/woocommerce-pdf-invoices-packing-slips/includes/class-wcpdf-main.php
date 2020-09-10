@@ -36,7 +36,7 @@ class Main {
 		add_filter( 'wpo_wcpdf_document_use_historical_settings', array( $this, 'test_mode_settings' ), 15, 2 );
 
 		// page numbers & currency filters
-		add_action( 'wpo_wcpdf_get_html', array($this, 'format_page_number_placeholders' ), 10, 2 );
+		add_filter( 'wpo_wcpdf_get_html', array($this, 'format_page_number_placeholders' ), 10, 2 );
 		add_action( 'wpo_wcpdf_after_dompdf_render', array($this, 'page_number_replacements' ), 9, 2 );
 		if ( isset( WPO_WCPDF()->settings->general_settings['currency_font'] ) ) {
 			add_action( 'wpo_wcpdf_before_pdf', array($this, 'use_currency_font' ), 10, 2 );
@@ -50,6 +50,9 @@ class Main {
 		add_action( 'woocommerce_privacy_remove_order_personal_data', array( $this, 'remove_order_personal_data' ), 10, 1 );
 		// export private data
 		add_action( 'woocommerce_privacy_export_order_personal_data_meta', array( $this, 'export_order_personal_data_meta' ), 10, 1 );
+
+		// apply header logo height
+		add_action( 'wpo_wcpdf_custom_styles', array( $this, 'set_header_logo_height' ), 9, 2 );
 	}
 
 	/**
@@ -98,8 +101,10 @@ class Main {
 		add_filter( 'wcpdf_disable_deprecation_notices', '__return_true' );
 
 		// reload translations because WC may have switched to site locale (by setting the plugin_locale filter to site locale in wc_switch_to_site_locale())
-		WPO_WCPDF()->translations();
-		do_action( 'wpo_wcpdf_reload_attachment_translations' );
+		if ( apply_filters( 'wpo_wcpdf_allow_reload_attachment_translations', true ) ) {
+			WPO_WCPDF()->translations();
+			do_action( 'wpo_wcpdf_reload_attachment_translations' );
+		}
 
 		$attach_to_document_types = $this->get_documents_for_email( $email_id, $order );
 		foreach ( $attach_to_document_types as $document_type ) {
@@ -617,6 +622,19 @@ class Main {
 	}
 
 	/**
+	 * Apply header logo height from settings
+	 */
+	public function set_header_logo_height( $document_type, $document = null ) {
+		if ( !empty($document) && $header_logo_height = $document->get_header_logo_height() ) {
+			?>
+			td.header img {
+				max-height: <?php echo $header_logo_height; ?>;
+			}
+			<?php
+		}
+	}
+
+	/**
 	 * Remove attachments older than 1 week (daily, hooked into wp_scheduled_delete )
 	 */
 	public function attachments_cleanup() {
@@ -691,9 +709,10 @@ class Main {
 	 * Set the default PHPMailer validator to 'php' ( which uses filter_var($address, FILTER_VALIDATE_EMAIL) )
 	 * This avoids issues with the presence of attachments affecting email address validation in some distros of PHP 7.3
 	 * See: https://wordpress.org/support/topic/invalid-address-setfrom/#post-11583815
+	 * Fixed in WP5.5 due to upgrade to newer PHPMailer
 	 */
 	public function set_phpmailer_validator( $mailArray ) {
-		if ( version_compare( PHP_VERSION, '7.3', '>=' ) ) {
+		if ( version_compare( PHP_VERSION, '7.3', '>=' ) && version_compare( get_bloginfo( 'version' ), '5.5-dev', '<' ) ) {
 			global $phpmailer;
 			if ( ! ( $phpmailer instanceof \PHPMailer ) ) {
 				require_once ABSPATH . WPINC . '/class-phpmailer.php';

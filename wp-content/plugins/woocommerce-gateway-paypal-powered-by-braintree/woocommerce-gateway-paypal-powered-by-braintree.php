@@ -1,16 +1,16 @@
 <?php
 /**
- * Plugin Name: WooCommerce PayPal Powered by Braintree Gateway
+ * Plugin Name: Braintree for WooCommerce Payment Gateway
  * Plugin URI: https://docs.woocommerce.com/document/woocommerce-gateway-paypal-powered-by-braintree/
- * Description: Receive credit card or PayPal payments using Paypal Powered by Braintree.  A server with cURL, SSL support, and a valid SSL certificate is required (for security reasons) for this gateway to function. Requires PHP 5.4+
+ * Description: Receive credit card or PayPal payments using Braintree for WooCommerce.  A server with cURL, SSL support, and a valid SSL certificate is required (for security reasons) for this gateway to function. Requires PHP 5.4+
  * Author: WooCommerce
  * Author URI: http://woocommerce.com/
- * Version: 2.3.10
+ * Version: 2.4.0
  * Text Domain: woocommerce-gateway-paypal-powered-by-braintree
  * Domain Path: /i18n/languages/
  *
- * WC requires at least: 2.6.14
- * WC tested up to: 4.1.0
+ * WC requires at least: 3.0.9
+ * WC tested up to: 4.3.2
  *
  * Copyright (c) 2016-2020, Automattic, Inc.
  *
@@ -48,42 +48,27 @@ define( 'WC_PAYPAL_BRAINTREE_FILE', __FILE__ );
 class WC_PayPal_Braintree_Loader {
 
 
+	/** minimum PHP version required by this plugin */
+	const MINIMUM_PHP_VERSION = '5.6.0';
+
+	/** minimum WordPress version required by this plugin */
+	const MINIMUM_WP_VERSION = '4.4';
+
+	/** minimum WooCommerce version required by this plugin */
+	const MINIMUM_WC_VERSION = '3.0.9';
+
+	/** SkyVerge plugin framework version used by this plugin */
+	const FRAMEWORK_VERSION = '5.7.1';
+
+	/** the plugin name, for displaying notices */
+	const PLUGIN_NAME = 'Braintree for WooCommerce';
+
+
 	/** @var \WC_PayPal_Braintree_Loader the singleton instance of the class */
 	private static $instance;
 
 	/** @var array the admin notices to add */
-	public $notices = array();
-
-
-	/**
-	 * Gets the singleton instance of the class.
-	 *
-	 * @return \WC_PayPal_Braintree_Loader
-	 */
-	public static function getInstance() {
-
-		if ( null === self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-
-	/**
-	 * Prevents cloning the instance of this class.
-	 *
-	 * @since 1.0.0
-	 */
-	private function __clone() { }
-
-
-	/**
-	 * Prevents unserializing the instance of this class.
-	 *
-	 * @since 1.0.0
-	 */
-	private function __wakeup() { }
+	public $notices = [];
 
 
 	/**
@@ -93,16 +78,37 @@ class WC_PayPal_Braintree_Loader {
 	 */
 	protected function __construct() {
 
-		add_action( 'admin_init', array( $this, 'check_environment' ) );
+		register_activation_hook( __FILE__, [ $this, 'activation_check' ] );
 
-		add_action( 'admin_notices', array( $this, 'admin_notices' ), 15 );
+		add_action( 'admin_init', [ $this, 'check_environment' ] );
+		add_action( 'admin_init', [ $this, 'add_plugin_notices' ] );
 
-		// Don't hook anything else in the plugin if we're in an incompatible environment
-		if ( self::get_environment_warning() ) {
-			return;
+		add_action( 'admin_notices', [ $this, 'admin_notices' ], 15 );
+
+		// if the environment check fails, initialize the plugin
+		if ( $this->is_environment_compatible() ) {
+			add_action( 'plugins_loaded', [ $this, 'init_plugin' ] );
 		}
+	}
 
-		add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
+
+	/**
+	 * Cloning instances is forbidden due to singleton pattern.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __clone() {
+		_doing_it_wrong( __FUNCTION__, sprintf( 'You cannot clone instances of %s.', get_class( $this ) ), '1.0.0' );
+	}
+
+
+	/**
+	 * Unserializing instances is forbidden due to singleton pattern.
+	 *
+	 * @since 1.0.0
+	 */
+	public function __wakeup() {
+		_doing_it_wrong( __FUNCTION__, sprintf( 'You cannot unserialize instances of %s.', get_class( $this ) ), '1.0.0' );
 	}
 
 
@@ -115,32 +121,83 @@ class WC_PayPal_Braintree_Loader {
 
 		// if the legacy plugin is active, let the admin know
 		if ( function_exists( 'wc_braintree' ) ) {
-			$this->add_admin_notice( 'bad_environment', 'error', __( 'WooCommerce PayPal powered by Braintree is inactive. Please deactivate the retired WooCommerce Braintree plugin.', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
+			$this->add_admin_notice( 'bad_environment', 'error', __( 'Braintree for WooCommerce is inactive. Please deactivate the retired WooCommerce Braintree plugin.', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
 			return;
 		}
 
-		// autoload the Braintree SDK
+		if ( ! $this->plugins_compatible() ) {
+			return;
+		}
+
+		$this->load_framework();
+
+		// autoload plugin and vendor files
 		require_once( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
 
-		// Required framework classes class
-		require_once( plugin_dir_path( __FILE__ ) . 'lib/skyverge/woocommerce/class-sv-wc-plugin.php' );
-		require_once( plugin_dir_path( __FILE__ ) . 'lib/skyverge/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php' );
+		// load main plugin file
 		require_once( plugin_dir_path( __FILE__ ) . 'class-wc-braintree.php' );
+
+		// if WooCommerce is inactive, render a notice and bail
+		if ( ! WC_Braintree::is_woocommerce_active() ) {
+
+			add_action( 'admin_notices', static function() {
+
+				echo '<div class="error"><p>';
+				esc_html_e( 'Braintree for WooCommerce is inactive because WooCommerce is not installed.', 'woocommerce-gateway-paypal-powered-by-braintree' );
+				echo '</p></div>';
+
+			} );
+
+			return;
+		}
+
+		// fire it up!
+		wc_braintree();
 	}
 
 
 	/**
-	 * Adds an admin notice to be displayed.
+	 * Loads the base framework classes.
 	 *
-	 * @since 1.0.0
+	 * @since 2.3.0-dev.1
 	 */
-	public function add_admin_notice( $slug, $class, $message ) {
+	protected function load_framework() {
 
-		$this->notices[ $slug ] = array(
-			'class' => $class,
-			'message' => $message
-		);
+		if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\' . $this->get_framework_version_namespace() . '\\SV_WC_Plugin' ) ) {
+			require_once( plugin_dir_path( __FILE__ ) . 'vendor/skyverge/wc-plugin-framework/woocommerce/class-sv-wc-plugin.php' );
+		}
+
+		if ( ! class_exists( '\\SkyVerge\\WooCommerce\\PluginFramework\\' . $this->get_framework_version_namespace() . '\\SV_WC_Payment_Gateway_Plugin' ) ) {
+			require_once( plugin_dir_path( __FILE__ ) . 'vendor/skyverge/wc-plugin-framework/woocommerce/payment-gateway/class-sv-wc-payment-gateway-plugin.php' );
+		}
 	}
+
+
+	/**
+	 * Gets the framework version in namespace form.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return string
+	 */
+	protected function get_framework_version_namespace() {
+
+		return 'v' . str_replace( '.', '_', $this->get_framework_version() );
+	}
+
+
+	/**
+	 * Gets the framework version used by this plugin.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return string
+	 */
+	protected function get_framework_version() {
+
+		return self::FRAMEWORK_VERSION;
+	}
+
 
 	/**
 	 * Checks the server environment and other factors and deactivates plugins
@@ -150,20 +207,18 @@ class WC_PayPal_Braintree_Loader {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function activation_check() {
+	public function activation_check() {
 
 		// deactivate the retired plugin if active
 		if ( is_plugin_active( 'woocommerce-gateway-braintree/woocommerce-gateway-braintree.php' ) ) {
 			deactivate_plugins( 'woocommerce-gateway-braintree/woocommerce-gateway-braintree.php' );
 		}
 
-		$environment_warning = self::get_environment_warning( true );
+		if ( ! $this->is_environment_compatible() ) {
 
-		if ( $environment_warning ) {
+			$this->deactivate_plugin();
 
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-
-			wp_die( $environment_warning );
+			wp_die( self::PLUGIN_NAME . ' could not be activated. ' . $this->get_environment_message() );
 		}
 
 		// enable the PayPal gateway on activation
@@ -180,19 +235,14 @@ class WC_PayPal_Braintree_Loader {
 	 */
 	public function check_environment() {
 
-		$environment_warning = self::get_environment_warning();
+		if ( ! $this->is_environment_compatible() && is_plugin_active( plugin_basename( __FILE__ ) ) ) {
 
-		if ( $environment_warning && is_plugin_active( plugin_basename( __FILE__ ) ) ) {
+			$this->deactivate_plugin();
 
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-
-			$this->add_admin_notice( 'bad_environment', 'error', $environment_warning );
-
-			if ( isset( $_GET['activate'] ) ) {
-				unset( $_GET['activate'] );
-			}
+			$this->add_admin_notice( 'bad_environment', 'error', self::PLUGIN_NAME . ' has been deactivated. ' . $this->get_environment_message() );
 		}
 	}
+
 
 	/**
 	 * Checks the environment for compatibility problems.
@@ -206,11 +256,11 @@ class WC_PayPal_Braintree_Loader {
 		$message = false;
 
 		// check the PHP version
-		if ( version_compare( phpversion(), WC_PAYPAL_BRAINTREE_MIN_PHP_VER, '<' ) ) {
+		if ( version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '<' ) ) {
 
 			$message = sprintf( __( 'The minimum PHP version required for this plugin is %1$s. You are running %2$s.', 'woocommerce-gateway-paypal-powered-by-braintree' ), WC_PAYPAL_BRAINTREE_MIN_PHP_VER, phpversion() );
 
-			$prefix = ( $during_activation ) ? 'The plugin could not be activated. ' : 'WooCommerce PayPal Powered by Braintree has been deactivated. ';
+			$prefix = ( $during_activation ) ? 'The plugin could not be activated. ' : 'Braintree for WooCommerce has been deactivated. ';
 
 			$message = $prefix . $message;
 		}
@@ -218,8 +268,148 @@ class WC_PayPal_Braintree_Loader {
 		return $message;
 	}
 
+
+	/**
+	 * Adds notices for out-of-date WordPress and/or WooCommerce versions.
+	 *
+	 * @since 2.3.0-dev.1
+	 */
+	public function add_plugin_notices() {
+
+		if ( ! $this->is_wp_compatible() ) {
+
+			$this->add_admin_notice( 'update_wordpress', 'error', sprintf(
+				'%s requires WordPress version %s or higher. Please %supdate WordPress &raquo;%s',
+				'<strong>' . self::PLUGIN_NAME . '</strong>',
+				self::MINIMUM_WP_VERSION,
+				'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">', '</a>'
+			) );
+		}
+
+		if ( ! $this->is_wc_compatible() ) {
+
+			$this->add_admin_notice( 'update_woocommerce', 'error', sprintf(
+				'%s requires WooCommerce version %s or higher. Please %supdate WooCommerce &raquo;%s',
+				'<strong>' . self::PLUGIN_NAME . '</strong>',
+				self::MINIMUM_WC_VERSION,
+				'<a href="' . esc_url( admin_url( 'update-core.php' ) ) . '">', '</a>'
+			) );
+		}
+
+		if ( ! extension_loaded( 'curl' ) ) {
+
+			$this->add_admin_notice( 'install_curl', 'error', sprintf(
+				'%1$s requires the cURL PHP extension to function. Contact your host or server administrator to install and configure cURL.',
+				'<strong>' . self::PLUGIN_NAME . '</strong>'
+			) );
+		}
+	}
+
+
+	/**
+	 * Determines if the required plugins are compatible.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return bool
+	 */
+	protected function plugins_compatible() {
+
+		return $this->is_wp_compatible() && $this->is_wc_compatible() && extension_loaded( 'curl' );
+	}
+
+
+	/**
+	 * Determines if the WordPress compatible.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return bool
+	 */
+	protected function is_wp_compatible() {
+
+		return version_compare( get_bloginfo( 'version' ), self::MINIMUM_WP_VERSION, '>=' );
+	}
+
+
+	/**
+	 * Determines if the WooCommerce compatible.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return bool
+	 */
+	protected function is_wc_compatible() {
+
+		return defined( 'WC_VERSION' ) && version_compare( WC_VERSION, self::MINIMUM_WC_VERSION, '>=' );
+	}
+
+
+	/**
+	 * Deactivates the plugin.
+	 *
+	 * @since 2.3.0-dev.1
+	 */
+	protected function deactivate_plugin() {
+
+		deactivate_plugins( plugin_basename( __FILE__ ) );
+
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
+		}
+	}
+
+
+	/**
+	 * Determines if the server environment is compatible with this plugin.
+	 *
+	 * Override this method to add checks for more than just the PHP version.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return bool
+	 */
+	protected function is_environment_compatible() {
+
+		return version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '>=' );
+	}
+
+
+	/**
+	 * Gets the message for display when the environment is incompatible with this plugin.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return string
+	 */
+	protected function get_environment_message() {
+
+		return sprintf( 'The minimum PHP version required for this plugin is %1$s. You are running %2$s.', self::MINIMUM_PHP_VERSION, PHP_VERSION );;
+	}
+
+
+	/**
+	 * Adds an admin notice to be displayed.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $slug notice slug/ID
+	 * @param string $class notice HTML class
+	 * @param string $message notice message
+	 */
+	public function add_admin_notice( $slug, $class, $message ) {
+
+		$this->notices[ $slug ] = [
+			'class' => $class,
+			'message' => $message
+		];
+	}
+
+
 	/**
 	 * Displays any admin notices added with \WC_PayPal_Braintree_Loader::add_admin_notice()
+	 *
+	 * @internal
 	 *
 	 * @since 1.0.0
 	 */
@@ -228,11 +418,31 @@ class WC_PayPal_Braintree_Loader {
 		foreach ( (array) $this->notices as $notice_key => $notice ) {
 
 			echo "<div class='" . esc_attr( $notice['class'] ) . "'><p>";
-			echo wp_kses( $notice['message'], array( 'a' => array( 'href' => array() ) ) );
-			echo "</p></div>";
+			echo wp_kses( $notice['message'], [ 'a' => [ 'href' => [] ], 'strong' => [] ] );
+			echo '</p></div>';
 		}
 	}
+
+
+	/**
+	 * Gets the main \WC_PayPal_Braintree_Loader instance.
+	 *
+	 * Ensures only one instance can be loaded.
+	 *
+	 * @since 2.3.0-dev.1
+	 *
+	 * @return WC_PayPal_Braintree_Loader
+	 */
+	public static function instance() {
+
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+
 }
 
-WC_PayPal_Braintree_Loader::getInstance();
-register_activation_hook( __FILE__, array( 'WC_PayPal_Braintree_Loader', 'activation_check' ) );
+WC_PayPal_Braintree_Loader::instance();

@@ -1,10 +1,10 @@
 === WooCommerce ===
 Contributors: automattic, mikejolley, jameskoster, claudiosanches, kloon, rodrigosprimo, peterfabian1000, vedjain, jamosova, obliviousharmony
 Tags: e-commerce, store, sales, sell, woo, shop, cart, checkout, downloadable, downloads, payments, paypal, storefront, stripe, woo commerce
-Requires at least: 5.0
-Tested up to: 5.4
+Requires at least: 5.2
+Tested up to: 5.5
 Requires PHP: 7.0
-Stable tag: 4.1.1
+Stable tag: 4.3.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -179,20 +179,10 @@ INTERESTED IN DEVELOPMENT?
 
 == Changelog ==
 
-= 4.1.1 - 2020-05-19 =
+= 4.3.3 - 2020-08-14 =
 
-* Enhancement - Added notice about public uploads directory. #26207
-* Tweak - Disallow directory listing in woocommerce_uploads when "Redirect only" it's the selected download method. #26399
-* Fix - Added correct handling of nonces to database update notice dismissal. #26500
-* Dev - Updated WooCommerce admin version to 1.1.3 and Action Scheduler to 3.1.6.
-* Dev - Add prop `isEnabled` and a function to dynamically enable tracks. #26493
-
-**WooCommerce Admin**
-* Tweak - Onboarding: Add Jetpack flow back to onboarding profiler. #4382
-* Fix - Respect tracking opt-in before new page load. #4368
-
-**ActionScheduler**
-* Fix - Shutdown deprecated notice changed to a warning when as_* functions called without data store initialization. #546
+**WooCommerce REST API 1.0.10-pl-2**
+* Fix - Fix regression and restore backward compatibility for date-time and mixed datatypes. #239
 
 [See changelog for all versions](https://raw.githubusercontent.com/woocommerce/woocommerce/master/CHANGELOG.txt).
 

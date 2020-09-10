@@ -3,14 +3,13 @@
 
 	$( window ).load(function() {
 		// show/hide wizard tabs tooltips
-		$('a.wizard-tab').hover(function (e) {
+		$('.wizard-tab a').hover(function (e) {
 			e.stopPropagation();
 			$('.wizard-tab-tooltip').hide();
-			$(this).find('.wizard-tab-tooltip').show();
-
+			$(this).next('.wizard-tab-tooltip').show();
 		});
 
-		$('a.wizard-tab').mouseleave(function (e) {
+		$('.wizard-tab a').mouseleave(function (e) {
 			e.stopPropagation();
 			$('.wizard-tab-tooltip').hide();
 			$('.wizard-tab-active .wizard-tab-tooltip').show();
@@ -28,20 +27,126 @@
 				$(this).find('span').addClass('active');
 				optionalSettings = true;
 			}
-			
-
 		});
+		
+		// re-enable disable select input on audience settings submit
+		$('#mailchimp_woocommerce_options').on('submit', function() {
+			$('select[name="mailchimp-woocommerce[mailchimp_list]"]').prop('disabled', false);
+		});
+
+		// load new log file on log select change
+		$('#log_file').change(function (e) {
+			e.preventDefault();
+			// prevents Log Deleted notification to show up
+			removeLogDeletedParamFromFormHttpRef();
+			
+			var data = {
+				action:'mailchimp_woocommerce_load_log_file',
+				log_file: $('#log_file').val()
+			};
+			
+			$('#log-viewer #log-content').css("visibility", "hidden");
+			$('#log-viewer .spinner').show().css("visibility", "visible");
+
+			$.post(ajaxurl, data, function(response) {
+				if (response.success) {
+					$('#log-content').html(response.data)
+				}
+				else {
+					$('#log-content').html('Error: ' + response.data)
+				}		
+
+				$('#log-viewer .spinner').hide().css("visibility", "hidden");
+				$('#log-viewer #log-content').css("visibility", "visible");
+			});
+			
+			
+		});
+
+		$('#mailchimp-log-pref').change(function (e) {
+			e.preventDefault();
+			// prevents Log Deleted notification to show up
+			removeLogDeletedParamFromFormHttpRef();
+
+			$('#mailchimp_woocommerce_options').submit();
+		});
+
+		// Remove log_deleted param from _wp_http_referer hidden input
+		function removeLogDeletedParamFromFormHttpRef() {
+			var currentFormRefererUrl = $('input[name="_wp_http_referer"]').val();
+			$('input[name="_wp_http_referer"]').val(currentFormRefererUrl.replace('&log_removed=1', ''))
+		}
 
 		// copy log button
 		$('.mc-woocommerce-copy-log-button').click(function (e) {
 			e.preventDefault();
-			var copyText = $('#log-text');
+			var copyText = $('#log-content');
 			var $temp = $("<textarea>");
 			$("body").append($temp);
 			$temp.val($(copyText).text()).select();
 			/* Copy the text inside the text field */
 			document.execCommand("copy");
 			$temp.remove();
+			$('.mc-woocommerce-copy-log-button span.clipboard').hide();
+			$('.mc-woocommerce-copy-log-button span.yes').show();
+		});
+
+		$('.mc-woocommerce-copy-log-button').mouseleave(function (e) {
+			$('.mc-woocommerce-copy-log-button span.clipboard').show();
+			$('.mc-woocommerce-copy-log-button span.yes').hide();
+		});
+
+		// delete log button
+		var mailchimp_woocommerce_delete_log = false;
+		$('.delete-log-button').click(function (e) {
+			if (mailchimp_woocommerce_delete_log) {
+				mailchimp_woocommerce_delete_log = false; // reset flag
+				return; // let the event bubble away
+			}
+			e.preventDefault();
+			var me = $(e.target);
+
+			Swal.fire({
+				title: phpVars.l10n.are_you_sure,
+				text: phpVars.l10n.log_delete_subtitle,
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: phpVars.l10n.log_delete_confirm,
+				cancelButtonText: phpVars.l10n.no_cancel,
+				customClass: {
+					confirmButton: 'button button-primary tab-content-submit disconnect-button',
+					cancelButton: 'button button-default mc-woocommerce-resync-button disconnect-button'
+				},
+				buttonsStyling: false,
+				reverseButtons: true,
+
+			}).then((result) => {
+				if (result.value) {
+					mailchimp_woocommerce_delete_log = true;
+					me.click();
+				}
+			})
+		});
+
+		$('.mc-woocommerce-resync-button').click(function(e) {
+			e.preventDefault();
+			Swal.fire({
+				title: 'Resync Request In Progress',
+				onBeforeOpen: () => {
+					Swal.showLoading()
+				}
+			});
+			var form = $('#mailchimp_woocommerce_options');
+			var data = form.serialize();
+			data+="&mailchimp_woocommerce_resync=1"
+			return $.ajax({type: "POST", url: form.attr('action'), data: data}).done(function(data) {
+				window.location.reload();
+			}).fail(function(xhr) {
+				Swal.hideLoading();
+				Swal.showValidationMessage("Could not resync orders, please try again.");
+			});
 		});
 
 		/*
@@ -50,6 +155,8 @@
 		*/ 
 		var mailchimp_woocommerce_disconnect_done = false;
 		$('#mailchimp_woocommerce_disconnect').click(function (e){
+			var me = $(this);
+
 			// this is to trigger the event even after preventDefault() is issued.
 			if (mailchimp_woocommerce_disconnect_done) {
 				mailchimp_woocommerce_disconnect_done = false; // reset flag
@@ -57,8 +164,6 @@
 			}
 
 			e.preventDefault();
-
-			var me = $(e.target);
 
 			const swalWithBootstrapButtons = Swal.mixin({
 				customClass: {
@@ -69,13 +174,13 @@
 			})
 			
 			swalWithBootstrapButtons.fire({
-				title: 'Are you sure?',
-				text: "You are about to disconnect your store from Mailchimp.",
+				title: phpVars.l10n.are_you_sure,
+				text: phpVars.l10n.store_disconnect_subtitle,
 				type: 'warning',
 				showCancelButton: true,
-				confirmButtonText: 'Yes, disconnect.',
-				cancelButtonText: 'No, cancel!',
-				reverseButtons: true
+				confirmButtonText: phpVars.l10n.store_disconnect_confirm,
+				cancelButtonText: phpVars.l10n.no_cancel,
+				reverseButtons: true,
 			}).then((result) => {
 				if (result.value) {
 					var query = window.location.href.match(/^(.*)\&/);
@@ -85,7 +190,23 @@
 					}
 					try {
 						mailchimp_woocommerce_disconnect_done = true;
-						me.click();
+						var form = $('#mailchimp_woocommerce_options');
+						var data = form.serialize();
+						data+="&mailchimp_woocommerce_disconnect_store=1"
+
+						Swal.fire({
+							title: 'Disconnecting Store In Progress',
+							onBeforeOpen: () => {
+								Swal.showLoading()
+							}
+						});
+
+						return $.ajax({type: "POST", url: form.attr('action'), data: data }).done(function(data) {
+							window.location.reload();
+						}).fail(function(xhr) {
+							Swal.hideLoading();
+							Swal.showValidationMessage("Could not delete store.");
+						});
 					} catch (e) {
 						console.error('clicking event for disconnect failed', e);
 					}
@@ -97,7 +218,7 @@
 		* Change wp_http_referer URL in case of in-wizard tab change
 		*/ 
 		var mailchimp_woocommerce_submit_done = false;
-		$('#mailchimp_woocommerce_options .tab-content-submit:not(.oauth-connect)').click(function(e){
+		$('#mailchimp_woocommerce_options .tab-content-submit:not(.oauth-connect):not(#mc-woocommerce-support-form-submit)').click(function(e){
 			// this is to trigger the event even after preventDefault() is issued.
 			if (mailchimp_woocommerce_submit_done) {
 				mailchimp_woocommerce_submit_done = false; // reset flag
@@ -192,9 +313,22 @@
 						$('#mailchimp-oauth-error').hide();
 						$('#mailchimp-oauth-waiting').hide();
 						$('#mailchimp-oauth-connecting').show();
+
+						// grab a copy of the ajax settings default headers
+						var previous_default_headers = ($.ajaxSettings && $.ajaxSettings.headers) ?
+							$.ajaxSettings.headers : {};
+
+						// set the default headers to NOTHING because the oauth server will block
+						// any non standard header that it was not expecting to receive and it was
+						// preventing folks from being able to connect.
+						$.ajaxSettings.headers = {};
 						
 						// ping status to check if auth was accepted
-						$.post(domain + '/api/status/' + token).done(function(statusData){
+						$.post(domain + '/api/status/' + token).done(function(statusData) {
+
+							// set the headers back to the previous defaults
+							$.ajaxSettings.headers = previous_default_headers;
+
 							if (statusData.status == "accepted") {
 								// call for finish endpoint to retrieve access_token
 								var finishData = {
@@ -509,6 +643,116 @@
 				$("#mc-woocommerce-create-account-go").click(); 				
 			}
 		});
+
+		$('a#mc-woocommerce-support-form-submit').click(function (e) {
+			var accountId = $('input#account_id');
+			var storeId = $('input#store_id');
+			var email = $('input#email');
+			var firstName = $('input#first_name');
+			var lastName = $('input#last_name');
+			var subject = $('input#subject');
+			var message = $('textarea#message');
+		
+			var isValid = true;
+			
+			var spinner = $(this).next('.spinner');
+			spinner.css('visibility', 'visible');
+			$('#success').hide();
+			$('#error').hide();
+
+			if (! email[0].checkValidity()) {
+				$('#email_error').show();
+				isValid= false;
+			}
+			else {
+				$('#email_error').hide();
+			}
+
+			if (! firstName[0].checkValidity()) {
+				$('#first_name_error').show();
+				isValid= false;
+			}
+			else {
+				$('#first_name_error').hide();
+			}
+
+			if (! lastName[0].checkValidity()) {
+				$('#last_name_error').show();
+				isValid= false;
+			}
+			else {
+				$('#last_name_error').hide();
+			}
+
+			if (! subject[0].checkValidity()) {
+				$('#subject_error').show();
+				isValid= false;
+			}
+			else {
+				$('#subject_error').hide();
+			}
+
+			if (! message[0].checkValidity()) {
+				$('#message_error').show();
+				isValid= false;
+			}
+			else {
+				$('#message_error').hide();
+			}
+
+			if (isValid) {
+				var data = {
+					action:'mailchimp_woocommerce_support_form',
+					data: {
+						email: email.val(),
+						first_name: firstName.val(),
+						last_name: lastName.val(),
+						subject: subject.val(),
+						message: message.val(),
+						account_id: accountId.val(),
+						store_id: storeId.val(),
+					},
+				};
+
+				Swal.fire({
+					title: 'Sending Support Request',
+					html: 'please wait',
+					onBeforeOpen: () => {
+						Swal.showLoading();
+						$.post(ajaxurl, data, function(response) {
+							Swal.hideLoading();
+							if (response.success) {
+								location.hash = '#mc-woocommerce-support-form-button';
+								$('#success').show();
+								subject.val('');
+								message.val('');
+								spinner.css('visibility', 'hidden');
+								Swal.fire({
+									icon: 'success',
+									timer: 2000,
+									title: 'Message Received',
+									html: 'Thanks, your message has been received.',
+								});
+							} else if (response.data.error) {
+								$('#error').show();
+								spinner.css('visibility', 'hidden');
+							}
+						}).fail(function (err) {
+							Swal.fire({
+								icon: 'error',
+								timer: 2000,
+								title: 'Oops, something went wrong!',
+								html: err,
+							});
+						});
+					},
+				});
+			}
+			else {
+				spinner.css('visibility', 'hidden')
+			}
+		});
+
 	});
 })( jQuery );
 

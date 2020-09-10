@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -52,11 +52,11 @@ class WC_Braintree_API_Customer_Request extends WC_Braintree_API_Vault_Request {
 		$this->set_callback( 'create' );
 
 		$this->request_data = array(
-			'company'            => WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_company' ),
-			'email'              => WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_email' ),
-			'phone'              => WC_Braintree_Framework\SV_WC_Helper::str_truncate( preg_replace( '/[^\d\-().]/', '', WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_phone' ) ),  14, '' ),
-			'firstName'          => WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_first_name' ),
-			'lastName'           => WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_last_name' ),
+			'company'            => $order->get_billing_company( 'edit' ),
+			'email'              => $order->get_billing_email( 'edit' ),
+			'phone'              => Framework\SV_WC_Helper::str_truncate( preg_replace( '/[^\d\-().]/', '', $order->get_billing_phone( 'edit' ) ),  14, '' ),
+			'firstName'          => $order->get_billing_first_name( 'edit' ),
+			'lastName'           => $order->get_billing_last_name( 'edit' ),
 			'paymentMethodNonce' => $order->payment->nonce,
 		);
 

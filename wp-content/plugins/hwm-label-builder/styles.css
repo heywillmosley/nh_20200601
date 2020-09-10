@@ -1,0 +1,234 @@
+html {
+    background-color: blue;
+}
+@media all {
+  @font-face {
+    font-family: 'Open Sans';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Open Sans Italic'), local('OpenSans-Italic'), url(https://fonts.gstatic.com/s/opensans/v17/mem6YaGs126MiZpBA-UFUK0Zdcg.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Open Sans Regular'), local('OpenSans-Regular'), url(https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0e.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: 600;
+    src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'), url(https://fonts.gstatic.com/s/opensans/v17/mem5YaGs126MiZpBA-UNirkOUuhs.ttf) format('truetype');
+  }
+
+
+  /* CSS Reset */
+  a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font-family:'Open Sans';vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+
+  /* Keeps our widths right for print */
+  html {
+    box-sizing: border-box;
+  }
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
+  }
+
+  p {
+    margin-bottom: 5px;
+    line-height: 1.2;
+  }
+  h1 {
+    font-size: 12px;
+    margin-bottom: 3px;
+  }
+  h2 {
+    font-size: 8px;
+    margin-bottom: 5px;
+  }
+  img {
+    max-width: 100%;
+  }
+  strong {
+    font-weight: 700;
+  }
+  .document-title {
+    font-size: 36px;
+    line-height: 1.4;
+  }
+  .sheet-title {
+    margin-top: 10px;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .pdf {
+    position: relative;
+    width: 8.5in;
+    height: 11in;
+    padding: 0.25in 0.25in 0;
+  }
+  .label {
+    position: relative;
+    width: 4in;
+    height: 4in;
+    font-size: 3.6pt;
+    background-color: #FFF;
+    margin: 0;
+    float: left;
+    overflow-y: hidden;
+  }
+  .label .label-directives {
+    width: 25%;
+    float: left;
+    height: 100%;
+    position: relative;
+  }
+  .label .label-directives .label-directives-footer-absolute {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+  }
+  .label .label-logo {
+    width: 7%;
+    float: left;
+    padding: 5px;
+  }
+  .label .label-logo img {
+    max-height: 70%;
+  }
+  .label .label-brand {
+    width: 34%;
+    height: 100%;
+    background-color: #EF7726; /* #F05525 */
+    float: left;
+  }
+  .label .label-facts {
+    width: 34%;
+    height: 1.75in;
+    float: left;
+  }
+  .row {
+    position: relative;
+    width: 100%;
+    display: block;
+    clear: both;
+    padding: 0;
+    margin: 0;
+  }
+  .label-directives,
+  .label-logo,
+  .label-brand,
+  .label-facts {
+    padding: 10px;
+    position: relative;
+  }
+  .label-mfg,
+  .label-lot {
+    margin-bottom: 3px;
+  }
+  .label-lot {
+    right: 0;
+  }
+  .label-brand {
+    color: #FFF;
+    font-weight: bold;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+  .label-brand-logo {
+    margin: 0 0 5px;
+    width: 50%;
+  }
+  .label-dietary {
+    margin-bottom: 5px;
+  }
+  .label-tagline {
+    margin-bottom: 5px;
+  }
+  .label-brand-title {
+    font-size: 10px;
+  }
+  .label-facts-box {
+    width: 100%;
+    border: 1px solid;
+    padding: 1px 1px 5px 1px;
+  }
+  .label-facts-box .label-serving-size {
+    font-size: 4px;
+    padding: 1px;
+  }
+  .label-facts-box .label-facts-table {
+    border-top: 3px solid #000;
+    width: 100%;
+  }
+  .label-facts-box .label-facts-table tr {
+    border-bottom: 0.5px solid #000;
+  }
+  .label-facts-box .label-facts-table tr:last-child {
+    border-bottom: 3px solid #000;
+  }
+  .label-facts-box .label-facts-table td {
+    padding: 1px;
+    font-size: 4px;
+  }
+  .label-facts-box .label-facts-table thead {
+    border-bottom: 2px solid #000;
+  }
+  .label-facts-box .label-facts-table thead td {
+    font-size: 3px;
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 2px;
+  }
+  .label-facts-box .label-facts-table .table-ingredient {
+    width: 60%;
+  }
+  .label-facts-box .label-facts-table .table-amount {
+    width: 20%;
+    text-align: center;
+  }
+  .label-facts-box .label-facts-table .table-daily {
+    width: 20%;
+    text-align: center;
+  }
+  .label-facts-box .label-facts-table .table-blend,
+  .label-facts-box .label-facts-table .table-flavoring,
+  .label-facts-box .label-facts-table .table-preservatives {
+    font-size: 3.5px;
+    border: 0 solid #000;
+  }
+  .label-facts-box .label-facts-table .table-blend p,
+  .label-facts-box .label-facts-table .table-flavoring p,
+  .label-facts-box .label-facts-table .table-preservatives p {
+    margin: 2px 0 0;
+  }
+  .pdf.pdf-letter-landscape {
+    height: 8.5in;
+    width: 11in;
+  }
+  .pdf.pdf-1oz {
+    padding: 0.25in;
+  }
+  .pdf.pdf-1oz .label {
+    width: 4in;
+    height: 1.75in;
+  }
+  .pdf.pdf-4oz {
+    padding: 0.25in 0.5in;
+  }
+  .pdf.pdf-4oz .label {
+    width: 5in;
+    height: 2in;
+  }
+  .pdf.pdf-8oz {
+    padding: 0.169;
+  }
+  .pdf.pdf-8oz .label {
+    width: 4in;
+    height: 2.5in;
+  }
+  .pdf.pdf-8oz .label:nth-child(odd) {
+    margin-right: 0.167;
+  }
+}

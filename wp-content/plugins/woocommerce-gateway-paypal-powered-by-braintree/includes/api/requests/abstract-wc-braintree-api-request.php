@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 3.0.0
  */
-abstract class WC_Braintree_API_Request implements WC_Braintree_Framework\SV_WC_Payment_Gateway_API_Request {
+abstract class WC_Braintree_API_Request implements Framework\SV_WC_Payment_Gateway_API_Request {
 
 
 	/** @var string Braintree SDK resource for the request, e.g. `transaction` */
@@ -197,7 +197,7 @@ abstract class WC_Braintree_API_Request implements WC_Braintree_Framework\SV_WC_
 	 */
 	public function get_request_data() {
 
-		WC_Braintree_Framework\SV_WC_Plugin_Compatibility::wc_deprecated_function( __FUNCTION__, '2.2.0', 'WC_Braintree_API_Request::get_data' );
+		Framework\SV_WC_Plugin_Compatibility::wc_deprecated_function( __FUNCTION__, '2.2.0', 'WC_Braintree_API_Request::get_data' );
 
 		return $this->get_data();
 	}
@@ -249,7 +249,10 @@ abstract class WC_Braintree_API_Request implements WC_Braintree_Framework\SV_WC_
 	 */
 	public function get_order_prop( $prop ) {
 
-		return WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $this->get_order(), $prop );
+		$order  = $this->get_order();
+		$method = "get_{$prop}";
+
+		return $order instanceof \WC_Order && is_callable( [ $order, $method ] ) ? $order->$method( 'edit' ) : '';
 	}
 
 

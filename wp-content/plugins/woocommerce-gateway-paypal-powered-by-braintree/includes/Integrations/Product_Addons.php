@@ -25,7 +25,7 @@
 namespace WC_Braintree\Integrations;
 
 use WC_Braintree\PayPal\Buttons;
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -67,8 +67,8 @@ class Product_Addons {
 
 			if ( $cart_handler instanceof \WC_Product_Addons_Cart ) {
 
-				$product_id = (int) WC_Braintree_Framework\SV_WC_Helper::get_post( 'product_id' );
-				$serialized = WC_Braintree_Framework\SV_WC_Helper::get_post( 'cart_form' );
+				$product_id = (int) Framework\SV_WC_Helper::get_posted_value( 'product_id' );
+				$serialized = Framework\SV_WC_Helper::get_posted_value( 'cart_form' );
 				$post_data  = [];
 
 				if ( ! empty( $serialized ) ) {

@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.0.0
  */
-class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_Direct {
+class WC_Gateway_Braintree extends Framework\SV_WC_Payment_Gateway_Direct {
 
 
 	/** sandbox environment ID */
@@ -80,6 +80,53 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 
 
 	/**
+	 * WC_Gateway_Braintree constructor.
+	 *
+	 * @param string $id the gateway id
+	 * @param Framework\SV_WC_Payment_Gateway_Plugin $plugin the parent plugin class
+	 * @param array $args gateway arguments
+	 */
+	public function __construct( $id, $plugin, $args ) {
+
+		parent::__construct( $id, $plugin, $args );
+
+		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_admin_scripts'] );
+	}
+
+
+	/**
+	 * Initializes the payment form handler.
+	 *
+	 * TODO: remove this method by version 3.0.0 or by 2021-05-05 {WV 2020-05-05}
+	 *
+	 * @since 2.2.1
+	 * @deprecated 2.4.0
+	 */
+	public function init_payment_form_handler() {
+
+		wc_deprecated_function( __METHOD__,  '2.4.0', __CLASS__ . '::init_payment_form_instance()' );
+
+		$this->init_payment_form_instance();
+	}
+
+
+	/**
+	 * Enqueues admin scripts.
+	 *
+	 * @internal
+	 *
+	 * @since 2.3.11
+	 */
+	public function enqueue_admin_scripts() {
+
+		if ( $this->get_plugin()->is_plugin_settings() ) {
+
+			wp_enqueue_script( 'wc-backbone-modal', null, [ 'backbone' ] );
+		}
+	}
+
+
+	/**
 	 * Loads the plugin configuration settings
 	 *
 	 * @since 2.0.0
@@ -98,7 +145,6 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	 *
 	 * @since 3.0.0
 	 * @see SV_WC_Payment_Gateway::enqueue_scripts()
-	 * @return bool
 	 */
 	public function enqueue_gateway_assets() {
 
@@ -131,7 +177,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 
 			wp_send_json_success( $result->get_client_token() );
 
-		} catch ( WC_Braintree_Framework\SV_WC_Plugin_Exception $e ) {
+		} catch ( Framework\SV_WC_Plugin_Exception $e ) {
 
 			$this->add_debug_message( $e->getMessage(), 'error' );
 
@@ -152,7 +198,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	public function validate_payment_nonce( $is_valid ) {
 
 		// nonce is required
-		if ( ! WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc_' . $this->get_id() . '_payment_nonce' ) ) {
+		if ( ! Framework\SV_WC_Helper::get_posted_value( 'wc_' . $this->get_id() . '_payment_nonce' ) ) {
 
 			wc_add_notice( __( 'Oops, there was a temporary payment error. Please try another payment method or contact us to complete your transaction.', 'woocommerce-gateway-paypal-powered-by-braintree' ), 'error' );
 
@@ -180,7 +226,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 
 		// nonce may be previously populated by Apple Pay
 		if ( empty( $order->payment->nonce ) ) {
-			$order->payment->nonce = WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc_'. $this->get_id() . '_payment_nonce' );
+			$order->payment->nonce = Framework\SV_WC_Helper::get_posted_value( 'wc_'. $this->get_id() . '_payment_nonce' );
 		}
 
 		$order->payment->tokenize = $this->get_payment_tokens_handler()->should_tokenize();
@@ -196,10 +242,10 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 		}
 
 		// fraud tool data as a JSON string, unslashed as WP slashes $_POST data which breaks the JSON
-		$order->payment->device_data = wp_unslash( WC_Braintree_Framework\SV_WC_Helper::get_post( 'device_data' ) );
+		$order->payment->device_data = wp_unslash( Framework\SV_WC_Helper::get_posted_value( 'device_data' ) );
 
 		// merchant account ID
-		if ( $merchant_account_id = $this->get_merchant_account_id( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'currency', 'view' ) ) ) {
+		if ( $merchant_account_id = $this->get_merchant_account_id( $order->get_currency() ) ) {
 			$order->payment->merchant_account_id = $merchant_account_id;
 		}
 
@@ -217,7 +263,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 		}
 
 		// the URL descriptor doesn't have any specific validation, so just truncate it if needed
-		$order->payment->dynamic_descriptors->url = WC_Braintree_Framework\SV_WC_Helper::str_truncate( $this->get_url_dynamic_descriptor(), 13, '' );
+		$order->payment->dynamic_descriptors->url = Framework\SV_WC_Helper::str_truncate( $this->get_url_dynamic_descriptor(), 13, '' );
 
 		// add the recurring flag to Subscriptions renewal orders
 		if ( $this->get_plugin()->is_subscriptions_active() && wcs_order_contains_subscription( $order, 'any' ) ) {
@@ -233,8 +279,8 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 		}
 
 		// test amount when in sandbox mode
-		if ( $this->is_test_environment() && ( $test_amount = WC_Braintree_Framework\SV_WC_Helper::get_post( 'wc-' . $this->get_id_dasherized() . '-test-amount' ) ) ) {
-			$order->payment_total = WC_Braintree_Framework\SV_WC_Helper::number_format( $test_amount );
+		if ( $this->is_test_environment() && ( $test_amount = Framework\SV_WC_Helper::get_posted_value( 'wc-' . $this->get_id_dasherized() . '-test-amount' ) ) ) {
+			$order->payment_total = Framework\SV_WC_Helper::number_format( $test_amount );
 		}
 
 		return $order;
@@ -260,7 +306,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 
 		if ( empty( $order->refund->trans_id ) ) {
 
-			$order->refund->trans_id = WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'transaction_id' );
+			$order->refund->trans_id = $order->get_transaction_id( 'edit' );
 		}
 
 		return $order;
@@ -417,6 +463,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	 * Adds the shared settings form fields.
 	 *
 	 * @since 2.0.0
+	 *
 	 * @param array $form_fields
 	 * @return array
 	 */
@@ -431,39 +478,29 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 			return $form_fields;
 		}
 
-		// used to move the environment field below
-		$environment_field = $form_fields['environment'];
-		unset( $form_fields['environment'] );
+		// only show this option when connected via auth flow
+		if ( $this->is_connected() && ! $this->is_connected_manually() ) {
 
-		$form_fields = WC_Braintree_Framework\SV_WC_Helper::array_insert_after( $form_fields, 'connection_settings', array(
-			'braintree_auth'   => array( 'type' => 'braintree_auth' ),
-			'connect_manually' => array(
-				'type'    => 'checkbox',
-				'label'   => __( 'Enter connection credentials manually', 'woocommerce-gateway-paypal-powered-by-braintree' ),
-				'default' => ( ! $this->get_option( 'connect_manually' ) && $this->is_connected_manually() ) ? 'yes' : 'no',
-			),
-			'environment' => $environment_field,
-		) );
+			// used to move the environment field below
+			$environment_field = $form_fields['environment'];
+			unset( $form_fields['environment'] );
 
-		// get any sibling gateways
-		$other_gateway_ids                  = array_diff( $this->get_plugin()->get_gateway_ids(), array( $this->get_id() ) );
-		$connect_manually_other_gateway_ids = array();
+			$form_fields  = Framework\SV_WC_Helper::array_insert_after( $form_fields, 'connection_settings', [
+				'braintree_auth'   => [
+					/** @see \WC_Gateway_Braintree::generate_braintree_auth_html() */
+					'type' => 'braintree_auth'
+				],
+				'connect_manually' => [
+					'type'    => 'checkbox',
+					'label'   => __( 'Enter connection credentials manually', 'woocommerce-gateway-paypal-powered-by-braintree' ),
+					'default' => 'no',
+				],
+				'environment' => $environment_field,
+			] );
 
-		// determine if any sibling gateways have configured manual connection
-		foreach ( $other_gateway_ids as $other_gateway_id ) {
+		} else {
 
-			$other_gateway_settings = $this->get_plugin()->get_gateway_settings( $other_gateway_id );
-
-			// add the gateway to the list if manual connection is set
-			if ( isset( $other_gateway_settings['connect_manually'] ) && 'yes' === $other_gateway_settings['connect_manually'] ) {
-				$connect_manually_other_gateway_ids[] = $other_gateway_id;
-			}
-		}
-
-		// if no sibling gateways are manually connected, disable the inherit settings checkbox
-		if ( empty( $connect_manually_other_gateway_ids ) ) {
-			$form_fields['inherit_settings']['disabled']    = true;
-			$form_fields['inherit_settings']['description'] = __( 'Disabled because the other gateway is not connected manually.', 'woocommerce-gateway' );
+			$this->connect_manually = true;
 		}
 
 		return $form_fields;
@@ -473,36 +510,107 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	/**
 	 * Generates the Braintree Auth connection HTML.
 	 *
+	 * This method will be phased out as the manual connection is the preferred setup method.
+	 * @see \WC_Gateway_Braintree::add_shared_settings_form_fields()
+	 *
+	 * @internal
+	 *
 	 * @since 2.0.0
-	 * @return string
+	 * @deprecated since 2.3.11
+	 *
+	 * @return string HTML
 	 */
 	public function generate_braintree_auth_html() {
 
-		if ( $this->is_connected() ) {
-
-			$help_tip = sprintf(
-				'%s<br><br>%s<br><br>%s',
-				__( 'You just connected your Braintree account to WooCommerce. You can start taking payments now.', 'woocommerce-gateway-paypal-powered-by-braintree' ),
-				__( 'Once you have processed a payment, PayPal will review your application for final approval. Before you ship any goods make sure you have received a final approval for your Braintree account.', 'woocommerce-gateway-paypal-powered-by-braintree' ),
-				__( 'Questions? We are a phone call away: 1-855-489-0345.', 'woocommerce-gateway-paypal-powered-by-braintree' )
-			);
-
-		} else {
-
-			$help_tip = __( 'Click button to create an account with Braintree and start transacting.', 'woocommerce-gateway-paypal-powered-by-braintree' );
+		// no long connect via auth for new merchants or merchants that have already connected manually
+		if ( ! $this->is_connected() || $this->is_connected_manually() ) {
+			return '';
 		}
-
-		$button_image_url    = $this->get_plugin()->get_plugin_url() . '/assets/images/button/connect-braintree.png';
-		$is_connected        = $this->is_connected();
-		$connect_url         = $this->get_connect_url();
-		$sandbox_connect_url = $this->get_connect_url( self::ENVIRONMENT_SANDBOX );
-		$disconnect_url      = $this->get_disconnect_url();
 
 		ob_start();
 
-		include( $this->get_plugin()->get_plugin_path() . '/includes/views/admin-html-braintree-auth.php' );
+		?>
+		<tr class="wc-braintree-auth">
+			<th>
+				<?php
 
-		return ob_get_clean();
+				esc_html_e( 'Connect/Disconnect', 'woocommerce-gateway-paypal-powered-by-braintree' );
+
+				echo wc_help_tip( sprintf(
+					'%s<br><br>%s<br><br>%s',
+					__( 'You just connected your Braintree account to WooCommerce. You can start taking payments now.', 'woocommerce-gateway-paypal-powered-by-braintree' ),
+					__( 'Once you have processed a payment, PayPal will review your application for final approval. Before you ship any goods make sure you have received a final approval for your Braintree account.', 'woocommerce-gateway-paypal-powered-by-braintree' ),
+					__( 'Questions? We are a phone call away: 1-855-489-0345.', 'woocommerce-gateway-paypal-powered-by-braintree' )
+				) );
+
+				?>
+			</th>
+			<td>
+				<a
+					href="<?php echo esc_url( $this->get_disconnect_url() ); ?>"
+					id="wc-braintree-auth-disconnect"
+					class="button-primary"
+				><?php
+					echo esc_html__( 'Disconnect from Braintree for WooCommerce', 'woocommerce-gateway-paypal-powered-by-braintree' );
+				?></a>
+			</td>
+		</tr>
+
+		<script type="text/template" id="tmpl-wc-braintree-auth-disconnect-modal">
+			<div class="wc-backbone-modal wc-braintree-auth-disconnect-modal">
+				<div class="wc-backbone-modal-content">
+					<section class="wc-backbone-modal-main" role="main">
+						<header class="wc-backbone-modal-header">
+							<h1><?php esc_html_e( 'Braintree for WooCommerce', 'woocommerce-gateway-paypal-powered-by-braintree' ); ?></h1>
+							<button class="modal-close modal-close-link dashicons dashicons-no-alt">
+								<span class="screen-reader-text"><?php esc_html_e( 'Close modal panel and cancel', 'woocommerce-gateway-paypal-powered-by-braintree' ); ?></span>
+							</button>
+						</header>
+						<article>
+							<p><?php printf(
+								/* translators: Placeholders %1$s - opening HTML <a> link tag, closing HTML </a> link tag */
+								esc_html__( 'Heads up! Once you disconnect, you\'ll need to use your %1$sBraintree API keys%2$s to reconnect. Do you want to proceed with disconnecting?', 'woocommerce-gateway-paypal-powered-by-braintree' ),
+								'<a href="https://docs.woocommerce.com/document/woocommerce-gateway-paypal-powered-by-braintree/#setup" target="_blank">',
+								'</a>'
+							); ?></p>
+						</article>
+						<footer style="text-align: right;">
+							<button
+								class="button"
+							><?php esc_html_e( 'Cancel', 'woocommerce-gateway-paypal-powered-by-braintree' ); ?></button>
+							<a
+								href="<?php echo esc_url( $this->get_disconnect_url() ); ?>"
+								class="button button-primary"
+							><?php esc_html_e( 'Disconnect', 'woocommerce-gateway-paypal-powered-by-braintree' ); ?></a>
+						</footer>
+					</section>
+				</div>
+			</div>
+			<div class="wc-backbone-modal-backdrop modal-close"></div>
+		</script>
+		<?php
+
+		$field = ob_get_clean();
+
+		wc_enqueue_js( "
+			$( '#wc-braintree-auth-disconnect' ).on( 'click', function( e ) {
+				e.preventDefault();
+
+				$( '#wc-backbone-modal-dialog .modal-close' ).trigger( 'click' );
+
+				new $.WCBackboneModal.View( {
+					target: 'wc-braintree-auth-disconnect-modal'
+				} );
+
+				$( '.wc-braintree-auth-disconnect-modal .button' ).on( 'click', function( e ) {
+					if ( ! $( this ).hasClass( 'button-primary' ) ) {
+						$( '.wc-braintree-auth-disconnect-modal button.modal-close' ).trigger( 'click' );
+					}
+				} );
+			} )
+		" );
+
+		return $field;
 	}
 
 
@@ -650,6 +758,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	public function admin_options() {
 
 		parent::admin_options();
+
 		?>
 		<style type="text/css">
 
@@ -664,10 +773,8 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 			}
 
 		</style>
-		<?php
 
-		ob_start();
-		?>
+		<?php ob_start(); ?>
 
 		$( document.body ).on( 'click', '.wc-braintree-auth.disabled .wc-braintree-connect-button', function( e ) {
 			e.preventDefault();
@@ -849,7 +956,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 		// first unset all merchant account IDs from settings so they can be freshly set
 		foreach ( array_keys( $sanitized_fields ) as $name ) {
 
-			if ( WC_Braintree_Framework\SV_WC_Helper::str_starts_with( $name, 'merchant_account_id_' ) ) {
+			if ( Framework\SV_WC_Helper::str_starts_with( $name, 'merchant_account_id_' ) ) {
 				unset( $sanitized_fields[ $name ] );
 				unset( $this->settings[ $name ] );
 			}
@@ -906,7 +1013,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 			return false;
 		}
 
-		$order_id = WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'id' );
+		$order_id = $order->get_id();
 
 		// update a legacy payment token if it exists
 		if ( 'payment_token' === $key && metadata_exists( 'post', $order_id, '_wc_paypal_braintree_payment_method_token' ) && ! get_post_meta( $order_id, $this->get_order_meta_prefix() . $key, true ) && $this->get_id() === get_post_meta( $order_id, '_payment_method', true ) ) {
@@ -1039,7 +1146,7 @@ class WC_Gateway_Braintree extends WC_Braintree_Framework\SV_WC_Payment_Gateway_
 	 * @see SV_WC_Payment_Gateway::is_configured()
 	 * @return boolean true if the gateway is properly configured
 	 */
-	protected function is_configured() {
+	public function is_configured() {
 
 		$is_configured = parent::is_configured();
 

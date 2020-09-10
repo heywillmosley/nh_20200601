@@ -27,7 +27,7 @@ defined( 'ABSPATH' ) or exit;
 /**
  * Braintree Frontend class
  *
- * Modifies the "My Payment Methods" table output from WC_Braintree_Framework files.
+ * Modifies the "My Payment Methods" table output from Framework files.
  *
  * TODO: This class can be removed if / when the SV Plugin Framework implements card icons in their own table cells.
  * @see https://github.com/skyverge/wc-plugin-framework/issues/198

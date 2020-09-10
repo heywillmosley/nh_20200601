@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -36,7 +36,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 3.0.0
  */
-class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements WC_Braintree_Framework\SV_WC_Payment_Gateway_API {
+class WC_Braintree_API extends Framework\SV_WC_API_Base implements Framework\SV_WC_Payment_Gateway_API {
 
 
 	/** Braintree Partner ID for transactions using Braintree Auth */
@@ -74,7 +74,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * @since 2.2.0
 	 *
 	 * @return WC_Braintree_API_Merchant_Configuration_Response
-	 * @throws WC_Braintree_Framework\SV_WC_API_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function get_merchant_configuration() {
 
@@ -84,7 +84,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 
 		// sanity check that the client key has valid JSON to decode
 		if ( ! json_decode( $data ) ) {
-			throw new WC_Braintree_Framework\SV_WC_API_Exception( 'The client key contained invalid JSON.', 500 );
+			throw new Framework\SV_WC_API_Exception( 'The client key contained invalid JSON.', 500 );
 		}
 
 		return new WC_Braintree_API_Merchant_Configuration_Response( $data );
@@ -95,9 +95,10 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Get a client token for initializing the hosted fields or PayPal forms
 	 *
 	 * @since 3.0.0
+	 *
 	 * @param array $args
 	 * @return \WC_Braintree_API_Client_Token_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function get_client_token( Array $args = array() ) {
 
@@ -115,10 +116,12 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Create a new credit card charge transaction
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::credit_card_charge()
+	 *
 	 * @param \WC_Order $order order
 	 * @return \WC_Braintree_API_Credit_Card_Transaction_Response|\WC_Braintree_API_PayPal_Transaction_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function credit_card_charge( WC_Order $order ) {
 
@@ -142,10 +145,11 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Create a new credit card auth transaction
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::credit_card_authorization()
 	 * @param \WC_Order $order order
 	 * @return \WC_Braintree_API_Credit_Card_Transaction_Response|\WC_Braintree_API_PayPal_Transaction_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function credit_card_authorization( WC_Order $order ) {
 
@@ -170,8 +174,9 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * is required. This must be done prior to processing the actual transaction.
 	 *
 	 * @since 3.0.0
-	 * @param \WC_Order $ordero rder
-	 * @throws \SV_WC_Payment_Gateway_Exception if CSC verification fails
+	 *
+	 * @param \WC_Order $order order
+	 * @throws Framework\SV_WC_Plugin_Exception if CSC verification fails
 	 */
 	public function verify_csc( WC_Order $order ) {
 
@@ -206,7 +211,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 					$message = $result->get_user_message();
 				}
 
-				throw new WC_Braintree_Framework\SV_WC_Payment_Gateway_Exception( $message );
+				throw new Framework\SV_WC_Payment_Gateway_Exception( $message );
 			}
 		}
 	}
@@ -216,10 +221,11 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Capture funds for a credit card authorization
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::credit_card_capture()
 	 * @param \WC_Order $order order
 	 * @return \WC_Braintree_API_Transaction_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function credit_card_capture( WC_Order $order ) {
 
@@ -248,9 +254,10 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Perform a refund for the order
 	 *
 	 * @since 3.0.0
+	 *
 	 * @param \WC_Order $order the order
 	 * @return \WC_Braintree_API_Transaction_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function refund( WC_Order $order ) {
 
@@ -269,9 +276,10 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Perform a void for the order
 	 *
 	 * @since 3.0.0
+	 *
 	 * @param \WC_Order $order the order
 	 * @return \WC_Braintree_API_Transaction_Response
-	 * @throws \SV_WC_Payment_Gateway_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function void( WC_Order $order ) {
 
@@ -293,9 +301,11 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Tokenize the payment method associated with the order
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::tokenize_payment_method()
 	 * @param WC_Order $order the order with associated payment and customer info
 	 * @return \WC_Braintree_API_Customer_Response|\WC_Braintree_API_Payment_Method_Response
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function tokenize_payment_method( WC_Order $order ) {
 
@@ -328,10 +338,11 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Get the tokenized payment methods for the customer
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::get_tokenized_payment_methods()
 	 * @param string $customer_id unique
 	 * @return \WC_Braintree_API_Customer_response
-	 * @throws \SV_WC_API_Exception
+	 * @throws Framework\SV_WC_API_Exception
 	 */
 	public function get_tokenized_payment_methods( $customer_id ) {
 
@@ -373,10 +384,12 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Remove the given tokenized payment method for the customer
 	 *
 	 * @since 3.0.0
+	 *
 	 * @see SV_WC_Payment_Gateway_API::remove_tokenized_payment_method()
 	 * @param string $token the payment method token
 	 * @param string $customer_id unique
-	 * @return \WC_Authorize_Net_CIM_API_Payment_Profile_Response
+	 * @return \WC_Braintree_API_Payment_Method_Response
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function remove_tokenized_payment_method( $token, $customer_id ) {
 
@@ -419,7 +432,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * @since 3.0.0
 	 * @param string $nonce payment nonce
 	 * @return \WC_Braintree_API_Payment_Method_Nonce_Response
-	 * @throws WC_Braintree_Framework\SV_WC_Plugin_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function get_payment_method_from_nonce( $nonce ) {
 
@@ -438,7 +451,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * @since 3.0.0
 	 * @param string $token payment method token ID
 	 * @return \WC_Braintree_API_Payment_Method_Nonce_Response
-	 * @throws WC_Braintree_Framework\SV_WC_Plugin_Exception
+	 * @throws Framework\SV_WC_Plugin_Exception
 	 */
 	public function get_nonce_from_payment_token( $token ) {
 
@@ -506,13 +519,13 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * @since 3.0.0
 	 * @param mixed $response directly from Braintree SDK
 	 * @return \WC_Braintree_API_Response
-	 * @throws \SV_WC_API_Exception braintree errors
+	 * @throws Framework\SV_WC_API_Exception braintree errors
 	 */
 	protected function handle_response( $response ) {
 
 		// check if Braintree response contains exception and convert to framework exception
 		if ( $response instanceof Exception ) {
-			throw new WC_Braintree_Framework\SV_WC_API_Exception( $this->get_braintree_exception_message( $response ), $response->getCode(), $response );
+			throw new Framework\SV_WC_API_Exception( $this->get_braintree_exception_message( $response ), $response->getCode(), $response );
 		}
 
 		$handler_class = $this->get_response_handler();
@@ -628,7 +641,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * @since 3.0.0
 	 * @see SV_WC_API_Base::get_new_request()
 	 * @param array $args
-	 * @throws SV_WC_API_Exception for invalid request types
+	 * @throws Framework\SV_WC_API_Exception for invalid request types
 	 * @return \WC_Braintree_API_Client_Token_Request|\WC_Braintree_API_Transaction_Request|\WC_Braintree_API_Customer_Request|\WC_Braintree_API_Payment_Method_Request|\WC_Braintree_API_Payment_Method_Nonce_Request
 	 */
 	protected function get_new_request( $args = array() ) {
@@ -662,7 +675,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 				return new WC_Braintree_API_Payment_Method_Nonce_Request();
 
 			default:
-				throw new WC_Braintree_Framework\SV_WC_API_Exception( 'Invalid request type' );
+				throw new Framework\SV_WC_API_Exception( 'Invalid request type' );
 		}
 	}
 
@@ -713,7 +726,7 @@ class WC_Braintree_API extends WC_Braintree_Framework\SV_WC_API_Base implements 
 	 * Return the gateway plugin
 	 *
 	 * @since 3.0.0
-	 * @return \SV_WC_Payment_Gateway_Plugin
+	 * @return \WC_Braintree
 	 */
 	public function get_plugin() {
 

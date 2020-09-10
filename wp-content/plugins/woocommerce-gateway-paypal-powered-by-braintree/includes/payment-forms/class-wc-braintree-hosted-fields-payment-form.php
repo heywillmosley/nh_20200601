@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -34,6 +34,19 @@ defined( 'ABSPATH' ) or exit;
  * @method \WC_Gateway_Braintree_Credit_Card get_gateway()
  */
 class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form {
+
+
+	/**
+	 * Gets the JS handler class name.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	protected function get_js_handler_class_name() {
+
+		return 'WC_Braintree_Credit_Card_Payment_Form_Handler';
+	}
 
 
 	/**
@@ -49,7 +62,7 @@ class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form 
 
 		$html = parent::get_saved_payment_method_html( $token );
 
-		if ( ! WC_Braintree_Framework\SV_WC_Helper::str_exists( $html, 'data-nonce' ) && in_array( WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( $token->get_card_type() ), $this->get_gateway()->get_3d_secure_card_types(), true ) ) {
+		if ( ! Framework\SV_WC_Helper::str_exists( $html, 'data-nonce' ) && in_array( Framework\SV_WC_Payment_Gateway_Helper::normalize_card_type( $token->get_card_type() ), $this->get_gateway()->get_3d_secure_card_types(), true ) ) {
 
 			if ( $nonce = $this->get_gateway()->get_3d_secure_nonce_for_token( $token ) ) {
 				$html = str_replace( 'name="wc-braintree-credit-card-payment-token"', 'name="wc-braintree-credit-card-payment-token" data-nonce="' . esc_attr( $nonce ) . '"', $html );
@@ -121,10 +134,10 @@ class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form 
 
 		// Braintree JS only returns the full names, so ensure they're correctly formatted from settings
 		$braintree_card_types = array(
-			'American Express' => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ,
-			'MasterCard'       => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD,
-			'Visa'             => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA,
-			'Maestro'          => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO,
+			'American Express' => Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX ,
+			'MasterCard'       => Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD,
+			'Visa'             => Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_VISA,
+			'Maestro'          => Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MAESTRO,
 		);
 
 		$card_types = array_keys( array_intersect( $braintree_card_types, $this->get_gateway()->get_3d_secure_card_types() ) );
@@ -175,18 +188,18 @@ class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form 
 	 */
 	protected function get_enabled_card_types() {
 
-		$types = array_map( array( '\\WC_Braintree\\Plugin_Framework\\SV_WC_Payment_Gateway_Helper', 'normalize_card_type' ), $this->get_gateway()->get_card_types() );
+		$types = array_map( '\\SkyVerge\\WooCommerce\\PluginFramework\\v5_7_1\\SV_WC_Payment_Gateway_Helper::normalize_card_type', $this->get_gateway()->get_card_types() );
 
 		// The Braintree SDK has its own strings for a few card types that we need to match
-		$types = str_replace( array(
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX,
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_DINERSCLUB,
-			WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD,
-		), array(
+		$types = str_replace( [
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_AMEX,
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_DINERSCLUB,
+			Framework\SV_WC_Payment_Gateway_Helper::CARD_TYPE_MASTERCARD,
+		], [
 			'american-express',
 			'diners-club',
 			'master-card',
-		), $types );
+		], $types );
 
 		return $types;
 	}
@@ -243,7 +256,7 @@ class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form 
 
 		$order_total = $this->get_order_total_for_3d_secure();
 
-		echo '<input type="hidden" name="wc-' . $this->get_gateway()->get_id_dasherized() . '-3d-secure-order-total" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Helper::number_format( $order_total ) ) . '" />';
+		echo '<input type="hidden" name="wc-' . $this->get_gateway()->get_id_dasherized() . '-3d-secure-order-total" value="' . esc_attr( Framework\SV_WC_Helper::number_format( $order_total ) ) . '" />';
 
 		if ( wc_braintree()->is_subscriptions_active() && \WC_Subscriptions_Cart::cart_contains_subscription() ) {
 			echo '<input type="hidden" name="wc-' . $this->get_gateway()->get_id_dasherized() . '-cart-contains-subscription" value="1" />';
@@ -256,29 +269,29 @@ class WC_Braintree_Hosted_Fields_Payment_Form extends WC_Braintree_Payment_Form 
 
 			if ( $order ) {
 
-				echo '<input type="hidden" name="billing_first_name" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_first_name' ) ) . '" />';
-				echo '<input type="hidden" name="billing_last_name" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_last_name' ) ) . '" />';
-				echo '<input type="hidden" name="billing_phone" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_phone' ) ) . '" />';
-				echo '<input type="hidden" name="billing_address_1" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_address_1' ) ) . '" />';
-				echo '<input type="hidden" name="billing_address_2" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_address_2' ) ) . '" />';
-				echo '<input type="hidden" name="billing_postcode" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_postcode' ) ) . '" />';
-				echo '<input type="hidden" name="billing_email" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_email' ) ) . '" />';
+				echo '<input type="hidden" name="billing_first_name" value="' . esc_attr( $order->get_billing_first_name( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_last_name" value="' . esc_attr( $order->get_billing_last_name( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_phone" value="' . esc_attr( $order->get_billing_phone( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_address_1" value="' . esc_attr( $order->get_billing_address_1( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_address_2" value="' . esc_attr( $order->get_billing_address_2( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_postcode" value="' . esc_attr( $order->get_billing_postcode( 'edit' ) ) . '" />';
+				echo '<input type="hidden" name="billing_email" value="' . esc_attr( $order->get_billing_email( 'edit' ) ) . '" />';
 
-				echo '<input type="hidden" id="billing_city" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_city' ) ) . '" />';
-				echo '<input type="hidden" id="billing_state" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_state' ) ) . '" />';
-				echo '<input type="hidden" id="billing_country" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'billing_country' ) ) . '" />';
+				echo '<input type="hidden" id="billing_city" value="' . esc_attr( $order->get_billing_city( 'edit' ) ) . '" />';
+				echo '<input type="hidden" id="billing_state" value="' . esc_attr( $order->get_billing_state( 'edit' ) ) . '" />';
+				echo '<input type="hidden" id="billing_country" value="' . esc_attr( $order->get_billing_country( 'edit' ) ) . '" />';
 
-				if ( WC_Braintree_Framework\SV_WC_Order_Compatibility::has_shipping_address( $order ) ) {
+				if ( $order->has_shipping_address() ) {
 
-					echo '<input type="hidden" name="shipping_first_name" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_first_name' ) ) . '" />';
-					echo '<input type="hidden" name="shipping_last_name" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_last_name' ) ) . '" />';
-					echo '<input type="hidden" name="shipping_address_1" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_address_1' ) ) . '" />';
-					echo '<input type="hidden" name="shipping_address_2" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_address_2' ) ) . '" />';
-					echo '<input type="hidden" name="shipping_city" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_city' ) ) . '" />';
-					echo '<input type="hidden" name="shipping_postcode" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_postcode' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_first_name" value="' . esc_attr( $order->get_shipping_first_name( 'edit' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_last_name" value="' . esc_attr( $order->get_shipping_last_name( 'edit' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_address_1" value="' . esc_attr( $order->get_shipping_address_1( 'edit' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_address_2" value="' . esc_attr( $order->get_shipping_address_2( 'edit' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_city" value="' . esc_attr( $order->get_shipping_city( 'edit' ) ) . '" />';
+					echo '<input type="hidden" name="shipping_postcode" value="' . esc_attr( $order->get_shipping_postcode( 'edit' ) ) . '" />';
 
-					echo '<input type="hidden" id="shipping_state" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_state' ) ) . '" />';
-					echo '<input type="hidden" id="shipping_country" value="' . esc_attr( WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'shipping_country' ) ) . '" />';
+					echo '<input type="hidden" id="shipping_state" value="' . esc_attr( $order->get_shipping_state( 'edit' ) ) . '" />';
+					echo '<input type="hidden" id="shipping_country" value="' . esc_attr( $order->get_shipping_country( 'edit' ) ) . '" />';
 				}
 			}
 		}

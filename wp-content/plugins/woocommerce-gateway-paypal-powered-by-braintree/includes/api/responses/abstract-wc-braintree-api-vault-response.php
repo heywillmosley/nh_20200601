@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -52,7 +52,7 @@ abstract class WC_Braintree_API_Vault_Response extends WC_Braintree_API_Response
 				'default'            => false,
 				'type'               => WC_Braintree_Payment_Method::CREDIT_CARD_TYPE,
 				'last_four'          => $payment_method->last4,
-				'card_type'          => WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $payment_method->bin ),
+				'card_type'          => Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $payment_method->bin ),
 				'exp_month'          => $payment_method->expirationMonth,
 				'exp_year'           => $payment_method->expirationYear,
 				'billing_address_id' => ( isset( $payment_method->billingAddress ) && ! empty( $payment_method->billingAddress->id ) ) ? $payment_method->billingAddress->id : null,

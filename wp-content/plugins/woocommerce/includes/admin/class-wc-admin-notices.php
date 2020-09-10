@@ -40,6 +40,7 @@ class WC_Admin_Notices {
 		'maxmind_license_key'              => 'maxmind_missing_license_key_notice',
 		'redirect_download_method'         => 'redirect_download_method_notice',
 		'uploads_directory_is_unprotected' => 'uploads_directory_is_unprotected_notice',
+		'base_tables_missing'              => 'base_tables_missing_notice',
 	);
 
 	/**
@@ -495,7 +496,7 @@ class WC_Admin_Notices {
 	/**
 	 * Notice about uploads directory begin unprotected.
 	 *
-	 * @since 4.1.1
+	 * @since 4.2.0
 	 */
 	public static function uploads_directory_is_unprotected_notice() {
 		if ( get_user_meta( get_current_user_id(), 'dismissed_uploads_directory_is_unprotected_notice', true ) || self::is_uploads_directory_protected() ) {
@@ -504,6 +505,21 @@ class WC_Admin_Notices {
 		}
 
 		include dirname( __FILE__ ) . '/views/html-notice-uploads-directory-is-unprotected.php';
+	}
+
+	/**
+	 * Notice about base tables missing.
+	 */
+	public static function base_tables_missing_notice() {
+		$notice_dismissed = apply_filters(
+			'woocommerce_hide_base_tables_missing_nag',
+			get_user_meta( get_current_user_id(), 'dismissed_base_tables_missing_notice', true )
+		);
+		if ( $notice_dismissed ) {
+			self::remove_notice( 'base_tables_missing' );
+		}
+
+		include dirname( __FILE__ ) . '/views/html-notice-base-table-missing.php';
 	}
 
 	/**
@@ -552,7 +568,7 @@ class WC_Admin_Notices {
 	/**
 	 * Check if uploads directory is protected.
 	 *
-	 * @since 4.1.1
+	 * @since 4.2.0
 	 * @return bool
 	 */
 	protected static function is_uploads_directory_protected() {
@@ -568,7 +584,12 @@ class WC_Admin_Notices {
 		$uploads = wp_get_upload_dir();
 
 		// Check for the "uploads/woocommerce_uploads" directory.
-		$response         = wp_safe_remote_get( esc_url_raw( $uploads['baseurl'] . '/woocommerce_uploads' ) );
+		$response         = wp_safe_remote_get(
+			esc_url_raw( $uploads['baseurl'] . '/woocommerce_uploads/' ),
+			array(
+				'redirection' => 0,
+			)
+		);
 		$response_code    = intval( wp_remote_retrieve_response_code( $response ) );
 		$response_content = wp_remote_retrieve_body( $response );
 

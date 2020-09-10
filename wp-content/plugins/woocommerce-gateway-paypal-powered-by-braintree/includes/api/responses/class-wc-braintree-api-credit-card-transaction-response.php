@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -61,7 +61,7 @@ class WC_Braintree_API_Credit_Card_Transaction_Response extends WC_Braintree_API
 	public function get_payment_token() {
 
 		if ( empty( $this->response->transaction->creditCardDetails->token ) ) {
-			throw new WC_Braintree_Framework\SV_WC_Payment_Gateway_Exception( __( 'Required credit card token is missing or empty!', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
+			throw new Framework\SV_WC_Payment_Gateway_Exception( __( 'Required credit card token is missing or empty!', 'woocommerce-gateway-paypal-powered-by-braintree' ) );
 		}
 
 		$data = array(
@@ -87,7 +87,7 @@ class WC_Braintree_API_Credit_Card_Transaction_Response extends WC_Braintree_API
 	public function get_card_type() {
 
 		// note that creditCardDetails->cardType is not used here as it is already prettified (e.g. American Express instead of amex)
-		return WC_Braintree_Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $this->get_bin() );
+		return Framework\SV_WC_Payment_Gateway_Helper::card_type_from_account_number( $this->get_bin() );
 	}
 
 

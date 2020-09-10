@@ -34,7 +34,7 @@ function add_login_check()
                                           //94, // resetpass
                                           3987000 // home
                                           ] ) ) {
-        wp_redirect('/menu');
+        wp_redirect('/');
         exit;
     }
     
@@ -188,30 +188,8 @@ function my_forcelogin_whitelist( $whitelist ) {
   $whitelist[] = site_url( '/account/lost-password/?' . $_SERVER['QUERY_STRING'] );
   $whitelist[] = site_url( '/account/customer-logout/' . $_SERVER['QUERY_STRING'] );
   $whitelist[] = site_url( '/account/customer-logout/?' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/sv2-insight/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/bionetics/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/testimonials/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/iabc/' . $_SERVER['QUERY_STRING'] );
   $whitelist[] = site_url( '/contact/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/about/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/botanicals/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/blog/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/training/' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/sv2-webinar/?' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/sv2-offer/?' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/new-user/?' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/p/' . $_SERVER['QUERY_STRING'] );
   $whitelist[] = site_url( '/wp-activate.php' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/h' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/expensify.txt' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/sv2-webinar-2019' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/ultimate-guide' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/application-submitted' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/repertory' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/repertory/ageless' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/team' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/webinar' . $_SERVER['QUERY_STRING'] );
-  $whitelist[] = site_url( '/webinar/request' . $_SERVER['QUERY_STRING'] );
   return $whitelist;
 }
 add_filter('v_forcelogin_whitelist', 'my_forcelogin_whitelist', 10, 1);
@@ -230,26 +208,13 @@ function my_forcelogin_bypass( $bypass ) {
     || is_page(6740) // Training
     || is_page(90) // Login
     || is_page(160607) // New User
-    || is_page(167135) // Partner Home/Apply
-    || is_page(167822) // New Home Dev
-    || is_page(174068) // Ultimate Guide
-    || is_page(177818) // Application Submitted
-    || is_page(155451) // Repertory
-    || is_page(151322) // Repertory Ageless
-    || is_page(160547) // Repertory Circulation
-    || is_page(155461) // Repertory Detoxify
-    || is_page(155463) // Repertory Digestion
-    || is_page(157590) // Repertory Endocrine
-    || is_page(155527) // Repertory Energy
-    || is_page(155476) // Heart + Emotions
-    || is_page(155529) // Immune
-    || is_page(155531) // Pain + Inflammation
-    || is_page(155537) // Pain + Sensitivities
-    || is_page(155533) // Sleep
-    || is_page(155535) // Stress
     || is_page(176197) // Team
     || is_page(239163) // Team
     || is_page(238950) // Team
+    || is_page(257878) // Clinic
+    || is_page(15206) // Apply
+    || is_page(177818) // Application Submitted
+    
     ) {
     $bypass = true;
   }
@@ -458,7 +423,7 @@ function radio_post_type() {
         'description'         => __( 'New Human Radio albums with sounds for the SLT.', 'twentytwenty' ),
         'labels'              => $labels,
         // Features this CPT supports in Post Editor
-        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        'supports'            => array( 'title', 'editor', 'revisions', 'custom-fields', ),
         // You can associate this CPT with a taxonomy or custom taxonomy. 
         'taxonomies'          => array( 'sounds' ),
         /* A hierarchical CPT is like Pages and can have
@@ -602,7 +567,7 @@ function ingredients_post_type() {
         'description'         => __( 'Ingredients used in our products.', 'twentytwenty' ),
         'labels'              => $labels,
         // Features this CPT supports in Post Editor
-        'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+        'supports'            => array( 'title', 'editor', 'revisions', 'custom-fields', ),
         // You can associate this CPT with a taxonomy or custom taxonomy. 
         'taxonomies'          => array( 'ingredients' ),
         /* A hierarchical CPT is like Pages and can have
@@ -630,6 +595,40 @@ function ingredients_post_type() {
     register_post_type( 'ingredients', $args );
  
 }
+
+//ins - register custom taxonomy for Ingredient Tags
+function ins_reg_ingredient_type() {
+ 
+// Labels part for the GUI
+ 
+// Add new taxonomy, make it hierarchical like categories
+//first do the translations part for GUI
+ 
+  $labels = array(
+    'name' => _x( 'Ingredient Type', 'taxonomy general name' ),
+    'singular_name' => _x( 'Ingredient Type', 'taxonomy singular name' ),
+    'search_items' =>  __( 'Search Ingredient Types' ),
+    'all_items' => __( 'All Ingredient Types' ),
+    'parent_item' => __( 'Parent Ingredient Type' ),
+    'parent_item_colon' => __( 'Parent Ingredient Type:' ),
+    'edit_item' => __( 'Edit Ingredient Type' ), 
+    'update_item' => __( 'Update Ingredient Type' ),
+    'add_new_item' => __( 'Add New Ingredient Type' ),
+    'new_item_name' => __( 'New Ingredient Type Name' ),
+    'menu_name' => __( 'Ingredient Types' ),
+  );    
+ 
+// Now register the taxonomy
+ 
+  register_taxonomy('ing_type',array('ingredients'), array(
+    'hierarchical' => true,
+    'labels' => $labels,
+    'show_ui' => true,
+    'show_admin_column' => true,
+    'query_var' => true,
+    'rewrite' => array( 'slug' => 'ing_type' ),
+  ));
+}
  
 /* Hook into the 'init' action so that the function
 * Containing our post type registration is not 
@@ -637,6 +636,9 @@ function ingredients_post_type() {
 */
  
 add_action( 'init', 'ingredients_post_type', 0 );
+
+//ins - initialize the 'Ingredient Type' category for 'Ingredients'
+add_action('init', 'ins_reg_ingredient_type');
 
 // WM - Back to classic editor, yes
 add_filter('use_block_editor_for_post', '__return_false', 10);
@@ -666,7 +668,7 @@ function hwm_clinic_builder( $atts ) {
     $clinic = hwm_gf_last_user_entry( 20 ); // Get the entry
     $is_mailed = $clinic[11];
     $prospect_msg = hwm_clinic_body ( $clinic, $show_price); // Prospect Message / Render
-    $admin_emails = "lwoolley@thenewhuman.com, iswitzer@thenewhuman.com, wmosley@thenewhuman.com";
+    $admin_emails = "lwoolley@thenewhuman.com, iswitzer@thenewhuman.com, wmosley@thenewhuman.com, jbrown@energeticwellnessok.com, sjohnson@thenewhuman.com";
     $admin_msg = $user->display_name . " created a Bionetic Clinic Build. Here are the built-out details we sent to the client: (including price)"; // Pre
     $admin_msg .= hwm_clinic_body ( $clinic, TRUE );
 
@@ -761,7 +763,7 @@ function hwm_clinic_body ( $clinic, $show_price = FALSE ) {
   if( $show_price )
     $render .= "<td>$sv2_combo_base_price</td>";
   $render .= "</tr>";
-  $render .= hwm_clinic_section_builder( $lasers, 'Lasers', $show_price );
+  $render .= hwm_clinic_section_builder( $lasers, 'LLLT', $show_price );
   $render .= hwm_clinic_section_builder( $slt, 'Sound Light Therapy', $show_price );
   $render .= hwm_clinic_section_builder( $footbath, 'Footbath', $show_price );
   $render .= hwm_clinic_section_builder( $add_seats, 'Certified SV2 Insight & Botanical Training Program for Additional Personnel', $show_price );
@@ -777,7 +779,7 @@ function hwm_clinic_body ( $clinic, $show_price = FALSE ) {
   $render .= "</table>";
   $render .= "</div>"; // end responsive table
   $render .= "<hr/>";
-  $render .= hwm_bb_module( 254117 ); // SV2 Clinic Builder Pre Email Text
+  //$render .= hwm_bb_module( 254117 ); // SV2 Clinic Builder Post Email Text
 
   return $render;
 }

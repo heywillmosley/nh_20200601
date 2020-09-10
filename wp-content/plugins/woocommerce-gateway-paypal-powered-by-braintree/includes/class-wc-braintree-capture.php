@@ -24,7 +24,7 @@
 
 namespace WC_Braintree;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @since 2.2.0
  */
-class Capture extends WC_Braintree_Framework\Payment_Gateway\Handlers\Capture {
+class Capture extends Framework\Payment_Gateway\Handlers\Capture {
 
 
 	/**
@@ -47,12 +47,12 @@ class Capture extends WC_Braintree_Framework\Payment_Gateway\Handlers\Capture {
 	public function has_order_authorization_expired( \WC_Order $order ) {
 
 		if ( ! $this->get_gateway()->get_order_meta( $order, 'trans_id' ) ) {
-			$this->get_gateway()->update_order_meta( $order, 'trans_id', WC_Braintree_Framework\SV_WC_Order_Compatibility::get_prop( $order, 'transaction_id' ) );
+			$this->get_gateway()->update_order_meta( $order, 'trans_id', $order->get_transaction_id( 'edit' ) );
 		}
 
-		$date_created = WC_Braintree_Framework\SV_WC_Order_Compatibility::get_date_created( $order );
+		$date_created = $order->get_date_created( 'edit' );
 
-		if ( ! $this->get_gateway()->get_order_meta( $order, 'trans_date' ) && $date_created ) {
+		if ( $date_created && ! $this->get_gateway()->get_order_meta( $order, 'trans_date' ) ) {
 			$this->get_gateway()->update_order_meta( $order, 'trans_date', $date_created->date( 'Y-m-d H:i:s' ) );
 		}
 

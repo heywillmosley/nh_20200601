@@ -1,3 +1,12 @@
+<h4>1.7.6.3 06/03/2020</h4>
+<p><strong>Hot Fix</strong></p>
+<ul>
+	<li>Fixed an issue where Google fonts might still be enqueued when not needed.</li>
+	<li>Fixed menu styling issue when no menu is set.</li>
+	<li>Fixed WooCommerce variable product button styling issues.</li>
+	<li>Fixed WocCommerce button border issues.</li>
+</ul>
+
 <h4>1.7.6.2 05/05/2020</h4>
 <p><strong>Hot Fix</strong></p>
 <ul>

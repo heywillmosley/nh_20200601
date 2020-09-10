@@ -24,7 +24,7 @@
 
 namespace WC_Braintree\PayPal\Buttons;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -38,6 +38,19 @@ class Product extends Abstract_Button {
 
 	/** @var \WC_Product|null|false the product object if on a product page or false if not on a product page */
 	protected $product;
+
+
+	/**
+	 * Gets the JS handler class name.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	protected function get_js_handler_class_name() {
+
+		return 'WC_Braintree_PayPal_Product_Button_Handler';
+	}
 
 
 	/**
@@ -57,10 +70,11 @@ class Product extends Abstract_Button {
 	 * Adds necessary actions and filters for this button.
 	 *
 	 * @since 2.3.0
+	 * @since 2.4.0 renamed add_hooks() to add_button_hooks()
 	 */
-	protected function add_hooks() {
+	protected function add_button_hooks() {
 
-		parent::add_hooks();
+		parent::add_button_hooks();
 
 		add_action( 'wp', function() { $this->init_product(); } );
 
@@ -125,7 +139,7 @@ class Product extends Abstract_Button {
 	 */
 	protected function is_wc_api_request_valid() {
 
-		return (bool) wp_verify_nonce( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_product_button_checkout' );
+		return (bool) wp_verify_nonce( Framework\SV_WC_Helper::get_posted_value( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_product_button_checkout' );
 	}
 
 
@@ -136,14 +150,14 @@ class Product extends Abstract_Button {
 	 */
 	protected function process_wc_api_request() {
 
-		$product_id = (int) WC_Braintree_Framework\SV_WC_Helper::get_post( 'product_id' );
+		$product_id = (int) Framework\SV_WC_Helper::get_posted_value( 'product_id' );
 		$product    = wc_get_product( $product_id );
 
 		if ( ! $product instanceof \WC_Product ) {
 			wp_send_json_error( 'Invalid Product Data' );
 		}
 
-		$serialized = WC_Braintree_Framework\SV_WC_Helper::get_post( 'cart_form' );
+		$serialized = Framework\SV_WC_Helper::get_posted_value( 'cart_form' );
 		$cart_data  = [];
 
 		if ( ! empty( $serialized ) ) {
@@ -200,7 +214,7 @@ class Product extends Abstract_Button {
 	 */
 	public function validate_product_data() {
 
-		if ( ! wp_verify_nonce( WC_Braintree_Framework\SV_WC_Helper::get_post( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_validate_product_data' ) ) {
+		if ( ! wp_verify_nonce( Framework\SV_WC_Helper::get_posted_value( 'wp_nonce' ), 'wc_' . $this->get_gateway()->get_id() . '_validate_product_data' ) ) {
 			return;
 		}
 
@@ -271,30 +285,6 @@ class Product extends Abstract_Button {
 
 
 	/**
-	 * Gets the JS handler class name.
-	 *
-	 * @since 2.3.0
-	 *
-	 * @return string
-	 */
-	protected function get_js_handler_object_name() {
-		return 'wc_braintree_paypal_product_button_handler';
-	}
-
-
-	/**
-	 * Gets the JS handler class name.
-	 *
-	 * @since 2.3.0
-	 *
-	 * @return string
-	 */
-	protected function get_js_handler_name() {
-		return 'WC_Braintree_PayPal_Product_Button_Handler';
-	}
-
-
-	/**
 	 * Returns whether the button is for single-use transaction or not.
 	 *
 	 * @since 2.3.0
@@ -334,5 +324,19 @@ class Product extends Abstract_Button {
 
 		return $this->product;
 	}
+
+
+	/**
+	 * Gets the ID of this script handler.
+	 *
+	 * @since 2.4.0
+	 *
+	 * @return string
+	 */
+	public function get_id() {
+
+		return $this->get_gateway()->get_id() . '_product_button';
+	}
+
 
 }

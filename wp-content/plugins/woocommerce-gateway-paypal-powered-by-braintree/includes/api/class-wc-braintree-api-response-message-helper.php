@@ -22,7 +22,7 @@
  * @license   http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  */
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -38,7 +38,7 @@ defined( 'ABSPATH' ) or exit;
  * @since 3.0.0
  * @see SV_WC_Payment_Gateway_API_Response_Message_Helper
  */
-class WC_Braintree_API_Response_Message_Helper extends WC_Braintree_Framework\SV_WC_Payment_Gateway_API_Response_Message_Helper {
+class WC_Braintree_API_Response_Message_Helper extends Framework\SV_WC_Payment_Gateway_API_Response_Message_Helper {
 
 
 	/** @var \WC_Braintree_API_Response response */

@@ -279,6 +279,22 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
     }
 
     /**
+     * @param WC_Data          $object   The deleted or trashed object.
+	 * @param WP_REST_Response $response The response data.
+     * @param WP_REST_Request  $request  The request sent to the API.
+     */
+    public function handleAPICouponTrashed($object, $response, $request)
+    {
+        try {
+            $deleted = mailchimp_get_api()->deletePromoRule(mailchimp_get_store_id(), $request['id']);
+            if ($deleted) mailchimp_log('api.promo_code.deleted', "deleted promo code {$request['id']}");
+            else mailchimp_log('api.promo_code.delete_fail', "Unable to delete promo code {$request['id']}");
+        } catch (\Exception $e) {
+            mailchimp_error('delete promo code', $e->getMessage());
+        }
+    }
+
+    /**
      * Save post metadata when a post is saved.
      *
      * @param int $post_id The post ID.
@@ -649,6 +665,12 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
         if (!($woo = WC()) || empty($woo->session)) {
             return $default;
         }
+
+        // not really sure why this would be the case, but if there is no session we can't get it anyway.
+        if (!is_object($woo->session) || !method_exists($woo->session, 'get')) {
+            return $default;
+        }
+
         return $woo->session->get($key, $default);
     }
 
@@ -724,8 +746,8 @@ class MailChimp_Service extends MailChimp_WooCommerce_Options
 
             $this->getCartItems();
 
-            if (isset($_GET['language'])) {
-                $this->user_language = $_GET['language'];
+            if (isset($_GET['mc_language'])) {
+                $this->user_language = $_GET['mc_language'];
             }
 
             $this->handleCartUpdated();

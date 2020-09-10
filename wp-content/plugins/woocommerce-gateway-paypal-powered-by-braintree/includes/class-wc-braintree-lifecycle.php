@@ -24,7 +24,7 @@
 
 namespace WC_Braintree;
 
-use WC_Braintree\Plugin_Framework as WC_Braintree_Framework;
+use SkyVerge\WooCommerce\PluginFramework\v5_7_1 as Framework;
 
 defined( 'ABSPATH' ) or exit;
 
@@ -35,7 +35,7 @@ defined( 'ABSPATH' ) or exit;
  *
  * @method \WC_Braintree get_plugin()
  */
-class Lifecycle extends WC_Braintree_Framework\Plugin\Lifecycle {
+class Lifecycle extends Framework\Plugin\Lifecycle {
 
 
 	/**
@@ -194,7 +194,7 @@ class Lifecycle extends WC_Braintree_Framework\Plugin\Lifecycle {
 
 				$settings['connect_manually'] = 'yes';
 
-				update_option( $this->get_plugin()->get_gateway_settings_name( $gateway_id ), $settings );
+				update_option( "woocommerce_${gateway_id}_settings", $settings );
 			}
 		}
 
