@@ -31,7 +31,7 @@ function hwm_add_label_printer_template( $templates ) {
   $label_printer_file = plugin_dir_path( __FILE__ ) . $label_printer_filename;
 
    $templates[ plugin_dir_path( __FILE__ ) . $label_printer_filename ] = __( 'Label Printer', 'text-domain' );
- 
+
    return $templates;
 }
 //add_filter ('theme_page_templates', 'hwm_add_label_printer_template');
@@ -41,20 +41,20 @@ function hwm_label_printer_page_template( $template )
 {
     if (is_page()) {
         $meta = get_post_meta(get_the_ID());
- 
+
         if (!empty($meta['_wp_page_template'][0]) && $meta['_wp_page_template'][0] != $template) {
             $template = $meta['_wp_page_template'][0];
         }
     }
- 
+
     return $template;
 }
 //add_filter('template_include', 'hwm_label_printer_page_template', 99);
 
 
 // Add custom page to /label-printer
-//add_filter( 'page_template', 'page_label_printer' ); 
-function page_label_printer( $page_template ) { 
+//add_filter( 'page_template', 'page_label_printer' );
+function page_label_printer( $page_template ) {
 
   if ( is_page( 'label-printer' ) ) {
 
@@ -169,11 +169,11 @@ function hwm_label_printer( $product_id, $date, $batch ) {
   $label_ml = oz2ml( $label_size );
 
   switch( $label_size ) {
-    case 1: 
+    case 1:
       $pdf_medium = 'pdf-letter-portrait';
       $label_count = 12;
       break;
-    case 4: 
+    case 4:
       $pdf_medium = 'pdf-letter-landscape';
       $label_count = 8;
       break;
@@ -497,7 +497,7 @@ $html .= <<<HTML
                   </td>
                 </tr>
 HTML;
-} // end if 
+} // end if
 
 // Show blend if ther are ingredients
 if( !empty( $preservatives ) ) {
@@ -509,7 +509,7 @@ $html .= <<<HTML
                   </td>
                 </tr>
 HTML;
-} // end if  
+} // end if
 
 // Show blend if ther are ingredients
 if( !empty( $flavoring ) ) {
@@ -521,7 +521,7 @@ $html .= <<<HTML
                   </td>
                 </tr>
 HTML;
-} // end if   
+} // end if
 
 $html .= <<<HTML
 
@@ -537,14 +537,14 @@ $html .= <<<HTML
       </div><!-- end label -->
 
 HTML;
-  
+
   // Add row every two labels
   if( $i % 2 == 1 )
     $html .= "</div>"; // end row
 
   $i++;
 }
-  
+
 $html .= "</div>";
 
   echo $html;
@@ -620,11 +620,11 @@ function get_daily_value( $serving, $daily_value_multiplier ) {
 
 // $ml is total blend ml
 // size of mix is always in gallons
-function blend_mltomg( $ml_of_extracts_only_in_mix, $size_of_mix_in_gallons, $number_of_doses = 1, $method = 'drop(s)') { 
+function blend_mltomg( $ml_of_extracts_only_in_mix, $size_of_mix_in_gallons, $number_of_doses = 1, $method = 'drop(s)') {
 
   $teaspoon = 4.92892; // teaspoon
   $drop = .04; // drop
-  
+
   if( $method == 'teaspoon(s)' )
     $unit = $number_of_doses * $teaspoon;
   else // make drops

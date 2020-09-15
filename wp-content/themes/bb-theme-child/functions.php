@@ -9,11 +9,11 @@ add_action('admin_head', 'storeapps_hotfix');
 
 function storeapps_hotfix() {
   echo '<style>
-    .post-type-shop_order #TB_window, 
-    .post-type-shop_order #TB_overlay, 
-    .post-type-shop_order .ig_content, 
-    .post-type-product #TB_window, 
-    .post-type-product #TB_overlay, 
+    .post-type-shop_order #TB_window,
+    .post-type-shop_order #TB_overlay,
+    .post-type-shop_order .ig_content,
+    .post-type-product #TB_window,
+    .post-type-product #TB_overlay,
     .post-type-product .ig_content {
         display: none !important;
         position: relative !important;
@@ -37,7 +37,7 @@ function add_login_check()
         wp_redirect('/');
         exit;
     }
-    
+
     if ( !is_user_logged_in() && is_page( [30688888 // Random Disable
                                           ] ) ) {
         wp_redirect('/login');
@@ -50,22 +50,22 @@ function add_login_check()
 add_action( 'user_register', 'registration_to_mc', 10, 1 );
 
 function registration_to_mc( $user_id ) {
-    
+
     $user_info = get_userdata( $user_id );
-    
+
     $email = $user_info->user_email;;
     $list_id = 'a981a755fb';
     $api_key = '07d44c5c8c9ed311e2b60f9c9a1fb23e-us5';
-     
+
     $data_center = substr($api_key,strpos($api_key,'-')+1);
-     
+
     $url = 'https://'. $data_center .'.api.mailchimp.com/3.0/lists/'. $list_id .'/members';
-     
+
     $json = json_encode([
         'email_address' => $email,
         'status'        => 'subscribed', //pass 'subscribed' or 'pending'
     ]);
-     
+
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_USERPWD, 'user:' . $api_key);
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
@@ -200,9 +200,9 @@ add_filter('v_forcelogin_whitelist', 'my_forcelogin_whitelist', 10, 1);
  * @return bool Whether to disable Force Login. Default false.
  */
 function my_forcelogin_bypass( $bypass ) {
-  if ( in_category('articles') 
-    || is_home() 
-    || is_front_page() 
+  if ( in_category('articles')
+    || is_home()
+    || is_front_page()
     || is_page(153258) // SV2 Webinar
     || is_page(153145) // SV2 Offer
     || is_page(6740) // Training
@@ -214,7 +214,7 @@ function my_forcelogin_bypass( $bypass ) {
     || is_page(257878) // Clinic
     || is_page(15206) // Apply
     || is_page(177818) // Application Submitted
-    
+
     ) {
     $bypass = true;
   }
@@ -284,7 +284,7 @@ function heywillmosley_webinar( $atts ) {
         $cut = $count - $skip;
         if( $cut == $display_count ) // only show certain #
             break;
-        
+
         if( $count == 0 )
             $date = strtotime( "$start_date $start_time" );
         else {
@@ -292,7 +292,7 @@ function heywillmosley_webinar( $atts ) {
             $interval_count = $initial_interval + $interval_count;
         }
 
-        
+
         if( strtotime("now") < $date  ) {
 
             $pretty_date = date('l F d, Y g:iA T', $date );
@@ -351,26 +351,26 @@ function heywillmosley_webinar_viewer() {
 
     case "vimeo":  // if the link is a vimeo link
       $url = "https://player.vimeo.com/video/" . $_GET['id'];
-      
+
       $render = "<style>.embed-container { position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 75%; height: auto; margin: 0 auto;} .embed-container iframe, .embed-container object, .embed-container embed { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }</style>";
       $render .= "<div class='embed-container'><iframe src='$url' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
       $render .= "</div>";
 
       break;
-      
+
     case "zoom":  //if the link is a zoom link
       $url = "https://zoom.us/rec/share/" . $_GET['id'];
-      
+
       $render = "<div class='iframe-container' style='overflow: hidden; padding-top: 56.25%; position: relative;'>";
       $render .= "<iframe allow='microphone; camera' style='border: 0; height: 100%; left: 0; position: absolute; top: 0; width: 100%;' src='$url' frameborder='0'></iframe>";
       $render .= "</div>";
-      
+
       break;
-      
+
     default:  //if it's not any of the above
 
   } // end switch
-  
+
   echo $render;
 
 } // end heywillmosley_webinar_viewer
@@ -393,12 +393,12 @@ function redirect_webinar_viewer( ) {
 // Redirect if Get isn't set
 add_action( 'template_redirect', 'redirect_webinar_viewer' );
 
-/* 
+/*
  * New Human Radio
 */
- 
+
 function radio_post_type() {
- 
+
 // Set UI labels for Custom Post Type
     $labels = array(
         'name'                => _x( 'Albums', 'New Human Radio Albums', 'twentytwenty' ),
@@ -415,21 +415,21 @@ function radio_post_type() {
         'not_found'           => __( 'Not Found', 'twentytwenty' ),
         'not_found_in_trash'  => __( 'Not found in Trash', 'twentytwenty' ),
     );
-     
+
 // Set other options for Custom Post Type
-     
+
     $args = array(
         'label'               => __( 'albums', 'twentytwenty' ),
         'description'         => __( 'New Human Radio albums with sounds for the SLT.', 'twentytwenty' ),
         'labels'              => $labels,
         // Features this CPT supports in Post Editor
         'supports'            => array( 'title', 'editor', 'revisions', 'custom-fields', ),
-        // You can associate this CPT with a taxonomy or custom taxonomy. 
+        // You can associate this CPT with a taxonomy or custom taxonomy.
         'taxonomies'          => array( 'sounds' ),
         /* A hierarchical CPT is like Pages and can have
         * Parent and child items. A non-hierarchical CPT
         * is like Posts.
-        */ 
+        */
         'hierarchical'        => false,
         'public'              => true,
         'show_ui'             => true,
@@ -444,19 +444,19 @@ function radio_post_type() {
         'publicly_queryable'  => true,
         'capability_type'     => 'post',
         'show_in_rest' => true,
- 
+
     );
-     
+
     // Registering your Custom Post Type
     register_post_type( 'albums', $args );
- 
+
 }
- 
+
 /* Hook into the 'init' action so that the function
-* Containing our post type registration is not 
-* unnecessarily executed. 
+* Containing our post type registration is not
+* unnecessarily executed.
 */
- 
+
 add_action( 'init', 'radio_post_type', 0 );
 
 
@@ -487,7 +487,7 @@ function stock_log( $product_id ) {
     $mod_author = $current_user->display_name;
   }
   // If on Product Edit Page
-  elseif ( strpos( $hwm_url, '/wp-admin/post.php' ) !== false ) 
+  elseif ( strpos( $hwm_url, '/wp-admin/post.php' ) !== false )
     $mod_author = get_the_modified_author();
 
   // The System do stuff
@@ -529,20 +529,8 @@ function cinch_add_revision_support( $args ) {
      return $args;
 }
 
-// ACF Global Label Builder
-if( function_exists('acf_add_options_page') ) {
-  // Register options page.
-        $option_page = acf_add_options_page(array(
-            'page_title'    => __('Label Builder'),
-            'menu_title'    => __('Label Builder'),
-            'menu_slug'     => 'label-builder',
-            'capability'    => 'edit_posts',
-            'redirect'      => false
-        ));
-}
-
 function ingredients_post_type() {
- 
+
 // Set UI labels for Custom Post Type
     $labels = array(
         'name'                => _x( 'Ingredients', 'Ingredients', 'twentytwenty' ),
@@ -559,21 +547,21 @@ function ingredients_post_type() {
         'not_found'           => __( 'Not Found', 'twentytwenty' ),
         'not_found_in_trash'  => __( 'Not found in Trash', 'twentytwenty' ),
     );
-     
+
 // Set other options for Custom Post Type
-     
+
     $args = array(
         'label'               => __( 'ingredients', 'twentytwenty' ),
         'description'         => __( 'Ingredients used in our products.', 'twentytwenty' ),
         'labels'              => $labels,
         // Features this CPT supports in Post Editor
         'supports'            => array( 'title', 'editor', 'revisions', 'custom-fields', ),
-        // You can associate this CPT with a taxonomy or custom taxonomy. 
+        // You can associate this CPT with a taxonomy or custom taxonomy.
         'taxonomies'          => array( 'ingredients' ),
         /* A hierarchical CPT is like Pages and can have
         * Parent and child items. A non-hierarchical CPT
         * is like Posts.
-        */ 
+        */
         'hierarchical'        => false,
         'public'              => true,
         'show_ui'             => true,
@@ -588,22 +576,22 @@ function ingredients_post_type() {
         'publicly_queryable'  => true,
         'capability_type'     => 'post',
         'show_in_rest' => true,
- 
+
     );
-     
+
     // Registering your Custom Post Type
     register_post_type( 'ingredients', $args );
- 
+
 }
 
 //ins - register custom taxonomy for Ingredient Tags
 function ins_reg_ingredient_type() {
- 
+
 // Labels part for the GUI
- 
+
 // Add new taxonomy, make it hierarchical like categories
 //first do the translations part for GUI
- 
+
   $labels = array(
     'name' => _x( 'Ingredient Type', 'taxonomy general name' ),
     'singular_name' => _x( 'Ingredient Type', 'taxonomy singular name' ),
@@ -611,15 +599,15 @@ function ins_reg_ingredient_type() {
     'all_items' => __( 'All Ingredient Types' ),
     'parent_item' => __( 'Parent Ingredient Type' ),
     'parent_item_colon' => __( 'Parent Ingredient Type:' ),
-    'edit_item' => __( 'Edit Ingredient Type' ), 
+    'edit_item' => __( 'Edit Ingredient Type' ),
     'update_item' => __( 'Update Ingredient Type' ),
     'add_new_item' => __( 'Add New Ingredient Type' ),
     'new_item_name' => __( 'New Ingredient Type Name' ),
     'menu_name' => __( 'Ingredient Types' ),
-  );    
- 
+  );
+
 // Now register the taxonomy
- 
+
   register_taxonomy('ing_type',array('ingredients'), array(
     'hierarchical' => true,
     'labels' => $labels,
@@ -629,12 +617,12 @@ function ins_reg_ingredient_type() {
     'rewrite' => array( 'slug' => 'ing_type' ),
   ));
 }
- 
+
 /* Hook into the 'init' action so that the function
-* Containing our post type registration is not 
-* unnecessarily executed. 
+* Containing our post type registration is not
+* unnecessarily executed.
 */
- 
+
 add_action( 'init', 'ingredients_post_type', 0 );
 
 //ins - initialize the 'Ingredient Type' category for 'Ingredients'
@@ -677,7 +665,7 @@ function hwm_clinic_builder( $atts ) {
 
       hwm_clinic_mail( $admin_emails, "SV2 Clinic Admin Email", $admin_msg ); // Admin Email
       hwm_clinic_mail( $user->user_email, "SV2 Clinic Prospect Email", $prospect_msg ); // Prospect Email
-    }    
+    }
 
   return $prospect_msg; // render out to page
 }
@@ -749,7 +737,7 @@ function hwm_clinic_body ( $clinic, $show_price = FALSE ) {
   $clinic_total = '$' . number_format( $clinic[5] );
   $pubDate =  new DateTime( $clinic['date_created'] );
   $pubDate = $pubDate->format('D, d M Y');
-   
+
   // Breakdown
   $render .= hwm_bb_module( 254112 ); // SV2 Clinic Builder Pre Email Text
   $render .= "<div class='table-responsive mt-4 hwm-clinic-build'>";
@@ -797,7 +785,7 @@ function hwm_clinic_mail( $to, $subject, $body ) {
 
 // Returns a field's contents
 function hwm_gf_field ( $form_id, $field_id ) {
-    
+
     $field = GFAPI::get_field( $form_id, $field_id );
     return $field->content;
 }
@@ -872,4 +860,10 @@ function hwm_get_array_parts_with ( $array, $start_with, $seperator ) {
 
   if( isset( $result ) )
       return $result;
+}
+
+function admin_print( $array ) {
+  echo "<pre>";
+  print_r( $array );
+  echo "</pre>";
 }
