@@ -4,6 +4,7 @@ echo '<link rel="stylesheet" href="' . plugins_url( WP_PAGE_HANDBOOK_NAME . '/pu
 $title = the_title( '', '', FALSE );
 
 $html = "<div class='pdf'>";
+$html .= "Document Builder Time!";
 
 // Products
 foreach( get_field('products') as $product_ID ) {
