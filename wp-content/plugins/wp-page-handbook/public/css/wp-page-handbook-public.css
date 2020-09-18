@@ -5,19 +5,105 @@
  /* CSS Reset */
  a,abbr,acronym,address,applet,article,aside,audio,b,big,blockquote,body,canvas,caption,center,cite,code,dd,del,details,dfn,div,dl,dt,em,embed,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,html,i,iframe,img,ins,kbd,label,legend,li,mark,menu,nav,object,ol,output,p,pre,q,ruby,s,samp,section,small,span,strike,strong,sub,summary,sup,table,tbody,td,tfoot,th,thead,time,tr,tt,u,ul,var,video{margin:0;padding:0;border:0;font-size:100%;font-family:'Open Sans';vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:after,blockquote:before,q:after,q:before{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
+ @page
+{
+    size: auto;   /* auto is the initial value */
+
+    /* this affects the margin in the printer settings */
+    margin: 50mm 25mm 25mm 25mm;
+}
+
  /* Keeps our widths right for print */
  *,
  *:before,
  *:after {
    box-sizing: inherit;
  }
-
  html {
    box-sizing: border-box;
  }
+ body {
+   font-size: 13px;
+   line-height: 1.5;
+ }
 
- .pdf {
-   width: 8.5in;
-   height: 11in;
-   padding: .5in;
+h1 {
+  font-size: 36px;
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 30px;
+}
+
+h2 {
+  font-size: 24px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+h4 {
+  font-size: 16px;
+  line-height: 1.2;
+  margin-bottom: 10px;
+  font-weight: bold;;
+}
+
+ p {
+   margin-bottom: 20px;
+ }
+
+img, table {
+  display: none;
+}
+.doc-section {
+  text-align: center;
+  border-top: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  padding: 20px 0;
+}
+.product-line {
+  border-bottom: 1px solid #CCC;
+  padding: 10px 0;
+  max-width: 3in;
+}
+.wp-product p {
+  font-size: 10.5pt;
+  line-height: 1.4;
+}
+
+ @media only screen {
+   html {
+     background-color: #F4F4F4;
+   }
+   body {
+     font-size: 16px;
+   }
+   img {
+     max-width: 100%;
+     display: block;
+   }
+   .pdf {
+     width: 8.5in;
+     padding: .5in 1in 1in 1in;
+     background-color: #FFF;
+     margin: 0 auto;
+     border-bottom: 1px solid #CCC;
+     -webkit-box-shadow: 10px 10px 31px -19px rgba(0,0,0,0.75);
+     -moz-box-shadow: 10px 10px 31px -19px rgba(0,0,0,0.75);
+     box-shadow: 10px 10px 31px -19px rgba(0,0,0,0.75);
+   }
+   .pdf.cover {
+     padding: 0;
+   }
+   .cover img {
+     width: 100%;
+   }
+   .logo {
+     max-width: 200px;
+     margin: 0 auto 30px;
+   }
  }
