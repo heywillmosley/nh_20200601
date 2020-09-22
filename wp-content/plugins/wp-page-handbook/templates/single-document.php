@@ -1,15 +1,13 @@
-<?php
-$css_url = plugins_url( WP_PAGE_HANDBOOK_NAME . '/public/css/wp-page-handbook-public.css' );
+<?php wp_head();
+//$css_url = plugins_url( WP_PAGE_HANDBOOK_NAME . '/public/css/wp-page-handbook-public.css' );
+//$js_url = plugins_url( WP_PAGE_HANDBOOK_NAME . '/public/js/wp-page-handbook-public.js' );
 $logo = get_field( 'logo' );
 $cover = get_field( 'cover' );
-$doc_title = the_title( '', '', FALSE );
+$doc_title = remove_private_prefix ( the_title( '', '', FALSE ) );
 $intro_content = get_field('introduction_content');
 $closing_content = get_field('closing_content');
 
-echo "<link rel='stylesheet' href='$css_url' type='text/css' media='all' />";
 $html = <<<HTML
-<html>
-<body>
   <div class="pdf cover">
     <img src="$cover" alt="Document Cover" />
   </div>
@@ -21,6 +19,23 @@ HTML;
 
 // Products
 foreach( get_field( 'included_content' ) as $content ) {
+
+  if( $content == 'Pages' ) {
+
+    foreach( get_field( 'pages') as $page_ID ) {
+
+      $page_title = remove_private_prefix ( get_the_title( $page_ID ) );
+      $page_content = get_the_content( NULL, FALSE, $page_ID );
+
+$html .= <<<HTML
+    <div class="wphb-page">
+      <h2>$page_title</h2>
+      <div>$page_content</div>
+    </div><!--end page -->
+
+HTML;
+    }
+  }
 
   if( $content == 'Products' ) {
 
@@ -55,7 +70,7 @@ foreach( get_field( 'included_content' ) as $content ) {
 
         foreach( $products as $product ) {
 
-          $name = $product->get_name();
+          $name = remove_private_prefix ( $product->get_name() );
           $desc = wp_strip_all_tags ( $product->get_description() );
 
           $html .= <<<HTML
@@ -86,8 +101,6 @@ foreach( get_field( 'included_content' ) as $content ) {
 $html .= <<<HTML
     <p>$closing_content</p>
   </div><!-- end pdf -->
-</body>
-</html>
 HTML;
 
 
@@ -98,4 +111,10 @@ function wph_get_content( $ID ) { // array
   $post = get_post( $ID );
   return apply_filters('the_content', $post->post_content);
 
+}
+
+// remove "Private: " from titles
+function remove_private_prefix( $title ) {
+
+	return str_replace( 'Private: ', '', $title );
 }

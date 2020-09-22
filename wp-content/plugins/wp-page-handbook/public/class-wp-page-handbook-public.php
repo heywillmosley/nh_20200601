@@ -110,4 +110,22 @@ class Wp_Page_Handbook_Public {
 		if ( is_singular( 'document' ) )
 			return dirname( __FILE__, 2 ) . '/templates/single-document.php'; // use dirnam vs plugins_url, 2 represents # of dir levels up
 	}
+
+	/**
+	 * Remove all java scripts.
+	 */
+	public function remove_all_scripts() {
+	    global $wp_scripts;
+	    if ( is_singular( 'document' ) )
+	        $wp_scripts->queue = array();
+	}
+
+	/**
+	 * Remove all style sheets.
+	 */
+	public function remove_all_styles() {
+	    global $wp_styles;
+	    if ( is_singular( 'document' ) )
+	        $wp_styles->queue = array();
+	}
 }

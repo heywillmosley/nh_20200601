@@ -32,5 +32,4 @@ class Wp_Page_Handbook_Activator {
 	public static function activate() {
 
 	}
-
 }

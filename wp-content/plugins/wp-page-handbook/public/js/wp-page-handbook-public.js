@@ -29,4 +29,6 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	 $('.wphb-page h1').remove();
+
 })( jQuery );

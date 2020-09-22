@@ -156,7 +156,7 @@ class Wp_Page_Handbook {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'init', $plugin_admin,  'new_cpt_document' );
-
+		$this->loader->add_action( 'acf/init', $plugin_admin,  'my_acf_add_local_field_groups' );
 	}
 
 	/**
@@ -170,7 +170,10 @@ class Wp_Page_Handbook {
 
 		$plugin_public = new Wp_Page_Handbook_Public( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+		//$this->loader->add_action( 'wp_print_styles', $plugin_public, 'remove_all_styles', 99 );
+		//$this->loader->add_action( 'wp_print_scripts', $plugin_public, 'remove_all_scripts', 99 );
+
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles', 99 );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_filter( 'single_template', $plugin_public, 'load_document_template' );
 
